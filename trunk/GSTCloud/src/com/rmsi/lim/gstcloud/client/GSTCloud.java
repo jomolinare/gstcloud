@@ -244,7 +244,7 @@ public class GSTCloud implements EntryPoint
 					{
 						public void onFailure(Throwable caught) 
 						{
-						
+						//
 						}
 
 					    public void onSuccess(List<Landmarks> result ) 
