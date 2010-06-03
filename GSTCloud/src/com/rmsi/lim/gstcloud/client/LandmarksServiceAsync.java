@@ -11,6 +11,6 @@ public interface LandmarksServiceAsync
 {
 	void loadStation(Landmarks station, AsyncCallback<String> callback);
     void displayStation(AsyncCallback<List<Landmarks>> callback);
-    void searchStation(String text,AsyncCallback<List<Landmarks>> callback);
+    void searchByAddress(String text,AsyncCallback<List<Landmarks>> callback);
     void loadKML(String filename, AsyncCallback<String> asyncCallback);
 }
