@@ -6,12 +6,13 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.rmsi.lim.gstcloud.shared.States;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "false")
 public class States implements IsSerializable
 {
 	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY ,mappedBy = "state_Id")
     private Long stateId;
 
     @Persistent
@@ -30,12 +31,14 @@ public class States implements IsSerializable
     
     public States(String stateName,Double latitude, Double longitude) 
     {
-        this.stateName = stateName;
+    	
+    	this.stateName = stateName;
         this.latitude=latitude;
         this.longitude=longitude;
     }
 
-    public long getStateId() 
+
+	public long getStateId() 
     {
         return stateId;
     }
@@ -46,7 +49,7 @@ public class States implements IsSerializable
 
     public Double getLatitude() {
         return latitude;
-    }
+    }	
 
     public Double getLongitude() {
         return longitude;
