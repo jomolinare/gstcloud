@@ -12,6 +12,7 @@ public interface LandmarksService extends RemoteService
 
 	    String loadStation(Landmarks station);
 	    List<Landmarks> displayStation();
-	    List<Landmarks> searchStation(String text);
+	    List<Landmarks> searchByAddress(String text);
+	    
 	    String loadKML(String fileIn);
 	}
