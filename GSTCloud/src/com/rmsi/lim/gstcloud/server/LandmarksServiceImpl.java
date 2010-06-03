@@ -12,7 +12,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.rmsi.lim.gstcloud.client.LandmarksService;
 import com.rmsi.lim.gstcloud.server.PMF;
 import com.rmsi.lim.gstcloud.shared.Landmarks;
-
+import com.rmsi.lim.gstcloud.client.LocalBodiesService;
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
@@ -31,7 +31,7 @@ public class LandmarksServiceImpl extends RemoteServiceServlet implements Landma
 	
 	PersistenceManager pm = PMF.get().getPersistenceManager();
 	
-	String query = "SELECT FROM org.emcode.samples.giscloud.shared.Landmarks WHERE category == 'Landmark'";
+	String query = "SELECT FROM com.rmsi.lim.gstcloud.shared.Landmarks WHERE category == 'Landmark'";
 	@Override
 	public List<Landmarks> displayStation() 
 	{
@@ -51,10 +51,10 @@ public class LandmarksServiceImpl extends RemoteServiceServlet implements Landma
 	    return tempList;
 	}
 	
-	public List<Landmarks> searchStation(String text)
+	public List<Landmarks> searchByAddress(String text)
 	{
 		//String querySearch = "SELECT FROM com.rmsi.cloudGIS.jdo.shared.Landmarks WHERE placeName.startsWith(" + text +")" ;
-		String querySearch = "SELECT FROM org.emcode.samples.giscloud.shared.Landmarks WHERE placeName =='" + text +"'" ;
+		String querySearch = "SELECT FROM com.rmsi.lim.gstcloud.shared.Landmarks WHERE placeName =='" + text +"'" ;
 	
 		List<Landmarks> landmarklist = (List<Landmarks>) pm.newQuery(querySearch).execute();
 //		List<Landmarks> landmarklist = (List<Landmarks>) pm.newQuery(Landmarks.class, "this.placename =="+ "'" + text +"'").execute();
