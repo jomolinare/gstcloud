@@ -20,6 +20,7 @@ import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -105,7 +106,39 @@ public class GSTCloud implements EntryPoint
 	private LocalBodiesServiceAsync dea = GWT
 	        .create(LocalBodiesService.class);
 
-		
+	public void drawCircleFromRadius(LatLng center, double radius,int nbOfPoints) 
+	{
+			 LatLngBounds bounds = LatLngBounds.newInstance();
+			 LatLng[] circlePoints = new LatLng[nbOfPoints];
+
+			 double EARTH_RADIUS = 6371000;
+			 double d = radius / EARTH_RADIUS;
+			 double lat1 = Math.toRadians(center.getLatitude());
+			 double lng1 = Math.toRadians(center.getLongitude());
+
+			 double a = 0;
+			 double step = 360.0 / (double) nbOfPoints;
+			 for (int i = 0; i < nbOfPoints; i++) 
+			 {
+				 double tc = Math.toRadians(a);
+				 double lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1)* Math.sin(d) 
+						                    * Math.cos(tc));
+				 double lng2 = lng1 + Math.atan2(Math.sin(tc) * Math.sin(d) * Math.cos(lat1),
+			                   Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
+				 LatLng point = LatLng.newInstance(Math.toDegrees(lat2), Math.toDegrees(lng2));
+				 circlePoints[i] = point;
+				 bounds.extend(point);
+				 a += step;
+			 }
+
+			 Polygon circle = new Polygon(circlePoints, "white", 0, 0, "green", 0.5);
+			 
+			 map.addOverlay(circle);
+			 return ;
+	}
+
+	
+	
 	private void StatesLoader()
 	{
 		 final States s1 = new States("Delhi",28.5332740008996,77.1380750260093);
@@ -210,7 +243,7 @@ public class GSTCloud implements EntryPoint
 		
 		final TextBox latitudeBox = new TextBox();
 		final TextBox longitudeBox = new TextBox();
-		TextBox SpeRadBox = new TextBox();
+		final TextBox SpeRadBox = new TextBox();
 		
 		Label latLabel = new Label("P1 Latitude");
 		Label longLabel = new Label("P1 Longitude");
@@ -223,7 +256,9 @@ public class GSTCloud implements EntryPoint
 			public void onClick(ClickEvent event)
 			{
 				if (event.getSource()==latLongSearch)	
-				{
+				{	
+					Double radius = new Double(SpeRadBox.getText());
+					
 					errorLabel.setText("");
 					String latChck = new String();
 					latChck = latitudeBox.getText();
@@ -245,7 +280,8 @@ public class GSTCloud implements EntryPoint
 					Double lat = new Double(latitudeBox.getText());	
 					Double lng = new Double(longitudeBox.getText());
 					LatLng point = LatLng.newInstance(lat,lng);
-					map.setCenter(point);
+					drawCircleFromRadius(point,radius,60);
+					map.setCenter(point,5);
 				}
 				else if (event.getSource()==latLongClear)
 				{
@@ -256,6 +292,8 @@ public class GSTCloud implements EntryPoint
 			{
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) 
 				{
+					Double radius = new Double(SpeRadBox.getText());
+					
 					errorLabel.setText("");
 					String latChck = new String();
 					latChck = latitudeBox.getText();
@@ -277,8 +315,9 @@ public class GSTCloud implements EntryPoint
 					Double lat = new Double(latitudeBox.getText());	
 					Double lng = new Double(longitudeBox.getText());
 					LatLng point = LatLng.newInstance(lat,lng);
+					drawCircleFromRadius(point,radius,60);
 					map.setCenter(point);
-					
+					 
 				}
 			}
 		}
@@ -323,7 +362,7 @@ public class GSTCloud implements EntryPoint
 		Label speRadLabel = new Label("Specified Radius");
 		
 		final TextBox addressBox = new TextBox();
-		TextBox SpeRadBox = new TextBox();
+		final TextBox SpeRadBox = new TextBox();
 		
 		final Button addressSearch = new Button("Search ");
 		addressSearch.setStylePrimaryName("Button");
@@ -723,7 +762,8 @@ public class GSTCloud implements EntryPoint
 	     * Disable double-click for zoom so we can 
 	     * use double-click handler for other fun things
 	     */
-	   map.setDoubleClickZoom(false);
+	   
+	    map.setDoubleClickZoom(false);
 	    
 	    /*
 	     * Single click on map will send the map's 
