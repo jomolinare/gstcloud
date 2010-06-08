@@ -108,6 +108,7 @@ public class GSTCloud implements EntryPoint
 
 	public void drawCircleFromRadius(LatLng center, double radius,int nbOfPoints) 
 	{
+		
 			 LatLngBounds bounds = LatLngBounds.newInstance();
 			 LatLng[] circlePoints = new LatLng[nbOfPoints];
 
@@ -131,8 +132,8 @@ public class GSTCloud implements EntryPoint
 				 a += step;
 			 }
 
-			 Polygon circle = new Polygon(circlePoints, "white", 0, 0, "green", 0.5);
-			 
+			 Polygon circle = new Polygon(circlePoints, "green", 1, 1, "green", 0);
+			 map.setCenter(center,10);
 			 map.addOverlay(circle);
 			 return ;
 	}
@@ -281,7 +282,7 @@ public class GSTCloud implements EntryPoint
 					Double lng = new Double(longitudeBox.getText());
 					LatLng point = LatLng.newInstance(lat,lng);
 					drawCircleFromRadius(point,radius,60);
-					map.setCenter(point,5);
+					map.setCenter(point,10);
 				}
 				else if (event.getSource()==latLongClear)
 				{
@@ -365,7 +366,7 @@ public class GSTCloud implements EntryPoint
 		final TextBox SpeRadBox = new TextBox();
 		
 		final Button addressSearch = new Button("Search ");
-		addressSearch.setStylePrimaryName("Button");
+			addressSearch.setStylePrimaryName("Button");
 			hKeyWrdPanel.add(addressSearch);
 		final Button addressClear = new Button("Clear");
 			addressClear.setStylePrimaryName("Button");
@@ -402,7 +403,8 @@ public class GSTCloud implements EntryPoint
 
 					    public void onSuccess(List<Landmarks> result ) 
 					    {
-					    	map.clearOverlays();
+					    	Double radius = new Double(SpeRadBox.getText());
+					    	
 							
 							int rowCount = result.size();
 							for (int row = 0; row < rowCount; row ++)
@@ -413,7 +415,8 @@ public class GSTCloud implements EntryPoint
 								LatLng point = LatLng.newInstance(lat,lng);
 //								// Add a marker
 					   	          map.addOverlay(new Marker(point));
-					   	          map.setCenter(point, 15);
+					   	          drawCircleFromRadius(point,radius,60);
+					   	          map.setCenter(point, 10);
 								// Add an info window to highlight a point of interest
 						    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 							}
@@ -460,13 +463,13 @@ public class GSTCloud implements EntryPoint
   			clear.setStylePrimaryName("Button");
   			hSpatPanel.add(clear);
 		
-  	vSpatialPanel.setSize("250px", "550px");
+  		vSpatialPanel.setSize("250px", "550px");
 		
 	
-  	vSpatialPanel.add(stateLabel);           
-  	vSpatialPanel.add(stateBox);
-  		stateBox.setWidth("180px");
-  		stateBox.addItem("Select State");
+  		vSpatialPanel.add(stateLabel);           
+  		vSpatialPanel.add(stateBox);
+  			stateBox.setWidth("180px");
+  			stateBox.addItem("Select State");
   		dea.getStates(new AsyncCallback<List<States>>()
   		{
   			public void onFailure(Throwable caught) 
@@ -504,17 +507,20 @@ public class GSTCloud implements EntryPoint
 			{
 				if (event.getSource()== spatialSearch)	
 				{
-					if(localBodyBox.getName()== null)
+					if(localBodyBox.getItemText( localBodyBox.getSelectedIndex())== null)
+					
 					{
-						if(districtBox.getName()== null)
+						if(districtBox.getItemText( districtBox.getSelectedIndex())== null)
+						//if(districtBox.getName()== null)
 						{
-							if(stateBox.getName()==null)
+							if(stateBox.getItemText( stateBox.getSelectedIndex())== null)
+							//if(stateBox.getName()==null)
 							{
 								dialogBox.setText("Atleast Enter name of the State");
 							}
 							else
 							{
-								String sName = stateBox.getName();
+								String sName = stateBox.getItemText( stateBox.getSelectedIndex());
 								dea.displayState(sName,new AsyncCallback<HashMap>()
 										{
 											public void onFailure(Throwable caught) 
@@ -537,7 +543,7 @@ public class GSTCloud implements EntryPoint
 						}
 						else
 						{
-							String dName = districtBox.getName();
+							String dName = districtBox.getItemText( districtBox.getSelectedIndex());
 							dea.displayState(dName,new AsyncCallback<HashMap>()
 									{
 										public void onFailure(Throwable caught) 
