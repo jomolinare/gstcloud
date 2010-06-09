@@ -18,7 +18,9 @@ public interface LocalBodiesService extends RemoteService
 	String loadDistricts(Districts district);
 	List<Districts> getDistricts(String stateName);
 	List<States> getStates();
-	HashMap displayState(String text);
-	HashMap displayDistrict(String text);
+	States getStateByName(String text);
+	Districts getDistrictByName(String text);
+	List<Districts> getDistrictsByStateId(Long stateId);
+	List<Districts> getDistrictsByStateName(String stateName);
 }
 
