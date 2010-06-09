@@ -15,9 +15,9 @@ public class Districts implements IsSerializable
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Long districtId;
 	
-	@ForeignKey
+	//@ForeignKey
 	@Persistent
-	private Long state_Id;
+	private Long stateId;
 	
     @Persistent
     private String districtName;
@@ -33,9 +33,9 @@ public class Districts implements IsSerializable
     	
     }
     
-    public Districts(Long state_Id,String districtName,Double latitude, Double longitude) 
+    public Districts(Long stateId,String districtName,Double latitude, Double longitude) 
     {
-        this.state_Id = state_Id;
+        this.stateId = stateId;
         this.districtName = districtName;
         this.latitude=latitude;
         this.longitude=longitude;
@@ -46,9 +46,9 @@ public class Districts implements IsSerializable
         return districtId;
     }
     
-    public long getState_Id() 
+    public long getStateId() 
     {
-        return state_Id;
+        return stateId;
     }
 
     public String getDistrictName() {
@@ -68,9 +68,9 @@ public class Districts implements IsSerializable
     	this.districtId = districtId;
     }
     
-    public void setState_Id(Long state_Id) 
+    public void setStateId(Long stateId) 
     {
-    	this.state_Id = state_Id;
+    	this.stateId = stateId;
     }
 
     public void setDistrictName(String stateName) {
