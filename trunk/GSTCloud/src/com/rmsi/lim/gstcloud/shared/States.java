@@ -12,7 +12,7 @@ import com.rmsi.lim.gstcloud.shared.States;
 public class States implements IsSerializable
 {
 	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY ,mappedBy = "state_Id")
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY )//,mappedBy = "stateId")
     private Long stateId;
 
     @Persistent
@@ -23,18 +23,22 @@ public class States implements IsSerializable
     
     @Persistent
     private Double longitude;
+    
+    @Persistent
+    private int zoomLevel;
 
     public States()
     {
     	
     }
     
-    public States(String stateName,Double latitude, Double longitude) 
+    public States(String stateName,Double latitude, Double longitude ,int zoomLevel) 
     {
     	
     	this.stateName = stateName;
         this.latitude=latitude;
         this.longitude=longitude;
+        this.zoomLevel = zoomLevel;
     }
 
 
@@ -42,6 +46,11 @@ public class States implements IsSerializable
     {
         return stateId;
     }
+	
+	 public int getZoomLevel() 
+	    {
+	        return zoomLevel;
+	    }
 
     public String getStateName() {
         return stateName;
@@ -54,7 +63,6 @@ public class States implements IsSerializable
     public Double getLongitude() {
         return longitude;
     }
-    
     
 
     public void setStateName(String stateName) {
