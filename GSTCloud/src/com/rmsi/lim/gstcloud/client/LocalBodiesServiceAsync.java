@@ -14,6 +14,8 @@ public interface LocalBodiesServiceAsync
 	void loadDistricts(Districts district, AsyncCallback<String> callback);
 	void getDistricts(String StateName,AsyncCallback<List<Districts>> callback);
 	void getStates(AsyncCallback<List<States>> callback);
-	void displayState(String text,AsyncCallback<HashMap> callback);
-	void displayDistrict(String text,AsyncCallback<HashMap> callback);
+	void getStateByName(String text,AsyncCallback<States> callback);
+	void getDistrictByName(String text,AsyncCallback<Districts> callback);
+	void getDistrictsByStateId (Long stateId,AsyncCallback<List<Districts>> callback);
+	void getDistrictsByStateName(String stateName,AsyncCallback<List<Districts>> callback);
 }
