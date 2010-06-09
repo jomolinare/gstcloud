@@ -3,6 +3,7 @@ package com.rmsi.lim.gstcloud.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.rmsi.lim.gstcloud.client.LocalBodiesService;
 import com.rmsi.lim.gstcloud.shared.Districts;
+import com.rmsi.lim.gstcloud.shared.Landmarks;
 import com.rmsi.lim.gstcloud.shared.States;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
 @SuppressWarnings("serial")
 public class LocalBodiesServiceImpl extends RemoteServiceServlet implements LocalBodiesService
@@ -74,32 +76,65 @@ public class LocalBodiesServiceImpl extends RemoteServiceServlet implements Loca
 		return null;
 	}
 	
-	public HashMap displayState(String text)
+	public States getStateByName(String stateName)
 	{
-		HashMap hashMap = new HashMap();
-		String querySearchLat = "SELECT latitude FROM com.rmsi.lim.gstcloud.shared.States WHERE stateName =='" + text +"'" ;
-		Long lat = (Long) pm.newQuery(querySearchLat).execute();
-		hashMap.put("Lat", lat);
 		
-		String querySearchLng = "SELECT longitude FROM com.rmsi.lim.gstcloud.shared.States WHERE stateName =='" + text +"'" ;
-		Long lng = (Long) pm.newQuery(querySearchLng).execute();
-		hashMap.put("Lon", lng);
-
-		return hashMap; 
+		String querySearchStates = "SELECT FROM com.rmsi.lim.gstcloud.shared.States WHERE stateName =='" + stateName +"'" ;
+		List<States> statesReturned=(List<States>)pm.newQuery(querySearchStates).execute();
+		return statesReturned.get(0);
+		
 	}
 	
-	public HashMap displayDistrict(String text)
+	public Districts getDistrictByName(String districtName)
 	{
-		HashMap hashMap = new HashMap();
-		String querySearchLat = "SELECT latitude FROM com.rmsi.lim.gstcloud.shared.States WHERE districtName =='" + text +"'" ;
-		Long lat = (Long) pm.newQuery(querySearchLat).execute();
-		hashMap.put("Lat", lat);
 		
-		String querySearchLng = "SELECT longitude FROM com.rmsi.lim.gstcloud.shared.States WHERE districtName =='" + text +"'" ;
-		Long lng = (Long) pm.newQuery(querySearchLng).execute();
-		hashMap.put("Lon", lng);
+		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE districtName =='" + districtName +"'" ;
+		List<Districts> districtsReturned=(List<Districts>)pm.newQuery(querySearchDistricts).execute();
+		return districtsReturned.get(0);
+	}
+	
+	public List<Districts> getDistrictsByStateId(Long stateId)
+	{
+		
+		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE stateId =='" + stateId.toString() +"'" ;
+		Query searchQ = pm.newQuery(querySearchDistricts);
+		searchQ.setSerializeRead(true);
+		
+		List<Districts> districtsReturned=(List<Districts>)searchQ.execute();
+		List<Districts> tempList= new ArrayList<Districts>();
+		int rowCount=districtsReturned.size();
+	    for (int ctr=0;ctr<rowCount ;ctr++)
+	    {
+	        
+	    	tempList.add(districtsReturned.get(ctr));
+	    }
 
-		return hashMap; 
+		return tempList; 
+		
+		
+	}
+	public List<Districts> getDistrictsByStateName(String stateName)
+	{
+		String querySearchStates = "SELECT FROM com.rmsi.lim.gstcloud.shared.States WHERE stateName =='" + stateName +"'" ;
+		List<States> statesReturned=(List<States>)pm.newQuery(querySearchStates).execute();
+		;
+		
+		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE stateId ==" + statesReturned.get(0).getStateId();
+		Query searchQ = pm.newQuery(querySearchDistricts);
+		//searchQ.setSerializeRead(true);
+		
+		List<Districts> districtsReturned=(List<Districts>)searchQ.execute();
+		List<Districts> tempList= new ArrayList<Districts>();
+		int rowCount=districtsReturned.size();
+	    for (int ctr=0;ctr<rowCount ;ctr++)
+	    {
+	        
+	    	tempList.add(districtsReturned.get(ctr));
+	    }
+
+		return tempList; 
+		
+		
 	}
 }
 
