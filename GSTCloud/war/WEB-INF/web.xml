@@ -60,14 +60,23 @@
     <url-pattern>/gstcloud/greet</url-pattern>
     <load-on-startup>10</load-on-startup>
   </servlet-mapping>
-<servlet>
+  
+  <servlet>
     <servlet-name>loadServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.LandmarksServiceImpl</servlet-class>
   </servlet>
-  
-  <servlet-mapping>
+   <servlet-mapping>
     <servlet-name>loadServlet</servlet-name>
     <url-pattern>/gstcloud/load</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+  <servlet-name>loadLocalServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.LocalBodiesServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>loadLocalServlet</servlet-name>
+    <url-pattern>/gstcloud/loadLocal</url-pattern>
   </servlet-mapping>
   
      <servlet>
