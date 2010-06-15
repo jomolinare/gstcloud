@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.rmsi.lim.gstcloud.shared.Landmarks;
+import com.rmsi.lim.gstcloud.shared.LocalBodies;
 import com.rmsi.lim.gstcloud.shared.States;
 import com.rmsi.lim.gstcloud.shared.Districts;
 
@@ -16,11 +17,17 @@ public interface LocalBodiesService extends RemoteService
 {
 	String loadStates(States state);
 	String loadDistricts(Districts district);
-	List<Districts> getDistricts(String stateName);
-	List<States> getStates();
+	String loadLocalBody(LocalBodies localBody);
+	
 	States getStateByName(String text);
 	Districts getDistrictByName(String text);
-	List<Districts> getDistrictsByStateId(Long stateId);
+	LocalBodies getLocalBodyByName(String localBodyName);
+	
+
+	List<States> getStates();
+	
+//	List<Districts> getDistrictsByStateId(Long stateId);
 	List<Districts> getDistrictsByStateName(String stateName);
+	List<LocalBodies> getLocalBodiesByDistrictName (String districtName);
 }
 

@@ -1,15 +1,22 @@
 package com.rmsi.lim.gstcloud.shared;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-public class LocalBodies 
+import com.google.gwt.user.client.rpc.IsSerializable;
+@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "false")
+public class LocalBodies implements IsSerializable
 {
 	@PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Long localBodyId;
-
+	
+	@Persistent
+	private Long districtId;
+	
     @Persistent
     private String localBodyType;
 
@@ -27,17 +34,18 @@ public class LocalBodies
     	
     }
     
-    public LocalBodies(String localBodyType,String localBodyName,Double latitude, Double longitude) 
+    public LocalBodies(Long districtId, String localBodyType,String localBodyName,Double latitude, Double longitude) 
     {
-        this.localBodyType = localBodyType;
+    	this.districtId = districtId;
+    	this.localBodyType = localBodyType;
         this.localBodyName = localBodyName;
         this.latitude=latitude;
         this.longitude=longitude;
     }
 
-    public long getLocalBodyId() 
+    public long getDistrictId() 
     {
-        return localBodyId;
+        return districtId;
     }
 
     public String getLocalBodyType() {
@@ -57,7 +65,15 @@ public class LocalBodies
     }
     
     
-
+    
+    public void setLocalBodyId(Long localBodyId) {
+        this.localBodyId = localBodyId;
+    }
+    
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
+    }
+    
     public void setLocalBodyType(String localBodyType) {
         this.localBodyType = localBodyType;
     }

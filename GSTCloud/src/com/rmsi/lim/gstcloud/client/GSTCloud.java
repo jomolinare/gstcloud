@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
@@ -18,6 +19,8 @@ import com.google.gwt.maps.client.control.ScaleControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapDragEndHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
+import com.google.gwt.maps.client.geocode.Geocoder;
+import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
@@ -40,11 +43,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.rmsi.lim.gstcloud.shared.Districts;
 import com.rmsi.lim.gstcloud.shared.FieldVerifier;
+import com.rmsi.lim.gstcloud.shared.LocalBodies;
 import com.rmsi.lim.gstcloud.shared.States;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import java.util.HashMap;
-
+import com.google.gwt.maps.client.geocode.Geocoder;
+import com.google.gwt.maps.client.geocode.LatLngCallback;
 /**
 * Entry point classes define <code>onModuleLoad()</code>.
 */
@@ -63,6 +68,7 @@ public class GSTCloud implements EntryPoint
 	private static final String applicationTitle1 = "Site Search";
 	private static final String applicationTitle2 = "RMSI in the Cloud ";
 	private static final String applicationTitle3 = "Tools";
+	private static final String applicationTitle4 = "Admin Block";
 	
 	private HorizontalPanel hp = new HorizontalPanel();
 	private HorizontalPanel tablePanel=new HorizontalPanel();
@@ -75,7 +81,7 @@ public class GSTCloud implements EntryPoint
 	private DialogBox dialogBox;
 	
 	private HTML serverResponseLabel;
-	private HTML title1,title2,title3;
+	private HTML title1,title2,title3,title4;
   
 	private Label textToServerLabel = new Label();
 	
@@ -87,6 +93,9 @@ public class GSTCloud implements EntryPoint
 	final Button displayButton = new Button ("Display");
 	public Button submitButton =new Button("submit");
 	private Button closeButton;
+	
+	private Geocoder geocoder;
+	
 	
 	/**
 	 * The message displayed to the user when the server cannot be reached or
@@ -102,11 +111,19 @@ public class GSTCloud implements EntryPoint
 	 */
 	private final GisCloudServiceAsync gisCloudService = GWT
 			.create(GisCloudService.class);
-	private LandmarksServiceAsync fea = GWT
+	private final LandmarksServiceAsync fea = GWT
 		    .create(LandmarksService.class);
-	private LocalBodiesServiceAsync dea = GWT
+	private final LocalBodiesServiceAsync dea = GWT
 	        .create(LocalBodiesService.class);
 
+	/**
+	 * Draws a circle at a specified radius with a green outline.this functions takes the following as its parameters.
+	 * @param center
+	 * @param radius
+	 * @param nbOfPoints
+	 * Earth's radius is taken in meters.The Latitude and Longitude are constituted in a single LatLng class.
+	 * The number of points calculated is always 60 
+	 */
 	public void drawCircleFromRadius(LatLng center, double radius,int nbOfPoints) 
 	{
 		
@@ -139,19 +156,21 @@ public class GSTCloud implements EntryPoint
 			 return ;
 	}
 
-	
-	
+	/**
+	 *This is a function with hard coded values of 9 States.The properties include the state name,Latitude ,longitude
+	 *and the zoom level for the respective state.
+	 */
 	private void StatesLoader()
 	{
-		 final States s1 = new States("Delhi",28.5332740008996,77.1380750260093,10);
-		 final States s2 = new States("Uttar Pradesh",21.5340600313233,70.1421779768099,9);
-		 final States s3 = new States("Maharashtra",35.5642880083966,72.1446790266595,11);
-		 final States s4 = new States("Kerala",25.5133780333045,74.18106301263,12);
-		 final States s5 = new States("Punjab",18.5143749911163,76.1810389731052,10);
-		 final States s6 = new States("Haryana",14.5162509923103,78.1837590156439,8);
-		 final States s7 = new States("Goa",10.5187349935866,80.1808049982944,9);
-		 final States s8 = new States("Jammu and Kashmir",12.5274640137745,82.1808369601841,11);
-		 final States s9 = new States("Gujarat",30.5241309782258,79.1854310131575,9);
+		 final States s1 = new States("Delhi",28.38, 77.12 ,10);
+		 final States s2 = new States("Uttar Pradesh",27.40,80.00,9);
+		 final States s3 = new States("Maharashtra",20.00,76.00,11);
+		 final States s4 = new States("Kerala",10.00,76.25,12);
+		 final States s5 = new States("Punjab",30.40,75.50,10);
+		 final States s6 = new States("Haryana",30.30,74.60,8);
+		 final States s7 = new States("Goa",28.00,72.00,9);
+		 final States s8 = new States("Jammu and Kashmir",32.44,74.54,11);
+		 final States s9 = new States("Gujarat",23.00,72.00,9);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -177,24 +196,28 @@ public class GSTCloud implements EntryPoint
 			dea.loadStates(s9, geoCallBack);
 	}
 	
+	/**
+	 *This is a function with hard coded values of 16 Districts for all the states loaded.The properties include 
+	 *the stateId,District name ,Latitude and longitude for the respective district.
+	 */
 	private void DistrictsLoader()
 	{
-		 final Districts d1 = new Districts(new Long(1792),"Mukerjee Nagar",28.5332740008773,77.1380750260011);
-		 final Districts d2 = new Districts(new Long(1792),"Quila Rai Pithora",28.5332740008995,77.1380750260022);
-		 final Districts d3 = new Districts(new Long(1792),"Mehrauli",28.5332740009000,77.1380750260000);
-		 final Districts d4 = new Districts(new Long(1791),"Varanasi",21.5340600313233,70.1421779768092);
-		 final Districts d5 = new Districts(new Long(1788),"Bombay",35.5642880083333,72.1446790266515);
-		 final Districts d6 = new Districts(new Long(1790),"Ernakulam (Cochin)",25.5133780333045,74.18106301263);
-		 final Districts d7 = new Districts(new Long(1790),"Kannur",25.5133780334049,74.18106301234);
-		 final Districts d8 = new Districts(new Long(1787),"Amritsar",18.5143749910063,76.1810389731092);
-		 final Districts d9 = new Districts(new Long(1787),"Ludhiana",18.5143749910101,76.1810389731022);
-		 final Districts d10 = new Districts(new Long(1789),"Kaithal",14.5162509923103,78.1837590156439);
-		 final Districts d11 = new Districts(new Long(1794),"Vasco",10.5187349935866,80.1808049982944);
-		 final Districts d12 = new Districts(new Long(1795),"Leh Ladakh",12.5274640137745,82.1808369601841);
-		 final Districts d13 = new Districts(new Long(1795),"Srinagar",30.5241309782258,79.1854310131575);
-		 final Districts d14 = new Districts(new Long(1795),"Jammu",30.5241309782258,79.1854310131575);
-		 final Districts d15 = new Districts(new Long(1793),"Ahemdabad",30.5241309782258,79.1854310131575);
-		 final Districts d16 = new Districts(new Long(1793),"Vadodra",30.5241309782258,79.1854310131575);
+		 final Districts d1 = new Districts(new Long(1840),"East Delhi",28.53,77.13);
+		 final Districts d2 = new Districts(new Long(1840),"West Delhi",28.595,77.102);
+		 final Districts d3 = new Districts(new Long(1840),"South Delhi",28.500,77.100);
+		 final Districts d4 = new Districts(new Long(1838),"Varanasi",25.20,83.00);
+		 final Districts d5 = new Districts(new Long(1842),"Bombay",18.55,72.54);
+		 final Districts d6 = new Districts(new Long(1837),"Ernakulam (Cochin)",10.00,76.15);
+		 final Districts d7 = new Districts(new Long(1837),"Kannur",11.52,75.25);
+		 final Districts d8 = new Districts(new Long(1839),"Amritsar",31.37,74.55);
+		 final Districts d9 = new Districts(new Long(1839),"Ludhiana",30.55,75.54);
+		 final Districts d10 = new Districts(new Long(1841),"Kaithal",29.48,78.26);
+		 final Districts d11 = new Districts(new Long(1845),"Vasco",15.25,73.43);
+		 final Districts d12 = new Districts(new Long(1844),"Leh Ladakh",34.10,77.40);
+		 final Districts d13 = new Districts(new Long(1844),"Srinagar",30.40,77.00);
+		 final Districts d14 = new Districts(new Long(1844),"Jammu",32.43,74.54);
+		 final Districts d15 = new Districts(new Long(1843),"Ahemdabad",23.03,72.40);
+		 final Districts d16 = new Districts(new Long(1843),"Vadodra",22.00,73.16);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -227,10 +250,47 @@ public class GSTCloud implements EntryPoint
 	}
 	
 	/**
-	 * this panel contains the Text boxes for entering Latitude, Longitude and the Specified Radius and contains the buttons Search and 
-	 * clear.Search is used to search according to the textbox values and clear is to clear all the overlays displayed on the map
+	 *This is a function with hard coded values of 6 Local Bodies for all the Districts loaded.The properties include 
+	 *the districtId,LocalBody name ,Latitude and longitude for the respective LocalBody.
 	 */
+	private void LocalBodyLoader()
+	{
+		final LocalBodies l1 = new LocalBodies(new Long(1889),"Town","Chilla Saroda Bangar",28.29,77.00);
+		final LocalBodies l2 = new LocalBodies(new Long(1889),"village","Kondli",28.11,77.29);
+		final LocalBodies l3 = new LocalBodies(new Long(1887),"Town","Dwarka Sub City",28.19,77.00);
+		final LocalBodies l4 = new LocalBodies(new Long(1887),"village","Najafgarh",27.11,77.909);
+		final LocalBodies l5 = new LocalBodies(new Long(1884),"village","Bersarai",28.97,77.98);
+		final LocalBodies l6 = new LocalBodies(new Long(1884),"Town","Hauz Khas",28.90,76.11);
+		
+		
+		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
+		{
+			public void onFailure(Throwable caught) 
+			{
+				//System.out.println("failure");	
+			}
 	
+			public void onSuccess(String result) 
+			{
+				System.out.println("success");
+			} 
+		};
+		
+		dea.loadLocalBody(l1, geoCallBack);
+		dea.loadLocalBody(l2, geoCallBack);
+		dea.loadLocalBody(l3, geoCallBack);
+		dea.loadLocalBody(l4, geoCallBack);
+		dea.loadLocalBody(l5, geoCallBack);
+		dea.loadLocalBody(l6, geoCallBack);
+		
+		
+	}
+	
+	/**
+	 * This panel contains the Text boxes for entering Latitude, Longitude and the Specified Radius and 
+	 * contains the buttons Search and clear.Search is used to search according to the textbox values and clear
+	 *  is to clear all the overlays displayed on the map.
+	 */
 	private void setupLatLongPanel()
 	{
 		VerticalPanel vLatLongPanel = new VerticalPanel();
@@ -399,7 +459,7 @@ public class GSTCloud implements EntryPoint
 					{
 						public void onFailure(Throwable caught) 
 						{
-						
+								
 						}
 
 					    public void onSuccess(List<Landmarks> result ) 
@@ -424,7 +484,7 @@ public class GSTCloud implements EntryPoint
 					    }
 					});
 				}
-				else if (event.getSource()==addressClear)
+				else if (event.getSource() == addressClear)
 				{
 					map.clearOverlays();
 				}
@@ -464,8 +524,7 @@ public class GSTCloud implements EntryPoint
   			hSpatPanel.add(spatialClear);
 		
   		vSpatialPanel.setSize("250px", "550px");
-		
-	
+
   		vSpatialPanel.add(stateLabel);           
   		vSpatialPanel.add(stateBox);
   			stateBox.setWidth("180px");
@@ -490,13 +549,16 @@ public class GSTCloud implements EntryPoint
   		});
   	    if(!dropdown)
   	    	stateBox.setVisibleItemCount(1);
-
+        
+  	    districtBox.addItem("No Available Districts");
+        localBodyBox.addItem("No Available Villages/Towns");
+        
 		vSpatialPanel.add(districtLabel);
 		vSpatialPanel.add(districtBox);
-			districtBox.setWidth("120px"); 
+			districtBox.setWidth("180px"); 
 	    vSpatialPanel.add(localBodyLabel);
 	    vSpatialPanel.add(localBodyBox);
-	    	localBodyBox.setWidth("120px"); 
+	    	localBodyBox.setWidth("180px"); 
 	    vSpatialPanel.add(speRadLabel);
 	    vSpatialPanel.add(SpeRadBox);
 	    	SpeRadBox.setWidth("120px"); 
@@ -511,19 +573,22 @@ public class GSTCloud implements EntryPoint
 				 
 					 {
 						 int selectedIndex=localBodyBox.getSelectedIndex();
-						 if(selectedIndex==-1 || localBodyBox.getItemText(selectedIndex )== null)
+						 if(selectedIndex==-1 || localBodyBox.getItemText(selectedIndex )== "Select Villages/Town"||localBodyBox.getItemText(selectedIndex )== "No Available Villages/Town")
 						 {
 							 selectedIndex = districtBox.getSelectedIndex();
-							 if(selectedIndex==-1 ||districtBox.getItemText( selectedIndex)== null)
+							 if(selectedIndex==-1 ||districtBox.getItemText( selectedIndex)== "Select District"||districtBox.getItemText( selectedIndex)=="No Available Districts")
 							 {
 								 selectedIndex=stateBox.getSelectedIndex();
-								 if(stateBox.getItemText( selectedIndex)== null)
+								 if(stateBox.getItemText( selectedIndex)== "Select State")
 								 {
 									 dialogBox.setText("Atleast Enter name of the State");
 								 }	
 								 else
 								 {
 									 String sName = stateBox.getItemText( stateBox.getSelectedIndex());
+									 /**
+									  * This function call brings the attributes of the state by the name specified.
+									  */
 									 dea.getStateByName(sName,new AsyncCallback<States>()
 										{
 											public void onFailure(Throwable caught) 
@@ -536,6 +601,7 @@ public class GSTCloud implements EntryPoint
 												LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 												map.addOverlay(new Marker(point));
 												map.setCenter(point,result.getZoomLevel());
+												drawCircleFromRadius(point,new Double(SpeRadBox.getText()),60);
 											}
 										});
 								 }
@@ -543,6 +609,9 @@ public class GSTCloud implements EntryPoint
 							 else
 							 {
 								 String dName = districtBox.getItemText( districtBox.getSelectedIndex());
+								 /**
+								  * This function call brings the attributes of the District by the name specified.
+								  */
 								 dea.getDistrictByName(dName,new AsyncCallback<Districts>()			
 										 {
 											public void onFailure(Throwable caught) 
@@ -550,20 +619,42 @@ public class GSTCloud implements EntryPoint
 											
 											}
 
-											public void onSuccess(Districts latLong ) 
+											public void onSuccess(Districts result ) 
 											{
-												LatLng point = LatLng.newInstance(latLong.getLatitude(),latLong.getLongitude());
+												LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 												map.addOverlay(new Marker(point));
 												map.setCenter(point,15);
+												drawCircleFromRadius(point,new Double(SpeRadBox.getText()),60);
 											}
 										 });
 							 }
 						 }
 						 else
 						 {
-							 // LocalBody display code
+							 String lbName = localBodyBox.getItemText( localBodyBox.getSelectedIndex());
+							 /**
+							  * This function call brings the attributes of the Local Body by the name specified.
+							  */
+							 dea.getLocalBodyByName(lbName,new AsyncCallback<LocalBodies>()			
+									 {
+										public void onFailure(Throwable caught) 
+										{
+										
+										}
+
+										public void onSuccess(LocalBodies result ) 
+										{
+											LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
+											map.addOverlay(new Marker(point));
+											map.setCenter(point,15);
+											drawCircleFromRadius(point,new Double(SpeRadBox.getText()),60);
+										}
+									 });
 						 }
 				}
+				/**
+				 * Deletes all the Overlays displayed on the map
+				 */
 				else if (event.getSource()==spatialClear)
 					{
 						map.clearOverlays();
@@ -576,24 +667,41 @@ public class GSTCloud implements EntryPoint
 			
 			public void onChange(ChangeEvent event)
 			{
-				
 				try{
+					
+				
 				if (event.getSource() == stateBox)
 				{
 					String stateText = new String();
 					int selectedIndex=stateBox.getSelectedIndex();
 					stateText=stateBox.getItemText(selectedIndex);
+					
+					int count = districtBox.getItemCount();	
+			 		for (int ctr1 = count-1; ctr1 >=0;ctr1--)
+			 		{
+			 			districtBox.removeItem(ctr1);
+			 		}
+
+			 			districtBox.addItem("No Available Districts");
+			        int count2 = localBodyBox.getItemCount();	
+			 		for (int ctr2 = count2-1; ctr2 >=0;ctr2--)
+			 			localBodyBox.removeItem(ctr2);
+			 			localBodyBox.addItem("No Available Villages/Towns");
+					if(stateText!="Select State")
 					dea.getDistrictsByStateName(stateText, new AsyncCallback<List<Districts>>(){
 						public void onFailure(Throwable caught) 
 					 	{		 
-				     
+							
 					 	}
 		  		
 					 	public void onSuccess(List<Districts> result) 
 						{
-					 							 		
+					 		int count3 = districtBox.getItemCount();	
+					 		for (int ctr3 = count3-1; ctr3 >=0 ;ctr3--)
+					 			districtBox.removeItem(ctr3);
+					 			districtBox.addItem("Select District");
 					 		for (int row = 0; row < result.size(); row ++) 
-					 		districtBox.addItem(result.get(row).getDistrictName());
+					 			districtBox.addItem(result.get(row).getDistrictName());
 					 		
 						}
 						
@@ -601,16 +709,50 @@ public class GSTCloud implements EntryPoint
 					});
 					
 				}
-				}catch(Exception ex){
-				System.out.println(ex.getMessage());
+				
+				else if(event.getSource() == districtBox)
+				{
+					String districtText = new String();
+					int selectedIndex=districtBox.getSelectedIndex();
+					districtText=districtBox.getItemText(selectedIndex);
+					int count = localBodyBox.getItemCount();	
+			 		for (int i = count-1; i >=0;i--)
+			 			localBodyBox.removeItem(i);
+			 			localBodyBox.addItem("No Available Villages/Towns");
+					if (districtText!="Select District")
+					dea.getLocalBodiesByDistrictName(districtText, new AsyncCallback<List<LocalBodies>>(){
+						public void onFailure(Throwable caught) 
+					 	{		 
+							
+					 	}
+		  		
+					 	public void onSuccess(List<LocalBodies> result) 
+						{
+					 		int count = localBodyBox.getItemCount();	
+					 		for (int i = count-1; i >=0;i--)
+					 			localBodyBox.removeItem(i);
+					 			localBodyBox.addItem("Select Villages/Town");
+					 		for (int row = 0; row < result.size(); row ++) 
+					 			localBodyBox.addItem(result.get(row).getLocalBodyName());
+					 		
+						}
+						
+						
+					});
+					
+				}
+				}catch(Exception ex)
+				{
+					System.out.println(ex.getMessage());
 				}
 			}
 	    }
 	    
 	    final SpatialHandler spatHandler = new SpatialHandler();		
 	    
-	    stateBox.addClickHandler(spatHandler);
+	    //stateBox.addClickHandler(spatHandler);
 	    stateBox.addChangeHandler(spatHandler);
+	    districtBox.addChangeHandler(spatHandler);
 	    spatialSearch.addClickHandler(spatHandler);
 	    vSpatialPanel.add(hSpatPanel);
 		queryTabPanel.add(vSpatialPanel, "Spatial");
@@ -626,16 +768,16 @@ public class GSTCloud implements EntryPoint
 		VerticalPanel vAttributePanel = new VerticalPanel();
 		HorizontalPanel hAttributePanel = new HorizontalPanel();
 		
-		Label queryIDLabel = new Label("QueryID:");
+		Label queryIDLabel = new Label("Address:");
 		Label speRadLabel = new Label("Specified Radius");
 		
-		TextBox queryIDBox = new TextBox();
-	    TextBox SpeRadBox = new TextBox();
+		final TextBox queryIDBox = new TextBox();
+	    final TextBox SpeRadBox = new TextBox();
 	    
-	    Button search = new Button("Search ");
-	    	search.setStylePrimaryName("Button");
-	    Button clear = new Button("Clear");
-	    	clear.setStylePrimaryName("Button");
+	    final Button attributeSearch = new Button("Search ");
+	    	attributeSearch.setStylePrimaryName("Button");
+	    final Button attributeClear = new Button("Clear");
+	    	attributeClear.setStylePrimaryName("Button");
 	    
 	    vAttributePanel.add(queryIDLabel);
 	    vAttributePanel.add(queryIDBox);
@@ -644,11 +786,51 @@ public class GSTCloud implements EntryPoint
 	    vAttributePanel.add(SpeRadBox);
 	    	SpeRadBox.setWidth("120px"); 
 	         
-	    hAttributePanel.add(search);
-	    hAttributePanel.add(clear);
+	    hAttributePanel.add(attributeSearch);
+	    hAttributePanel.add(attributeClear);
 		vAttributePanel.add(hAttributePanel);	    
 		
-	    queryTabPanel.add(vAttributePanel, "Attribute");
+	    queryTabPanel.add(vAttributePanel, "Address");
+	    
+	    class AttributeHandler implements ClickHandler
+		{
+			public void onClick(ClickEvent event)
+			{
+				if (event.getSource()==attributeSearch)	
+				{
+					String boxText = new String();
+					boxText = queryIDBox.getText().trim().replace("'", "\\'");
+					showAddress(boxText);
+					}
+				else if (event.getSource() == attributeClear)
+				{
+					map.clearOverlays();
+				}
+			}
+		}
+		final AttributeHandler addressSearchHandler = new AttributeHandler();
+		attributeSearch.addClickHandler(addressSearchHandler);
+		attributeClear.addClickHandler(addressSearchHandler);
+	    
+	    
+	    
+	}
+	
+	private void showAddress(final String address) {
+	    //InfoWindow info = map.getInfoWindow();
+	    geocoder.getLatLng(address, new LatLngCallback() {
+	      public void onFailure() {
+	        //Window.alert(address + " not found");
+	    	  System.out.println(address+ "not found");
+	      }
+	      public void onSuccess(LatLng point) {
+	          map.setCenter(point, 13);
+	          Marker marker = new Marker(point);
+	          map.addOverlay(marker);
+	          //info.open(marker, new InfoWindowContent(address));
+	          //displayLatLng(point);
+	        }
+	      });
 	}
 	
 	private void setupQueryPanels()
@@ -660,7 +842,16 @@ public class GSTCloud implements EntryPoint
 		vp1.add(title1);
 		vp1.setCellHorizontalAlignment(title1,HasHorizontalAlignment.ALIGN_LEFT);
 		vp1.setSize("250px", "470px");
-			
+	
+		VerticalPanel admin = new VerticalPanel();
+		admin.setStyleName("VerticalPanel");
+		title4 = new HTML(applicationTitle4);
+		title4.setStylePrimaryName("titlet");
+		admin.add(title4);
+		admin.setCellHorizontalAlignment(title4,HasHorizontalAlignment.ALIGN_LEFT);
+		admin.setSize("250px", "170px");
+		admin.setVisible(true);
+		
 	    HorizontalPanel hp5 = new HorizontalPanel();
 		hp5.add(upload);
 	    
@@ -674,7 +865,8 @@ public class GSTCloud implements EntryPoint
      
 		  //Add to the Query panel
 		vp1.add(queryTabPanel);
-		vp1.add(hp5);
+		vp1.add(admin);
+		admin.add(hp5);
 						
 	}
 	
@@ -807,14 +999,14 @@ public class GSTCloud implements EntryPoint
 		 * within Salt Lake County. Zooming out too far will
 		 * makes the map viewport larger than the county.
 		 */
-	    map.addMapZoomEndHandler(new MapZoomEndHandler(){
+	   /* map.addMapZoomEndHandler(new MapZoomEndHandler(){
 
 			public void onZoomEnd(MapZoomEndEvent event) {
 				
-				/*
+				
 				 * We want a string to make a box, like this:
 				 * "lng1 lat1, lng2 lat2, lng3 lat3, lng4 lat4, lng1 lat1"
-				 */
+				 
 			    LatLngBounds bounds = map.getBounds();
 				LatLng ne = bounds.getNorthEast();
 				LatLng sw = bounds.getSouthWest();
@@ -824,17 +1016,17 @@ public class GSTCloud implements EntryPoint
 				double sLat = sw.getLatitude();
 				double wLng = sw.getLongitude();
 //				
-				/*
+				
 				 * Start at ne and go clockwise
-				 */
+				 
 				String nePair = Double.toString(eLng) + " " + Double.toString(nLat);
 				String sePair = Double.toString(eLng) + " " + Double.toString(sLat);
 				String swPair = Double.toString(wLng) + " " + Double.toString(sLat);
           	String nwPair = Double.toString(wLng) + " " + Double.toString(nLat);
 //				
-				/*
+				
 				 * Finish bbox back at ne
-				 */
+				 
 				String bbox = nePair + "," + sePair + "," + swPair + "," + nwPair + "," + nePair;
 				
 				textToServerLabel.setText(bbox);
@@ -844,18 +1036,18 @@ public class GSTCloud implements EntryPoint
 				
 	    });
 	    
-	    /*
+	    
 	     * Let's repeat the zoom handler funtionality as a drag end handler. If
 	     * the user is zoomed in, and is within the county, we want to warn them
 	     * if they drag the map beyond the edge of the county too.
-	     */
+	     
 	    map.addMapDragEndHandler(new MapDragEndHandler(){
 			public void onDragEnd(MapDragEndEvent event) {
 				
-				/*
+				
 				 * We want a string to make a box, like this:
 				 * "lng1 lat1, lng2 lat2, lng3 lat3, lng4 lat4, lng1 lat1"
-				 */
+				 
 				LatLngBounds bounds = map.getBounds();
 				LatLng ne = bounds.getNorthEast();
 				LatLng sw = bounds.getSouthWest();				
@@ -864,17 +1056,17 @@ public class GSTCloud implements EntryPoint
 				double sLat = sw.getLatitude();
 				double wLng = sw.getLongitude();
 				
-				/*
+				
 				 * Start at ne and go clockwise
-				 */
+				 
 				String nePair = Double.toString(eLng) + " " + Double.toString(nLat);
 				String sePair = Double.toString(eLng) + " " + Double.toString(sLat);
 				String swPair = Double.toString(wLng) + " " + Double.toString(sLat);
 				String nwPair = Double.toString(wLng) + " " + Double.toString(nLat);
 				
-				/*
+				
 				 * Finish bbox back at ne
-				 */
+				 
 				String bbox = nePair + "," + sePair + "," + swPair + "," + nwPair + "," + nePair;
 				
 				//textToServerLabel.setText(bbox);
@@ -885,10 +1077,11 @@ public class GSTCloud implements EntryPoint
 			
 	    	
 	    });
-	    mapWrapper.add(map);
+	    */mapWrapper.add(map);
 		mapWrapper.setStylePrimaryName("map");
 		mapWrapper.setCellHorizontalAlignment(map, HasHorizontalAlignment.ALIGN_CENTER);
 		mapWrapper.setBorderWidth(2);
+		
 	}
 	
 	private void setupToolsPanel()
@@ -952,8 +1145,26 @@ public class GSTCloud implements EntryPoint
 		vp.add(title2);
 		vp.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
 		//setupDialogBox();
-//		StatesLoader();
-		DistrictsLoader();
+		dea.getStates(new AsyncCallback<List<States>>()
+		  		{
+		  			public void onFailure(Throwable caught) 
+					 	{		 
+				     
+					 	}
+		  		
+					 	public void onSuccess(List<States> result) 
+						{
+					 		if(result.size()== 0)
+					 		{
+					 			StatesLoader();
+					 			DistrictsLoader();
+					 			LocalBodyLoader();
+					 		}
+					 			
+						}
+		  		});
+					 		
+		
 		setupLatLongPanel();
 		setupKeywordPanel();
 		setupSpatialPanel();
