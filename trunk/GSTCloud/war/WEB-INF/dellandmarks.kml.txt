@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+ <Document>
+  <Placemark>
+      <name>SULTAN GHORI'S TOMB</name>
+      <open>0</open>
+      <description>&lt;br&gt;&lt;br&gt;&lt;table border="1"padding="1"width="97%"&gt;&lt;tr&gt;&lt;td&gt;CATEGORY:&lt;/td&gt;&lt;td&gt;LANDMARK&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;PLACES_NAM:&lt;/td&gt;&lt;td&gt;SULTAN GHORI'S TOMB&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+      <Point>
+       <coordinates>77.1380750260093,28.5332740008996,0 </coordinates>
+      </Point>
+    </Placemark>
+  <Placemark>
+      <name>RANG PURI</name>
+      <open>0</open>
+      <description>&lt;br&gt;&lt;br&gt;&lt;table border="1"padding="1"width="97%"&gt;&lt;tr&gt;&lt;td&gt;CATEGORY:&lt;/td&gt;&lt;td&gt;LANDMARK&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;PLACES_NAM:&lt;/td&gt;&lt;td&gt;RANG PURI&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+      <Point>
+       <coordinates>77.1421779768099,28.5340600313233,0 </coordinates>
+      </Point>
+  </Placemark>
+<Placemark>
+      <name>JAHAZ MAHAL</name>
+      <description>&lt;br&gt;&lt;br&gt;&lt;table border="1"padding="1"width="97%"&gt;&lt;tr&gt;&lt;td&gt;CATEGORY:&lt;/td&gt;&lt;td&gt;LANDMARK&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;PLACES_NAM:&lt;/td&gt;&lt;td&gt;JAHAZ MAHAL&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+      <open>0</open>
+      <Point>
+        <coordinates>77.1810389731052,28.5143749911163,0 </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark >
+      <name>KALA MAHAL</name>
+      <description>&lt;br&gt;&lt;br&gt;&lt;table border="1"padding="1"width="97%"&gt;&lt;tr&gt;&lt;td&gt;CATEGORY:&lt;/td&gt;&lt;td&gt;LANDMARK&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;PLACES_NAM:&lt;/td&gt;&lt;td&gt;KALA MAHAL&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+      <open>0</open>
+      <Point>
+        <coordinates>77.1837590156439,28.5162509923103,0 </coordinates>
+      </Point>
+    </Placemark>
+    
+
+</Document>
+</kml>
+
