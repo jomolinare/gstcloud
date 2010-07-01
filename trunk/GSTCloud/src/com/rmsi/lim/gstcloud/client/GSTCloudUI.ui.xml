@@ -1,0 +1,308 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:gw="urn:import:com.google.gwt.maps.client">
+	<ui:style>
+		
+.layerm  {
+position:absolute;
+background: green;
+ /**	height:700px;*/
+/** 	width: 700px; */
+	padding: 8px;
+	border: 1px solid black;
+	
+height:74%;
+width:15%; 
+border:1px solid #000000;
+left:85%;
+top:8%;
+
+
+}
+
+.logio  { 
+position:absolute;
+height:8%;
+width:13%;
+border:1px solid #000000;
+left:87%;
+top:0%;
+}
+.queries  {
+position:absolute;
+background: green;
+ /**	height:700px;*/
+/** 	width: 700px; */
+	padding: 8px;
+	border: 1px solid black;
+	margin-top: 20px;
+	margin-bottom: 10px;
+height:58.5%;
+width:25%;
+border:1px solid #000000;
+left:0%;
+top:8%;
+}
+
+.map  { 
+position:absolute;
+height:70%;
+width:60%;
+border:1px solid #000000;
+left:25%;
+top:15%;
+}
+.tools  {
+position:absolute;
+height:10%;
+width:60%;
+border:1px solid #000000;
+left:25%;
+top:8%;
+}
+.adminp  { 
+position:absolute;
+
+width:25%;
+left:0%;
+background: green;border: 2px solid black;
+}
+.datag  {
+position:absolute;
+height:12%;
+width:100%;
+border:1px solid #000000;
+
+top:88%;
+}
+
+.legend  { 
+position:absolute;
+height:23%;
+width:33%;
+border:1px solid #000000;
+left:67%;
+top:77%;
+}
+.lattextbox1{
+	width:180px;4
+}
+
+.lattextbox2{
+	width:120px;
+}
+.vLatLongPanel{
+	height:150px;
+	width:250px;
+	}
+.tabPanel{
+	top:0%;
+	width:100%;
+	height:250px;border: 2px solid black;
+	}
+ .VerticalPanel 
+ {
+ 	background: green;
+ 	height:70%;
+ 	width: 20%; 
+	padding: 8px;
+	border: 1px solid black;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	top:10%;
+ }
+ .Button 
+ {
+  display: block;
+  font-size: 9pt;
+}
+h4{
+/**text-align:center;*/
+color: red;	
+	font-size: 10pt;
+	font-weight: bold;
+	margin-top: 20px;
+}
+/** Add css rules here for your application. */
+
+.map
+{
+	width: 50%;
+	padding: 8px;
+	background: #ffffff;
+	border: 1px solid black;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	left:25%;
+}
+
+.title
+{
+	color: #000000;	
+	font-size: 22pt;
+	font-weight: bolder;
+	margin-top: 20px; text-align: center;
+}
+.titlet
+{
+	color: red;	
+	font-size: 11pt;
+	font-weight: bold;
+	margin-top: 20px;
+}
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  color: #777777;
+  margin: 40px 0px 70px;
+  
+}
+.label{
+	color:  white;
+	font-weight: bold;	
+	font-size: 11pt;
+	margin-right:5px;
+	background-color:#777777;
+	cursor: pointer;
+	border: 2px solid black;
+/**margin-left:50px;*/
+	}
+.textlabel{
+	color:#AAAAAA;
+	font-weight: bold;	
+	font-size: 11pt;
+	margin-right:5px;
+	}
+	.label:hover {
+  background-color: #0061D7;
+}
+		
+
+		</ui:style>
+	
+<g:VerticalPanel ui:field="vp">
+				 <g:HorizontalPanel >
+				 <g:HTML><h1>Cloud GIS</h1></g:HTML>
+				 	<g:VerticalPanel styleName="{style.logio}">
+				  	<g:HTML>Login/out Panel</g:HTML>
+				  	</g:VerticalPanel>
+				 </g:HorizontalPanel>
+				  
+  <g:HorizontalPanel ui:field="hp">
+	<g:VerticalPanel styleName="{style.queries}" ui:field="vp1">
+<!--			 <g:VerticalPanel styleName="{style.queries}">-->
+			 <g:HTML><h4>Site Search</h4></g:HTML>
+			 <g:TabLayoutPanel barUnit='PX' barHeight='20' styleName="{style.tabPanel}"  ui:field="queryTabPanel" >	
+				<g:tab>
+					<g:customHeader size='5'>
+          			<g:Label styleName="{style.label}">LatLong </g:Label>
+        			</g:customHeader>
+				    	<g:VerticalPanel ui:field="vLatLongPanel" styleName="{style.vLatLongPanel}" >
+						<g:Label ui:field="latLabel" text="P1 Latitude" styleName="{style.textlabel}" />
+						<g:TextBox ui:field="latitudeBox" styleName="{style.lattextbox1}" text="Enter Lattitude"></g:TextBox>
+						<g:Label ui:field="longLabel" text="P1 Longitude" styleName="{style.textlabel}" />
+						<g:TextBox ui:field="longitudeBox" styleName="{style.lattextbox1}" text="Enter Longitude"></g:TextBox>
+						<g:Label ui:field="speRadLabel" text="Specified Radius" styleName="{style.textlabel}"/>
+						<g:TextBox ui:field="SpeRadBox" styleName="{style.lattextbox2}" text="Enter Radius" />
+						<g:HorizontalPanel ui:field="hLatLongPanel">
+							<g:Button ui:field="latLongSearch" text="Search" styleName="{style.Button}" />
+							<g:Button ui:field="latLongClear" text="Clear" styleName="{style.Button}" />
+						</g:HorizontalPanel>
+						<g:Label ui:field="errorLabel"></g:Label>
+					</g:VerticalPanel>
+	
+				</g:tab>
+				<g:tab>
+					<g:customHeader size='5'>
+          			<g:Label styleName="{style.label}">KeyWord</g:Label>
+        			</g:customHeader>    	
+				    	<g:VerticalPanel ui:field="vKeyWordPanel" styleName="{style.vLatLongPanel}" >
+						<g:Label ui:field="addLabel" text="Address :" styleName="{style.textlabel}"/>
+						<g:TextBox ui:field="addressBox" styleName="{style.lattextbox1}" text="Enter Address"></g:TextBox>
+						<g:Label ui:field="kspeRadLabel" text="Specified Radius" styleName="{style.textlabel}"/>
+						<g:TextBox ui:field="kSpeRadBox" styleName="{style.lattextbox2}" text="Enter Radius"></g:TextBox>
+						<g:HorizontalPanel ui:field="hKeyWrdPanel">
+							<g:Button ui:field="addressSearch" text="Search" styleName="{style.Button}" />
+							<g:Button ui:field="addressClear" text="Clear" styleName="{style.Button}" />
+						</g:HorizontalPanel>
+						</g:VerticalPanel>
+				</g:tab>
+				<g:tab>
+					<g:customHeader size='5'>
+          			<g:Label styleName="{style.label}">Spatial</g:Label>
+        			</g:customHeader>
+						<g:VerticalPanel ui:field="vSpatialPanel" styleName="{style.vLatLongPanel}" >
+						<g:Label ui:field="stateLabel" text="State:" styleName="{style.textlabel}"/>
+						<g:ListBox ui:field="stateBox" />
+						<g:Label ui:field="districtLabel" text="District:" styleName="{style.textlabel}"/>
+						<g:ListBox ui:field="districtBox" />
+						<g:Label ui:field="localBodyLabel" text="Local Body:" styleName="{style.textlabel}"/>
+						<g:ListBox ui:field="localBodyBox" />
+						<g:Label ui:field="sspeRadLabel" text="Specified Radius" styleName="{style.textlabel}"/>
+						<g:TextBox ui:field="sSpeRadBox" styleName="{style.lattextbox2}" text="Enter Radius"></g:TextBox>
+							<g:HorizontalPanel ui:field="hSpatPanel">
+							<g:Button ui:field="spatialSearch" text="Search" styleName="{style.Button}" />
+							<g:Button ui:field="spatialClear" text="Clear" styleName="{style.Button}" />
+						</g:HorizontalPanel>
+						</g:VerticalPanel>
+				</g:tab>
+				<g:tab>
+					<g:customHeader size='5'>
+    			    <g:Label styleName="{style.label}">Attribute</g:Label>
+        			</g:customHeader>
+        				<g:VerticalPanel ui:field="vAttributePanel" styleName="{style.vLatLongPanel}" >
+						<g:Label ui:field="queryIDLabel" text="Address:" styleName="{style.textlabel}"/>
+						<g:TextBox ui:field="queryIDBox" text="Enter Address" />
+						<g:Label ui:field="aspeRadLabel" text="Specified Radius:" styleName="{style.textlabel}"/>
+						<g:TextBox  ui:field="aSpeRadBox"  text="Enter Radius"/>
+							<g:HorizontalPanel ui:field="hAttributePanel">
+							<g:Button ui:field="attributeSearch" text="Search" styleName="{style.Button}" />
+							<g:Button ui:field="attributeClear" text="Clear" styleName="{style.Button}" />
+						</g:HorizontalPanel>
+						</g:VerticalPanel>
+				</g:tab>
+		</g:TabLayoutPanel>	
+<!--	</g:VerticalPanel>		-->
+				<g:VerticalPanel ui:field="admin"  styleName="{style.adminp}">
+					<g:HTML><h4>Admin Panel</h4></g:HTML>
+					<g:HorizontalPanel ui:field="hp5">
+<!--					<g:Button ui:field="submitButton" text="Submit" styleName="{style.Button}" />-->
+					</g:HorizontalPanel>
+					<g:HorizontalPanel>
+					<g:Button ui:field="loadButton" text="Load" styleName="{style.Button}" />
+					<g:Button ui:field="displayButton" text="Display" styleName="{style.Button}" />
+					</g:HorizontalPanel>
+				</g:VerticalPanel>
+		</g:VerticalPanel>
+					
+					<g:VerticalPanel >
+						<g:HorizontalPanel styleName="{style.tools}">
+						<g:HTML>Tools Panel</g:HTML> 
+						</g:HorizontalPanel>
+						<g:VerticalPanel styleName="{style.map}" ui:field="mapwrapper">	
+						
+						
+						
+					<gw:MapWidget ui:field="map">
+					</gw:MapWidget>
+					</g:VerticalPanel>
+					</g:VerticalPanel>
+
+					<g:VerticalPanel styleName="{style.layerm}" ui:field="vp2">
+					<g:HTML><h4>Layer Manager Panel</h4>
+					</g:HTML>
+				
+					
+					</g:VerticalPanel>
+			</g:HorizontalPanel>
+			
+			<g:HorizontalPanel styleName="{style.datag}">
+			<g:HTML><h4>DataGird Panel</h4></g:HTML>
+			</g:HorizontalPanel>
+        </g:VerticalPanel>
+    
+			</ui:UiBinder> 
