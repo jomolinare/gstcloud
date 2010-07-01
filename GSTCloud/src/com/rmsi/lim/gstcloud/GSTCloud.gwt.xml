@@ -21,5 +21,6 @@
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
   <source path='shared'/>
-  
+    <!-- Specification for UiBinder.                         -->
+  <inherits name="com.google.gwt.uibinder.UiBinder"/>
 </module>

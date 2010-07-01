@@ -2,8 +2,10 @@ package com.rmsi.lim.gstcloud.shared;
 
 public class FieldVerifier 
 {
-	public static boolean isValidNumber(int lat,int longt) 
+	public static boolean isValidNumber(String latIn,String longIn) 
 	{
+	    Double lat= new Double(latIn);
+	    Double longt= new Double(longIn);
 		if (lat > 90 || lat <(-90) ) 
 		{	
 			return false;
