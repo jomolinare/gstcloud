@@ -373,9 +373,9 @@ public class GSTCloud implements EntryPoint
 						dialogBox.setWidget(errorLabel);
 						return;
 					}
-					//Integer latCheck = new Integer (latitudeBox.getText());
-					//Integer longCheck = new Integer (longitudeBox.getText());
-					if (!FieldVerifier.isValidNumber(latitudeBox.getText(),longitudeBox.getText())) 
+					String latCheck = new String (latitudeBox.getText());
+					String longCheck = new String (longitudeBox.getText());
+					if (!FieldVerifier.isValidNumber(latCheck,longCheck)) 
 					{
 						errorLabel.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
 						return;
@@ -408,9 +408,9 @@ public class GSTCloud implements EntryPoint
 						errorLabel.setText("Enter only digits");
 						return;
 					  }
-					//Integer latCheck = new Integer (latitudeBox.getText());
-					//Integer longCheck = new Integer (longitudeBox.getText());
-					if (!FieldVerifier.isValidNumber(latitudeBox.getText(),longitudeBox.getText())) 
+					String latCheck = new String (latitudeBox.getText());
+					String longCheck = new String (longitudeBox.getText());
+					if (!FieldVerifier.isValidNumber(latCheck,longCheck)) 
 					  {
 						errorLabel.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
 						return;
@@ -1247,18 +1247,7 @@ public class GSTCloud implements EntryPoint
 	 */
 	public void onModuleLoad()
 	{
-		GSTCloudUI w =new GSTCloudUI();
-
-		w.stateBox.addItem("Select State");
-		w.districtBox.addItem("No Available Districts");
-		w.localBodyBox.addItem("No Available Villages/Towns");
-		w.setupMap();
-		w.hp5.add(upload);
-
 		title2 = new HTML(applicationTitle2);
-		Window.setTitle(applicationTitle2);
-		
-		/*title2 = new HTML(applicationTitle2);
 		Window.setTitle(applicationTitle2);
 		title2.setStylePrimaryName("title");
 		vp.add(title2);
@@ -1284,23 +1273,24 @@ public class GSTCloud implements EntryPoint
 						}
 		  		});
 					 		
-	//	layerLoader();
+	    layerLoader();
 		setupLatLongPanel();
 		setupKeywordPanel();
 		setupSpatialPanel();
 		setupAttributePanel();
 		setupQueryPanels();
 		setupToolsPanel();
-		
+		setupLayerManager();
 		hp.add(vp1);
 	
 		setupMap();
 		//creating vertical panel for Map
 		hp.add(mapWrapper);
+		setupToolsPanel();
 		hp.add(vp2);
 	    vp.add(hp);
-	    *//**vp.add(mapWrapper);
-	    vp.setCellHorizontalAlignment(mapWrapper, HasHorizontalAlignment.ALIGN_CENTER);*//*
+	    /**vp.add(mapWrapper);
+	    vp.setCellHorizontalAlignment(mapWrapper, HasHorizontalAlignment.ALIGN_CENTER);*/
 	    // style the vp
 	    vp.setWidth("100%");
 	    vp.setStylePrimaryName("vp");
@@ -1325,8 +1315,7 @@ public class GSTCloud implements EntryPoint
 		tablePanel.add(table); 
 		vp.add(tablePanel);		    
 	
-*/		setupLayerManager();
-		RootPanel.get().add(w);
+		RootPanel.get().add(vp);
 	    
 	}
 
