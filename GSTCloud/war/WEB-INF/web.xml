@@ -79,6 +79,24 @@
     <url-pattern>/gstcloud/loadLocal</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+  <servlet-name>loadLayerServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.LayerServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>loadLayerServlet</servlet-name>
+    <url-pattern>/gstcloud/loadLayer</url-pattern>
+  </servlet-mapping>
+     
+      <servlet>
+  <servlet-name>TableModelServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.LandmarksTableModelServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/TableModel</url-pattern>
+  </servlet-mapping>
+     
      <servlet>
         <servlet-name>DataNucleus</servlet-name>
         <servlet-class>org.datanucleus.rest.RestServlet</servlet-class>
@@ -92,5 +110,9 @@
         <servlet-name>DataNucleus</servlet-name>
         <url-pattern>/dn/*</url-pattern>
     </servlet-mapping>
+    
+    
+  
+    
     
 </web-app>

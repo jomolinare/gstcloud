@@ -2,6 +2,8 @@ package com.rmsi.lim.gstcloud.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import com.rmsi.lim.gstcloud.shared.Landmarks;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -30,6 +32,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -46,6 +49,8 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.rmsi.lim.gstcloud.shared.DataFilter;
 import com.rmsi.lim.gstcloud.shared.Districts;
 import com.rmsi.lim.gstcloud.shared.FieldVerifier;
 import com.rmsi.lim.gstcloud.shared.Layer;
@@ -105,8 +110,10 @@ public class GSTCloud implements EntryPoint
 	private Button closeButton;
 	
 	private Geocoder geocoder;
-	
-	
+	private HorizontalPanel tablePanel1 = new HorizontalPanel();
+	private HorizontalPanel hp1=new HorizontalPanel();
+    private Label labelMessages = new Label();
+	private AdvancedTable datagrid = new AdvancedTable();
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -127,7 +134,7 @@ public class GSTCloud implements EntryPoint
 	        .create(LocalBodiesService.class);
 	private final LayerServiceAsync layerService = GWT
     		.create(LayerService.class);
-	
+	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
 	LayerManager lm = new LayerManager();
 	/**
 	 * Draws a circle at a specified radius with a green outline.this functions takes the following as its parameters.
@@ -1247,6 +1254,15 @@ public class GSTCloud implements EntryPoint
 	 */
 	public void onModuleLoad()
 	{
+		
+		GSTCloudUI w =new GSTCloudUI();
+
+//		w.stateBox.addItem("Select State");
+//		w.districtBox.addItem("No Available Districts");
+//		w.localBodyBox.addItem("No Available Villages/Towns");
+//		w.setupMap();
+//		w.hp5.add(upload);
+		
 		title2 = new HTML(applicationTitle2);
 		Window.setTitle(applicationTitle2);
 		title2.setStylePrimaryName("title");
@@ -1273,7 +1289,7 @@ public class GSTCloud implements EntryPoint
 						}
 		  		});
 					 		
-	    layerLoader();
+	    //layerLoader();
 		setupLatLongPanel();
 		setupKeywordPanel();
 		setupSpatialPanel();
@@ -1281,6 +1297,7 @@ public class GSTCloud implements EntryPoint
 		setupQueryPanels();
 		setupToolsPanel();
 		setupLayerManager();
+		setupTablePanel();
 		hp.add(vp1);
 	
 		setupMap();
@@ -1297,23 +1314,7 @@ public class GSTCloud implements EntryPoint
 	    // Create the popup dialog box
 		
 		
-	 // add flex table
-      
-	    FlexTable table = new FlexTable();
-	    
-	// Put some text at the table's extremes.  This forces the table to be 4 by 4
-	    table.setText(0,0,"Category");
-		table.setText(0,1,"Latitude");
-		table.setText(0,2,"Longitude");
-		table.setText(0,3,"Place Name");
-		
-      table.setBorderWidth(3);
- 
-		     //...and set it's column span so that it takes up the whole row.
-      table.getFlexCellFormatter().setColSpan(0, 1, 2);		
-      
-		tablePanel.add(table); 
-		vp.add(tablePanel);		    
+	
 	
 		RootPanel.get().add(vp);
 	    
@@ -1347,7 +1348,97 @@ public class GSTCloud implements EntryPoint
 					}
 				});
 	}
+    
+	private void setupTablePanel()
+	{
+		datagrid.setAllowRowMark(true);
+		datagrid.setFirstColumnVisible(true);
+		datagrid.setTableModelService(landmarksModelService);
+		datagrid.addRowSelectionListener(new RowSelectionListener() {
+			public void onRowSelected(AdvancedTable sender, String rowId) {
+				labelMessages.setText("Row " + rowId + " selected.");
+			}
+		});
+		
+		
+		datagrid.setSize("1024px", "200px");
+		datagrid.setPageSize(5);
 
+		vp.add(hp);
+		vp.add(tablePanel);
+		tablePanel.add(datagrid);
+		vp.add(hp1);
+		hp1.add(tablePanel1);
+		final TextBox textBoxFilter = new TextBox();
+		tablePanel1.add(textBoxFilter);
+		textBoxFilter.setWidth("100%");
+		tablePanel1.setCellWidth(textBoxFilter, "100%");
+
+		final Button buttonApplyFilter = new Button();
+		tablePanel1.add(buttonApplyFilter);
+		buttonApplyFilter.addClickListener(new ClickListener() {
+		public void onClick(Widget sender) {
+				String filterText = textBoxFilter.getText();
+				DataFilter filter = new DataFilter("keyword", filterText); 
+				DataFilter[] filters = {filter};
+				datagrid.applyFilters(filters);
+				labelMessages.setText("Filter '" + filterText +"' applied.");
+			}
+		});
+		buttonApplyFilter.setWidth("100");
+		tablePanel1.setCellWidth(buttonApplyFilter, "100");
+		tablePanel1.setCellHorizontalAlignment(
+		buttonApplyFilter, HasHorizontalAlignment.ALIGN_RIGHT);
+		buttonApplyFilter.setText("Apply Filter");
+
+		final Button clearFilterButton = new Button();
+		tablePanel1.add(clearFilterButton);
+		clearFilterButton.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				datagrid.applyFilters(null);
+				textBoxFilter.setText("");
+				labelMessages.setText("Filter cleaned.");
+			}
+		});
+		clearFilterButton.setWidth("100");
+		tablePanel1.setCellWidth(clearFilterButton, "100");
+		clearFilterButton.setText("Clear Filter");
+
+		
+
+		final Button buttonMarkAll = new Button();
+		tablePanel1.add(buttonMarkAll);
+		buttonMarkAll.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				datagrid.markAllRows();
+			}
+		});
+		buttonMarkAll.setWidth("128px");
+	buttonMarkAll.setText("Mark All");
+//
+		final Button buttonMarkNothing = new Button();
+		tablePanel1.add(buttonMarkNothing);
+		buttonMarkNothing.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				datagrid.clearMarkedRows();
+			}
+		});
+		buttonMarkNothing.setSize("136px", "24px");
+		buttonMarkNothing.setText("Mark Nothing");
+
+		final Button buttonShowMarked = new Button();
+		tablePanel1.add(buttonShowMarked);
+		buttonShowMarked.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				Set markedRows = datagrid.getMarkedRows();
+				Window.alert("Marked rows:" + markedRows.toString());				
+		}
+		});
+		buttonShowMarked.setSize("128px", "24px");
+		buttonShowMarked.setText("Show Marked");
+	}
+
+	
 	protected void sendMapCenter(String lngLat) 
 	{
 		gisCloudService.pointInPolygon(lngLat,

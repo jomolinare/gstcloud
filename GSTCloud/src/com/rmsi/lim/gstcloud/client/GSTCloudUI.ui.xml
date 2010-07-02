@@ -12,7 +12,7 @@ background: green;
 	padding: 8px;
 	border: 1px solid black;
 	
-height:74%;
+height:80%;
 width:15%; 
 border:1px solid #000000;
 left:85%;
@@ -38,11 +38,11 @@ background: green;
 	border: 1px solid black;
 	margin-top: 20px;
 	margin-bottom: 10px;
-height:58.5%;
+height:65%;
 width:25%;
 border:1px solid #000000;
 left:0%;
-top:8%;
+top:5%;
 }
 
 .map  { 
@@ -123,11 +123,13 @@ color: red;
 	font-size: 10pt;
 	font-weight: bold;
 	margin-top: 20px;
+	text-decoration:underline;
 }
 /** Add css rules here for your application. */
 
 .map
 {
+	position: absolute;
 	width: 50%;
 	padding: 8px;
 	background: #ffffff;
@@ -153,13 +155,11 @@ color: red;
 }
 
 /** Example rules used by the template application (remove for your app) */
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  text-align: center;
-  color: #777777;
-  margin: 40px 0px 70px;
+h3 {
   
+  left:50%;
+  text-align:center;
+  float:center;
 }
 .label{
 	color:  white;
@@ -180,15 +180,24 @@ h1 {
 	.label:hover {
   background-color: #0061D7;
 }
-		
+.hp{
+	position:absolute;
+	right:30%;
+	top:0%;
+}
 
+.header{
+	align:center;
+	}
 		</ui:style>
 	
-<g:VerticalPanel ui:field="vp">
-				 <g:HorizontalPanel >
-				 <g:HTML><h1>Cloud GIS</h1></g:HTML>
-				 	<g:VerticalPanel styleName="{style.logio}">
-				  	<g:HTML>Login/out Panel</g:HTML>
+<g:VerticalPanel ui:field="vp" >
+                 <g:HorizontalPanel >		
+				 	<g:VerticalPanel styleName="{style.header}">
+				 	<g:HTML><h3>Cloud GIS</h3></g:HTML>
+					<g:VerticalPanel styleName="{style.logio}">
+					</g:VerticalPanel>
+				  	<g:HTML><h4>Login/out Panel</h4></g:HTML>
 				  	</g:VerticalPanel>
 				 </g:HorizontalPanel>
 				  
@@ -281,7 +290,7 @@ h1 {
 					
 					<g:VerticalPanel >
 						<g:HorizontalPanel styleName="{style.tools}">
-						<g:HTML>Tools Panel</g:HTML> 
+						<g:HTML><h4>Tools Panel</h4></g:HTML> 
 						</g:HorizontalPanel>
 						<g:VerticalPanel styleName="{style.map}" ui:field="mapwrapper">	
 						
