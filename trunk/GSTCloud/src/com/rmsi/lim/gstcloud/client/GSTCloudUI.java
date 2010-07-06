@@ -1,6 +1,72 @@
 package com.rmsi.lim.gstcloud.client;
 
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import com.rmsi.lim.gstcloud.shared.Landmarks;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.maps.client.InfoWindow;
+import com.google.gwt.maps.client.InfoWindowContent;
+import com.google.gwt.maps.client.MapType;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.LargeMapControl3D;
+import com.google.gwt.maps.client.control.MapTypeControl;
+import com.google.gwt.maps.client.control.ScaleControl;
+import com.google.gwt.maps.client.event.MapClickHandler;
+import com.google.gwt.maps.client.event.MapDragEndHandler;
+import com.google.gwt.maps.client.event.MapZoomEndHandler;
+import com.google.gwt.maps.client.geocode.Geocoder;
+import com.google.gwt.maps.client.geocode.LatLngCallback;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.Polygon;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.TreeListener;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.rmsi.lim.gstcloud.shared.DataFilter;
+import com.rmsi.lim.gstcloud.shared.Districts;
+import com.rmsi.lim.gstcloud.shared.FieldVerifier;
+import com.rmsi.lim.gstcloud.shared.Layer;
+import com.rmsi.lim.gstcloud.shared.LayerManager;
+import com.rmsi.lim.gstcloud.shared.LayerTree;
+import com.rmsi.lim.gstcloud.shared.LocalBodies;
+import com.rmsi.lim.gstcloud.shared.States;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import java.util.HashMap;
+import com.google.gwt.maps.client.geocode.Geocoder;
+import com.google.gwt.maps.client.geocode.LatLngCallback;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.rmsi.lim.gstcloud.shared.LayerItem;
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -14,13 +80,9 @@ import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 import java.util.List;
 import com.rmsi.lim.gstcloud.shared.Landmarks;
-
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
@@ -28,46 +90,26 @@ import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.ScaleControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.event.MapDragEndHandler;
-import com.google.gwt.maps.client.event.MapZoomEndHandler;
-import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
-import com.google.gwt.maps.client.geocode.Geocoder;
-import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.Polygon;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.rmsi.lim.gstcloud.shared.Districts;
 import com.rmsi.lim.gstcloud.shared.FieldVerifier;
+import com.rmsi.lim.gstcloud.shared.Layer;
+import com.rmsi.lim.gstcloud.shared.LayerManager;
 import com.rmsi.lim.gstcloud.shared.LocalBodies;
 import com.rmsi.lim.gstcloud.shared.States;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
-
-import java.util.HashMap;
-import com.google.gwt.maps.client.geocode.Geocoder;
-import com.google.gwt.maps.client.geocode.LatLngCallback;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 //import com.rmsi.lim.gstcloud.client.GSTCloud.MyHandler;
 //@SuppressWarnings("deprecation")
@@ -132,23 +174,59 @@ public class GSTCloudUI  extends Composite {
 	@UiField
 	Button displayButton;
 //	@UiField
-//	Button submitButton;
+//	Button closeButton;
 	@UiField
 	MapWidget map;
+	@UiField
+	VerticalPanel dialogVPanel;
+	@UiField
+	HTML serverResponseLabel;
+	@UiField
+	Label labelMessages;
+	@UiField
+	Label textToServerLabel;
+	@UiField
+	DialogBox dialogBox;
+//	@UiField
+//	HorizontalPanel hp1;
+	@UiField 
+	HorizontalPanel tablePanel1;
+	@UiField
+	TextBox  textBoxFilter;
+	@UiField 
+	Button buttonApplyFilter;
+	@UiField 
+	Button  clearFilterButton;
+	@UiField 
+	Button  buttonMarkAll;
+	@UiField 
+	Button buttonMarkNothing;
+	@UiField 
+	Button  buttonShowMarked;
+	@UiField
+	VerticalPanel vpdg;
+
 	
-	private DialogBox dialogBox;
-	//private MapWidget map;
+	
 	/**
 	  * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-
+	
+	private AdvancedTable datagrid = new AdvancedTable();
+	@UiField VerticalPanel tablePanel;
+	Button closeButton = new Button();
+	
 	private final GisCloudServiceAsync gisCloudService = GWT
 	.create(GisCloudService.class);
 	private final LandmarksServiceAsync fea = GWT
     .create(LandmarksService.class);
 	private final LocalBodiesServiceAsync dea = GWT
     .create(LocalBodiesService.class);
-	
+	private final LayerServiceAsync layerService = GWT
+	.create(LayerService.class);
+	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
+	LayerManager lm = new LayerManager();
+
 	/**
 	 * Draws a circle at a specified radius with a green outline.this functions takes the following as its parameters.
 	 * @param center
@@ -188,6 +266,7 @@ public class GSTCloudUI  extends Composite {
 			 map.addOverlay(circle);
 			 return ;
 	}
+	
 	final FileUpload upload = new FileUpload();
 	
 	public GSTCloudUI() {
@@ -358,6 +437,37 @@ public class GSTCloudUI  extends Composite {
 		
 	}
 	
+	/**
+	 *This is a function with hard coded values of 4 Layers and their Types.The data include the name of the
+	 *layer and its type (i.e point,polygon or line). 	 
+	 */
+	
+	public void layerLoader() 
+	{
+		final Layer l1 = new Layer("States","Polygon");
+		final Layer l2 = new Layer("Districts","Polygon");
+		final Layer l3 = new Layer("Local Body","Point");
+		final Layer l4 = new Layer("Landmark","Point");
+		
+		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
+		{
+			public void onFailure(Throwable caught) 
+			{
+				//System.out.println("failure");	
+			}
+	
+			public void onSuccess(String result) 
+			{
+				System.out.println("success");
+			} 
+		};
+		
+		layerService.loadLayer(l1, geoCallBack);
+		layerService.loadLayer(l2, geoCallBack);
+		layerService.loadLayer(l3, geoCallBack);
+		layerService.loadLayer(l4, geoCallBack);
+	}
+	
 	@UiHandler({"loadButton","displayButton","attributeClear","aSpeRadBox","queryIDBox","latLongSearch","latLongClear", "latitudeBox","longitudeBox","SpeRadBox","addressBox","kSpeRadBox","addressSearch","addressClear","spatialSearch","spatialClear","sSpeRadBox"})
 	public void onClick(ClickEvent event) {
 		eventMessageClick(event);
@@ -475,7 +585,7 @@ public class GSTCloudUI  extends Composite {
 						 selectedIndex=stateBox.getSelectedIndex();
 						 if(stateBox.getItemText( selectedIndex)== "Select State")
 						 {
-							 dialogBox.setText("Atleast Enter name of the State");
+//							 dialogBox.setText("Atleast Enter name of the State");
 						 }	
 						 else
 						 {
@@ -751,7 +861,6 @@ public class GSTCloudUI  extends Composite {
 			System.out.println(ex.getMessage());
 		}
 	}
-	
 
 	@UiHandler("latLongSearch")
 	public void onKeyUp(KeyUpEvent event) 
@@ -799,7 +908,7 @@ public class GSTCloudUI  extends Composite {
 	    map.addControl(new MapTypeControl());
 	   
 	    
-	    map.setSize("620px", "400px");
+	    map.setSize("693px", "377px");
 	//    map.setGoogleBarEnabled(true);
 	    map.addControl(new LargeMapControl3D());
 	    map.addControl(new ScaleControl());
@@ -918,5 +1027,146 @@ public class GSTCloudUI  extends Composite {
 //		mapwrapper.setCellHorizontalAlignment(map, HasHorizontalAlignment.ALIGN_CENTER);		mapwrapper.setBorderWidth(2);
 		
 	}
+
+	private void setupDialogBox(){
+
+		// We can set the id of a widget by accessing its Element
+		dialogVPanel.add(new HTML("<b>Sending coordinates to the server:</b>"));
+		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
+		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+		dialogBox.setWidget(dialogVPanel);
+
+		// Add a handler to close the DialogBox
+		closeButton.addClickHandler(new ClickHandler() 
+		{
+			public void onClick(ClickEvent event)
+		
+			{
+				
+				dialogBox.hide();
+				//dialogBox.setVisible(true);
+				
+			}
+	});
+	}
+	
+	public void setupLayerManager()
+	{
+		layerService.getLayers(new AsyncCallback<List<Layer>>()
+				{
+					public void onFailure(Throwable caught) 
+					{		 
+
+					}
+
+					public void onSuccess(List<Layer> result) 
+					{		
+						for (int row = 0; row < result.size(); row ++) 				
+							lm.addLayer(result.get(row));
+						vp2.add(lm);
+
+					}
+
+				});
+				
+//		class Listener implements TreeListener
+//		{
+//			public void onTreeItemSelected(TreeItem item) 
+//			{		
+//					String text = item.getText();
+//					if (text == "States")
+//					{
+//						map.clearOverlays();
+//						dea.getStates(new AsyncCallback<List<States>>()
+//						  		{
+//						  				public void onFailure(Throwable caught) 
+//									 	{		 
+//								     
+//									 	}
+//						  		
+//									 	public void onSuccess(List<States> result) 
+//										{
+//									 		int rowCount = result.size();
+//									 		for (int row = 0; row < rowCount; row ++) 
+//									 		{
+//									 			LatLng point = LatLng.newInstance(result.get(row).getLatitude(),result.get(row).getLongitude());
+//												map.addOverlay(new Marker(point));
+//												map.setCenter(point,10);
+//									 		}
+//										}
+//						  		});
+//					}
+//			}
+//
+//			@Override
+//			public void onTreeItemStateChanged(TreeItem item) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		}		
+
+	}
+
+	public void setupTablePanel()
+	{
+		datagrid.setAllowRowMark(true);
+		datagrid.setFirstColumnVisible(true);
+		datagrid.setTableModelService(landmarksModelService);
+		datagrid.addRowSelectionListener(new RowSelectionListener() {
+			public void onRowSelected(AdvancedTable sender, String rowId) {
+				labelMessages.setText("Row " + rowId + " selected.");
+			}
+		});
+		datagrid.setSize("1152px", "100px");
+		datagrid.setPageSize(3);
+		vpdg.add(datagrid);
+
+		textBoxFilter.setWidth("100%");
+		buttonApplyFilter.addClickListener(new ClickListener() {
+		public void onClick(Widget sender) {
+				String filterText = textBoxFilter.getText();
+				DataFilter filter = new DataFilter("keyword", filterText); 
+				DataFilter[] filters = {filter};
+				datagrid.applyFilters(filters);
+				labelMessages.setText("Filter '" + filterText +"' applied.");
+			}
+		});
+		buttonApplyFilter.setWidth("100");
+		tablePanel1.setCellWidth(buttonApplyFilter, "100");
+		tablePanel1.setCellHorizontalAlignment(
+		buttonApplyFilter, HasHorizontalAlignment.ALIGN_RIGHT);
+
+		clearFilterButton.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				datagrid.applyFilters(null);
+				textBoxFilter.setText("");
+				labelMessages.setText("Filter cleaned.");
+			}
+		});
+		clearFilterButton.setWidth("100");
+		tablePanel1.setCellWidth(clearFilterButton, "100");
+
+		buttonMarkAll.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				datagrid.markAllRows();
+			}
+		});
+		buttonMarkAll.setWidth("128px");
+
+		buttonMarkNothing.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				datagrid.clearMarkedRows();
+			}
+		});
+		buttonMarkNothing.setSize("136px", "24px");
+
+		buttonShowMarked.addClickListener(new ClickListener() {
+			public void onClick(Widget sender) {
+				Set markedRows = datagrid.getMarkedRows();
+				Window.alert("Marked rows:" + markedRows.toString());				
+		}
+		});
+		buttonShowMarked.setSize("128px", "24px");
+}
 
 }
