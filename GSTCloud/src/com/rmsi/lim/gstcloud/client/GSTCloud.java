@@ -250,7 +250,7 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void DistrictsLoader()
 	{
-		 final Districts d1 = new Districts(new Long(1840),"East Delhi",28.53,77.13);
+		final Districts d1 = new Districts(new Long(1840),"East Delhi",28.53,77.13);
 		 final Districts d2 = new Districts(new Long(1840),"West Delhi",28.595,77.102);
 		 final Districts d3 = new Districts(new Long(1840),"South Delhi",28.500,77.100);
 		 final Districts d4 = new Districts(new Long(1838),"Varanasi",25.20,83.00);
@@ -1257,66 +1257,64 @@ public class GSTCloud implements EntryPoint
 		
 		GSTCloudUI w =new GSTCloudUI();
 
-//		w.stateBox.addItem("Select State");
-//		w.districtBox.addItem("No Available Districts");
-//		w.localBodyBox.addItem("No Available Villages/Towns");
-//		w.setupMap();
-//		w.hp5.add(upload);
-		
+		w.stateBox.addItem("Select State");
+		w.districtBox.addItem("No Available Districts");
+		w.localBodyBox.addItem("No Available Villages/Towns");
+		w.setupMap();
+		w.hp5.add(upload);
+		w.layerLoader();
+		w.setupLayerManager();
+		w.setupTablePanel();
 		title2 = new HTML(applicationTitle2);
 		Window.setTitle(applicationTitle2);
-		title2.setStylePrimaryName("title");
-		vp.add(title2);
-		vp.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
-		//setupDialogBox();
-		dea.getStates(new AsyncCallback<List<States>>()
-		  		{
-		  			public void onFailure(Throwable caught) 
-					 	{		 
-				     
-					 	}
-		  		
-					 	public void onSuccess(List<States> result) 
-						{
-					
-					 		if(result.size()== 0)
-					 		{
-					 			StatesLoader();
-					 			DistrictsLoader();
-					 			LocalBodyLoader();
-					 		}
-					 			
-						}
-		  		});
-					 		
-	    //layerLoader();
-		setupLatLongPanel();
-		setupKeywordPanel();
-		setupSpatialPanel();
-		setupAttributePanel();
-		setupQueryPanels();
-		setupToolsPanel();
-		setupLayerManager();
-		setupTablePanel();
-		hp.add(vp1);
-	
-		setupMap();
-		//creating vertical panel for Map
-		hp.add(mapWrapper);
-		setupToolsPanel();
-		hp.add(vp2);
-	    vp.add(hp);
-	    /**vp.add(mapWrapper);
-	    vp.setCellHorizontalAlignment(mapWrapper, HasHorizontalAlignment.ALIGN_CENTER);*/
-	    // style the vp
-	    vp.setWidth("100%");
-	    vp.setStylePrimaryName("vp");
+//		title2.setStylePrimaryName("title");
+//		vp.add(title2);
+//		vp.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
+//		//setupDialogBox();
+//		dea.getStates(new AsyncCallback<List<States>>()
+//		  		{
+//		  			public void onFailure(Throwable caught) 
+//					 	{		 
+//				     
+//					 	}
+//		  		
+//					 	public void onSuccess(List<States> result) 
+//						{
+//					
+//					 		if(result.size()== 0)
+//					 		{
+//					 			StatesLoader();
+//					 			DistrictsLoader();
+//					 			LocalBodyLoader();
+//					 		}
+//					 			
+//						}
+//		  		});
+//					 		
+//	    layerLoader();
+//		setupLatLongPanel();
+//		setupKeywordPanel();
+//		setupSpatialPanel();
+//		setupAttributePanel();
+//		setupQueryPanels();
+//		setupToolsPanel();
+//		setupLayerManager();
+//		setupTablePanel();
+//		hp.add(vp1);
+//	
+//		setupMap();
+//		//creating vertical panel for Map
+//		hp.add(mapWrapper);
+//		setupToolsPanel();
+//		hp.add(vp2);
+//	    vp.add(hp);
+//	    /**vp.add(mapWrapper);
+//	    vp.setCellHorizontalAlignment(mapWrapper, HasHorizontalAlignment.ALIGN_CENTER);*/
+//	    // style the vp
+//	    vp.setWidth("100%");
+//	    vp.setStylePrimaryName("vp");
 	    // Create the popup dialog box
-		
-		
-	
-	
-		RootPanel.get().add(vp);
+		RootPanel.get().add(w);
 	    
 	}
 
@@ -1437,7 +1435,6 @@ public class GSTCloud implements EntryPoint
 		buttonShowMarked.setSize("128px", "24px");
 		buttonShowMarked.setText("Show Marked");
 	}
-
 	
 	protected void sendMapCenter(String lngLat) 
 	{
