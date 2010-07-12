@@ -30,8 +30,8 @@ width:13%;
 border:1px solid #000000;
 left:87%;
 top:0%;
-#0061D7;
 }
+
 .queries  {
 position:absolute;
 background: green;
@@ -89,7 +89,7 @@ left:67%;
 top:77%;
 }
 .lattextbox1{
-	width:180px;4
+	width:180px;
 }
 
 .lattextbox2{
@@ -254,10 +254,11 @@ h6{
 <!--	</g:VerticalPanel>		-->
 				<g:VerticalPanel ui:field="admin"  styleName="{style.adminp}">
 					<g:HTML><h4>Admin Panel</h4></g:HTML>
+					<g:FormPanel ui:field="adminform" />
 					<g:HorizontalPanel ui:field="hp5">
 <!--					<g:Button ui:field="submitButton" text="Submit" styleName="{style.Button}" />-->
-					</g:HorizontalPanel>
-					<g:HorizontalPanel>
+<!--					</g:HorizontalPanel>-->
+<!--					<g:HorizontalPanel>-->
 					<g:Button ui:field="loadButton" text="Load" styleName="{style.Button}" />
 					<g:Button ui:field="displayButton" text="Display" styleName="{style.Button}" />
 					</g:HorizontalPanel>

@@ -98,6 +98,16 @@
   </servlet-mapping>
      
      <servlet>
+		<servlet-name>FileUpServlet</servlet-name>
+		<servlet-class>com.rmsi.lim.gstcloud.server.FileUp</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>FileUpServlet</servlet-name>
+		<url-pattern>/gstcloud/FileUp</url-pattern>
+	</servlet-mapping>
+     
+     <servlet>
         <servlet-name>DataNucleus</servlet-name>
         <servlet-class>org.datanucleus.rest.RestServlet</servlet-class>
         <init-param>
