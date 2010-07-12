@@ -102,6 +102,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.rmsi.lim.gstcloud.shared.Districts;
 import com.rmsi.lim.gstcloud.shared.FieldVerifier;
 import com.rmsi.lim.gstcloud.shared.Layer;
@@ -205,7 +207,8 @@ public class GSTCloudUI  extends Composite {
 	Button  buttonShowMarked;
 	@UiField
 	VerticalPanel vpdg;
-
+	@UiField
+	FormPanel adminform;
 	
 	
 	/**
@@ -267,11 +270,13 @@ public class GSTCloudUI  extends Composite {
 			 return ;
 	}
 	
-	final FileUpload upload = new FileUpload();
+	//FileUpload upload = new FileUpload();
 	
 	public GSTCloudUI() {
 		
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		
 		  dea.getStates(new AsyncCallback<List<States>>()
 			  		{
 			  			public void onFailure(Throwable caught) 
@@ -468,6 +473,42 @@ public class GSTCloudUI  extends Composite {
 		layerService.loadLayer(l4, geoCallBack);
 	}
 	
+	@UiHandler("adminform")
+	public void onSubmit(SubmitEvent event) 
+    {
+      if(event.getSource() == loadButton)
+      {
+      
+  	// This event is fired just before the form is submitted. We can take
+      // this opportunity to perform validation.
+        Window.alert("file uploaded");
+        event.cancel();
+      
+      }
+    }
+
+	@UiHandler("adminform")
+	public void onSubmitComplete(SubmitCompleteEvent event) {
+		      // When the form submission is successfully completed, this event is
+		      // fired. Assuming the service returned a response of type text/html,
+		      // we can get the result text here (see the FormPanel documentation for
+		      // further explanation).
+		     
+		    	//Window.alert(event.getResults());
+		    	/* land.loadKML(upload1.getFilename(), new AsyncCallback<String>(){
+						public void onFailure(Throwable caught) 
+						{
+							System.out.println("failure");	
+						}
+
+						public void onSuccess(String result) 
+						{
+							System.out.println("success");
+						}					
+					});
+		    	    }*/		
+		    }
+	
 	@UiHandler({"loadButton","displayButton","attributeClear","aSpeRadBox","queryIDBox","latLongSearch","latLongClear", "latitudeBox","longitudeBox","SpeRadBox","addressBox","kSpeRadBox","addressSearch","addressClear","spatialSearch","spatialClear","sSpeRadBox"})
 	public void onClick(ClickEvent event) {
 		eventMessageClick(event);
@@ -482,7 +523,8 @@ public class GSTCloudUI  extends Composite {
 //			}
 		if (event.getSource()==loadButton)
 		{
-			final AsyncCallback geoCallBack= new AsyncCallback<String>() 
+			adminform.submit();
+			/*final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
 				public void onFailure(Throwable caught) 
 				{
@@ -509,7 +551,7 @@ public class GSTCloudUI  extends Composite {
 					
 			});			
 			System.out.println("file uploaded");
-		}
+*/		}
 		
 		
 
