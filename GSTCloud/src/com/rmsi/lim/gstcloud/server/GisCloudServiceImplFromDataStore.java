@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 
 import com.rmsi.lim.gstcloud.client.GisCloudService;
+import com.rmsi.lim.gstcloud.shared.County;
 
 import com.google.appengine.api.datastore.Text;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;

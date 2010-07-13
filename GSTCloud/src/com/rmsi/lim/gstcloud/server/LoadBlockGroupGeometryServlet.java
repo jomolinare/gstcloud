@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.Text;
+import com.rmsi.lim.gstcloud.shared.BlockGroup;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 import com.Ostermiller.util.CSVParse;
