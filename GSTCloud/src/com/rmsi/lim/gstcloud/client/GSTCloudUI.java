@@ -117,98 +117,106 @@ import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 //@SuppressWarnings("deprecation")
 
 public class GSTCloudUI  extends Composite {
-
+	 
+	
 	private static testagainUiBinder uiBinder = GWT
 			.create(testagainUiBinder.class);
  @UiTemplate("GSTCloudUI.ui.xml")
 	interface testagainUiBinder extends UiBinder<Panel, GSTCloudUI> {
 	}
-	
-	@UiField 
-	VerticalPanel vp,vp1,vp2,mapwrapper,vLatLongPanel,vKeyWordPanel,vSpatialPanel;
-	@UiField 
-	HorizontalPanel hp,hLatLongPanel,hKeyWrdPanel;
-	@UiField
-	TextBox longitudeBox,latitudeBox,SpeRadBox;
-	@UiField
-	Label errorLabel,latLabel,longLabel,speRadLabel,addLabel,kspeRadLabel,stateLabel,localBodyLabel,sspeRadLabel;
-
-	@UiField
-	Button latLongSearch,latLongClear,addressSearch,addressClear;
-	@UiField
-	TabLayoutPanel queryTabPanel;
-	@UiField
-	TextBox addressBox,kSpeRadBox;
-	@UiField
-	ListBox stateBox,districtBox;
-	@UiField
-	ListBox localBodyBox;
-	@UiField
-	TextBox sSpeRadBox;
-	@UiField
-	HorizontalPanel hSpatPanel;
-	@UiField
-	Button spatialSearch;
-	@UiField
-	Button spatialClear;
-	@UiField
-	VerticalPanel vAttributePanel;
-	@UiField
-	Label queryIDLabel;
-	@UiField
-	TextBox queryIDBox;
-	@UiField
-	Label aspeRadLabel;
-	@UiField
-	TextBox aSpeRadBox;
-	@UiField
-	HorizontalPanel hAttributePanel;
-	@UiField
-	Button attributeSearch;
-	@UiField
-	Button attributeClear;
-	@UiField
-	HorizontalPanel hp5;
-	@UiField
-	VerticalPanel admin;
-	@UiField
-	Button loadButton;
-	@UiField
-	Button displayButton;
-//	@UiField
-//	Button closeButton;
-	@UiField
-	MapWidget map;
-	@UiField
-	VerticalPanel dialogVPanel;
-	@UiField
-	HTML serverResponseLabel;
-	@UiField
-	Label labelMessages;
-	@UiField
-	Label textToServerLabel;
-	@UiField
-	DialogBox dialogBox;
-//	@UiField
-//	HorizontalPanel hp1;
-	@UiField 
-	HorizontalPanel tablePanel1;
-	@UiField
-	TextBox  textBoxFilter;
-	@UiField 
-	Button buttonApplyFilter;
-	@UiField 
-	Button  clearFilterButton;
-	@UiField 
-	Button  buttonMarkAll;
-	@UiField 
-	Button buttonMarkNothing;
-	@UiField 
-	Button  buttonShowMarked;
-	@UiField
-	VerticalPanel vpdg;
-	@UiField
-	FormPanel adminform;
+ 
+ 	
+ //Main Fields
+ @UiField 
+ VerticalPanel vp,vp1,vp2,mapwrapper;
+ @UiField
+ HorizontalPanel hp;
+ @UiField
+ TabLayoutPanel queryTabPanel;
+ @UiField
+ MapWidget map;
+ 
+ //Fields for LatLngPanel
+ @UiField
+ VerticalPanel vpLatLng;
+ @UiField
+ HorizontalPanel hpLatLng;
+ @UiField
+ TextBox tbLongitude,tbLatitude,tbLatLngRadius;
+ @UiField
+ Label lblError,lblLatitude,lblLongitude,lblLatLngRadius;
+ @UiField
+ Button btnLatLngSearch,btnLatLngClear;
+ 
+ //Fields for AttributePanel
+ @UiField
+ VerticalPanel vpAttribute;
+ @UiField
+ HorizontalPanel hpAttribute;
+ @UiField
+ Label lblAttribute,lblAttributeRadius;
+ @UiField
+ TextBox tbAttribute,tbAttributeRadius;
+ @UiField
+ Button btnAttributeSearch,btnAttributeClear;
+ 
+ //Fields for SpatialPanel
+ @UiField
+ VerticalPanel vpSpatial;
+ @UiField
+ HorizontalPanel hpSpatial;
+ @UiField
+ Label lblState,lblLocalBody,lblSpatialRadius;
+ @UiField
+ ListBox lbState,lbDistrict,lbLocalBody;
+ @UiField
+ TextBox tbSpatialRadius;
+ @UiField
+ Button btnSpatialSearch, btnSpatialClear;
+ 
+ //Fields for GeoCodedPanel
+ @UiField
+ VerticalPanel vpGeoCoded;
+ @UiField
+ HorizontalPanel hpGeoCoded;
+ @UiField
+ Label lblGeoCodedAddress,lblGeoCodedRadius;
+ @UiField
+ TextBox tbGeoCodedAddress,tbGeoCodedRadius;
+ @UiField
+ Button btnGeoCodedSearch,btnGeoCodedClear;
+ 
+ //Fields for AdminPanel
+ @UiField
+ VerticalPanel vpAdmin;
+ @UiField
+ HorizontalPanel hpAdmin;
+ @UiField
+ Button btnAdminLoad,btnAdminDisplay;
+ 
+ //Fields for DialogBox
+ @UiField
+ VerticalPanel vpDialogBox;
+ @UiField
+ HTML serverResponseLabel;
+ @UiField
+ Label textToServerLabel;
+ @UiField
+ DialogBox dialogBox;
+ 
+ //Fields for TablePanel & DataGirdPanel
+ @UiField
+ VerticalPanel vpDataGird,vpTable;
+ @UiField
+ HorizontalPanel hpTable;
+ @UiField
+ FormPanel fpAdmin;
+ @UiField
+ Label lblMessages;
+ @UiField
+ TextBox  tbFilter;
+ @UiField
+ Button btnApplyFilter, btnClearFilter,btnMarkAll,btnMarkNothing,btnShowMarked;
 	
 	
 	/**
@@ -216,7 +224,8 @@ public class GSTCloudUI  extends Composite {
 	 */
 	
 	private AdvancedTable datagrid = new AdvancedTable();
-	@UiField VerticalPanel tablePanel;
+	final FileUpload upload = new FileUpload();
+	
 	Button closeButton = new Button();
 	
 	private final GisCloudServiceAsync gisCloudService = GWT
@@ -270,8 +279,6 @@ public class GSTCloudUI  extends Composite {
 			 return ;
 	}
 	
-	//FileUpload upload = new FileUpload();
-	
 	public GSTCloudUI() {
 		
 		initWidget(uiBinder.createAndBindUi(this));
@@ -307,11 +314,22 @@ public class GSTCloudUI  extends Composite {
 			 		for (int row = 0; row < rowCount; row ++) 
 			 		{
 			 			state = result.get(row).getStateName();
-			 			stateBox.addItem(state);
+			 			lbState.addItem(state);
 			 		}
 				}
   		});
+		
+		
+		
 
+		lbState.addItem("Select State");
+		lbDistrict.addItem("No Available Districts");
+		lbLocalBody.addItem("No Available Villages/Towns");
+		setupMap();
+		hpAdmin.add(upload);
+		layerLoader();
+		setupLayerManager();
+		setupTablePanel();
 	}
 	
 	/**
@@ -473,10 +491,10 @@ public class GSTCloudUI  extends Composite {
 		layerService.loadLayer(l4, geoCallBack);
 	}
 	
-	@UiHandler("adminform")
+	@UiHandler("fpAdmin")
 	public void onSubmit(SubmitEvent event) 
     {
-      if(event.getSource() == loadButton)
+      if(event.getSource() == btnAdminLoad)
       {
       
   	// This event is fired just before the form is submitted. We can take
@@ -487,7 +505,7 @@ public class GSTCloudUI  extends Composite {
       }
     }
 
-	@UiHandler("adminform")
+	@UiHandler("fpAdmin")
 	public void onSubmitComplete(SubmitCompleteEvent event) {
 		      // When the form submission is successfully completed, this event is
 		      // fired. Assuming the service returned a response of type text/html,
@@ -509,21 +527,21 @@ public class GSTCloudUI  extends Composite {
 		    	    }*/		
 		    }
 	
-	@UiHandler({"loadButton","displayButton","attributeClear","aSpeRadBox","queryIDBox","latLongSearch","latLongClear", "latitudeBox","longitudeBox","SpeRadBox","addressBox","kSpeRadBox","addressSearch","addressClear","spatialSearch","spatialClear","sSpeRadBox"})
+	@UiHandler({"btnAdminLoad","btnAdminDisplay","btnGeoCodedClear","tbGeoCodedRadius","tbGeoCodedAddress","btnLatLngSearch","btnLatLngClear", "tbLatitude","tbLongitude","tbLatLngRadius","tbAttribute","tbAttributeRadius","btnAttributeSearch","btnAttributeClear","btnSpatialSearch","btnSpatialClear","tbSpatialRadius"})
 	public void onClick(ClickEvent event) {
 		eventMessageClick(event);
 	}
 	
 	private void eventMessageClick(GwtEvent<?> event) {		
-//		if (event.getSource()==attributeSearch)	
+//		if (event.getSource()==btnGeoCodedSearch)	
 //		{
 //			String boxText = new String();
-//			boxText = queryIDBox.getText().trim().replace("'", "\\'");
+//			boxText = tbGeoCodedAddress.getText().trim().replace("'", "\\'");
 //			showAddress(boxText);
 //			}
-		if (event.getSource()==loadButton)
+		if (event.getSource()==btnAdminLoad)
 		{
-			adminform.submit();
+			fpAdmin.submit();
 			/*final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
 				public void onFailure(Throwable caught) 
@@ -556,7 +574,7 @@ public class GSTCloudUI  extends Composite {
 		
 
 
-		else if (event.getSource()==displayButton) 
+		else if (event.getSource()==btnAdminDisplay) 
 				 fea.displayStation(new AsyncCallback<List<Landmarks>>() 
 				 {
 					 public void onFailure(Throwable caught) 
@@ -590,48 +608,48 @@ public class GSTCloudUI  extends Composite {
 			
 				 });	
 
-	else if (event.getSource()==attributeClear) 
+	else if (event.getSource()==btnGeoCodedClear) 
 		{
-			aSpeRadBox.setValue("");
-			queryIDBox.setValue("");
+			tbGeoCodedRadius.setValue("");
+			tbGeoCodedAddress.setValue("");
 			map.clearOverlays();
 		}
-		else if (event.getSource()==aSpeRadBox) 
+		else if (event.getSource()==tbGeoCodedRadius) 
 		{
-			aSpeRadBox.setValue("");
+			tbGeoCodedRadius.setValue("");
 		}
-		else if (event.getSource()==queryIDBox) 
+		else if (event.getSource()==tbGeoCodedAddress) 
 		{
-			queryIDBox.setValue("");
+			tbGeoCodedAddress.setValue("");
 		}
-		else if (event.getSource()==sSpeRadBox) 
+		else if (event.getSource()==tbSpatialRadius) 
 		{
-			sSpeRadBox.setValue("");
+			tbSpatialRadius.setValue("");
 		}
-		else if (event.getSource()==latLongClear) 
+		else if (event.getSource()==btnLatLngClear) 
 		{
-			latitudeBox.setValue("");
-			longitudeBox.setValue("");
-			SpeRadBox.setValue("");
+			tbLatitude.setValue("");
+			tbLongitude.setValue("");
+			tbLatLngRadius.setValue("");
 			map.clearOverlays();
 		}
-		else if (event.getSource()==spatialSearch) 
+		else if (event.getSource()==btnSpatialSearch) 
 			 
 			 {
-				 int selectedIndex=localBodyBox.getSelectedIndex();
-				 if(selectedIndex==-1 || localBodyBox.getItemText(selectedIndex )== "Select Villages/Town"||localBodyBox.getItemText(selectedIndex )== "No Available Villages/Town")
+				 int selectedIndex=lbLocalBody.getSelectedIndex();
+				 if(selectedIndex==-1 || lbLocalBody.getItemText(selectedIndex )== "Select Villages/Town"||lbLocalBody.getItemText(selectedIndex )== "No Available Villages/Town")
 				 {
-					 selectedIndex = districtBox.getSelectedIndex();
-					 if(selectedIndex==-1 ||districtBox.getItemText( selectedIndex)== "Select District"||districtBox.getItemText( selectedIndex)=="No Available Districts")
+					 selectedIndex = lbDistrict.getSelectedIndex();
+					 if(selectedIndex==-1 ||lbDistrict.getItemText( selectedIndex)== "Select District"||lbDistrict.getItemText( selectedIndex)=="No Available Districts")
 					 {
-						 selectedIndex=stateBox.getSelectedIndex();
-						 if(stateBox.getItemText( selectedIndex)== "Select State")
+						 selectedIndex=lbState.getSelectedIndex();
+						 if(lbState.getItemText( selectedIndex)== "Select State")
 						 {
 //							 dialogBox.setText("Atleast Enter name of the State");
 						 }	
 						 else
 						 {
-							 String sName = stateBox.getItemText( stateBox.getSelectedIndex());
+							 String sName = lbState.getItemText( lbState.getSelectedIndex());
 							 /**
 							  * This function call brings the attributes of the state by the name specified.
 							  */
@@ -647,14 +665,14 @@ public class GSTCloudUI  extends Composite {
 										LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 										map.addOverlay(new Marker(point));
 										map.setCenter(point,result.getZoomLevel());
-										drawCircleFromRadius(point,new Double(SpeRadBox.getText()),60);
+										drawCircleFromRadius(point,new Double(tbLatLngRadius.getText()),60);
 									}
 								});
 						 }
 					 }
 					 else
 					 {
-						 String dName = districtBox.getItemText( districtBox.getSelectedIndex());
+						 String dName = lbDistrict.getItemText( lbDistrict.getSelectedIndex());
 						 /**
 						  * This function call brings the attributes of the District by the name specified.
 						  */
@@ -670,14 +688,14 @@ public class GSTCloudUI  extends Composite {
 										LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 										map.addOverlay(new Marker(point));
 										map.setCenter(point,15);
-										drawCircleFromRadius(point,new Double(SpeRadBox.getText()),60);
+										drawCircleFromRadius(point,new Double(tbLatLngRadius.getText()),60);
 									}
 								 });
 					 }
 				 }
 				 else
 				 {
-					 String lbName = localBodyBox.getItemText( localBodyBox.getSelectedIndex());
+					 String lbName = lbLocalBody.getItemText( lbLocalBody.getSelectedIndex());
 					 /**
 					  * This function call brings the attributes of the Local Body by the name specified.
 					  */
@@ -693,7 +711,7 @@ public class GSTCloudUI  extends Composite {
 									LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 									map.addOverlay(new Marker(point));
 									map.setCenter(point,15);
-									drawCircleFromRadius(point,new Double(SpeRadBox.getText()),60);
+									drawCircleFromRadius(point,new Double(tbLatLngRadius.getText()),60);
 								}
 							 });
 				 }
@@ -701,7 +719,7 @@ public class GSTCloudUI  extends Composite {
 		/**
 		 * Deletes all the Overlays displayed on the map
 		 */
-		else if (event.getSource()==spatialClear)
+		else if (event.getSource()==btnSpatialClear)
 			{
 				map.clearOverlays();
 			}
@@ -714,69 +732,69 @@ public class GSTCloudUI  extends Composite {
 			
 	
 		
-		else if (event.getSource()==latLongSearch)	
+		else if (event.getSource()==btnLatLngSearch)	
 		{	
-			Double radius = new Double(SpeRadBox.getText());
-			errorLabel.setText("");
+			Double radius = new Double(tbLatLngRadius.getText());
+			lblError.setText("");
 			String latChck = new String();
-			latChck = latitudeBox.getText();
+			latChck = tbLatitude.getText();
 			String longChck = new String();
-			longChck = longitudeBox.getText();
+			longChck = tbLongitude.getText();
 			String spradChck = new String();
-			spradChck = SpeRadBox.getText();
+			spradChck = tbLatLngRadius.getText();
 			if (!FieldVerifier.isaNumber(latChck,longChck))
 			{
-				errorLabel.setText("Enter only digits");
-				latitudeBox.setValue("Enter again");
-				longitudeBox.setValue("Enter again");
-				SpeRadBox.setValue("Enter again");
+				lblError.setText("Enter only digits");
+				tbLatitude.setValue("Enter again");
+				tbLongitude.setValue("Enter again");
+				tbLatLngRadius.setValue("Enter again");
 				return;
 			}
-			//Double latCheck = new Integer (latitudeBox.getText());
-			//Double longCheck = new Integer (longitudeBox.getText());
-			if (!FieldVerifier.isValidNumber(latitudeBox.getText(),longitudeBox.getText())) 
+			//Double latCheck = new Integer (tbLatitude.getText());
+			//Double longCheck = new Integer (tbLongitude.getText());
+			if (!FieldVerifier.isValidNumber(tbLatitude.getText(),tbLongitude.getText())) 
 			{
-				errorLabel.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
-				latitudeBox.setValue("Enter again");
-				longitudeBox.setValue("Enter again");
-				SpeRadBox.setValue("Enter again");
+				lblError.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
+				tbLatitude.setValue("Enter again");
+				tbLongitude.setValue("Enter again");
+				tbLatLngRadius.setValue("Enter again");
 				return;
 			}
-			Double lat = new Double(latitudeBox.getText());	
-			Double lng = new Double(longitudeBox.getText());
+			Double lat = new Double(tbLatitude.getText());	
+			Double lng = new Double(tbLongitude.getText());
 			LatLng point = LatLng.newInstance(lat,lng);
 			drawCircleFromRadius(point,radius,60);
 			map.setCenter(point,10);
 		}
-		else if (event.getSource()==latitudeBox)
+		else if (event.getSource()==tbLatitude)
 		{
-			latitudeBox.setValue("");
+			tbLatitude.setValue("");
 		}
-		else if (event.getSource()==longitudeBox)
+		else if (event.getSource()==tbLongitude)
 		{
-			longitudeBox.setValue("");
+			tbLongitude.setValue("");
 		}
-		else if (event.getSource()==SpeRadBox) 
+		else if (event.getSource()==tbLatLngRadius) 
 		{
-			SpeRadBox.setValue("");
+			tbLatLngRadius.setValue("");
 		}
-		else if(event.getSource()== addressBox){
-			addressBox.setValue("");
+		else if(event.getSource()== tbAttribute){
+			tbAttribute.setValue("");
 		}
-		else if(event.getSource()== kSpeRadBox){
-			kSpeRadBox.setValue("");
+		else if(event.getSource()== tbAttributeRadius){
+			tbAttributeRadius.setValue("");
 		}
-		else if(event.getSource()== addressClear){
-			kSpeRadBox.setValue("");
-			addressBox.setValue("");
+		else if(event.getSource()== btnAttributeClear){
+			tbAttributeRadius.setValue("");
+			tbAttribute.setValue("");
 			map.clearOverlays();
 		}
-		else if (event.getSource()==addressSearch)	
+		else if (event.getSource()==btnAttributeSearch)	
 		{
 ////			check for creation of object fea,
 		
 			String boxText = new String();
-			boxText = addressBox.getText().trim().replace("'", "\\'");
+			boxText = tbAttribute.getText().trim().replace("'", "\\'");
 			fea.searchByAddress(boxText,new AsyncCallback<List<Landmarks>>()
 			{
 				public void onFailure(Throwable caught) 
@@ -784,8 +802,8 @@ public class GSTCloudUI  extends Composite {
 				}
 			    public void onSuccess(List<Landmarks> result ) 
 			    {
-			    //	kSpeRadBox.setValue("Running");
-			    	Double radius = new Double(kSpeRadBox.getText());
+			    //	tbAttributeRadius.setValue("Running");
+			    	Double radius = new Double(tbAttributeRadius.getText());
 					int rowCount = result.size();
 					for (int row = 0; row < rowCount; row ++)
 					{
@@ -821,29 +839,29 @@ public class GSTCloudUI  extends Composite {
 //	      });
 //	}	
 	
-	@UiHandler({"districtBox","stateBox"})
+	@UiHandler({"lbDistrict","lbState"})
 	public void onChange(ChangeEvent event)
 	{
 		try{
 			
 		
-		if (event.getSource() == stateBox)
+		if (event.getSource() == lbState)
 		{
 			String stateText = new String();
-			int selectedIndex=stateBox.getSelectedIndex();
-			stateText=stateBox.getItemText(selectedIndex);
+			int selectedIndex=lbState.getSelectedIndex();
+			stateText=lbState.getItemText(selectedIndex);
 			
-			int count = districtBox.getItemCount();	
+			int count = lbDistrict.getItemCount();	
 	 		for (int ctr1 = count-1; ctr1 >=0;ctr1--)
 	 		{
-	 			districtBox.removeItem(ctr1);
+	 			lbDistrict.removeItem(ctr1);
 	 		}
 
-	 			districtBox.addItem("No Available Districts");
-	        int count2 = localBodyBox.getItemCount();	
+	 			lbDistrict.addItem("No Available Districts");
+	        int count2 = lbLocalBody.getItemCount();	
 	 		for (int ctr2 = count2-1; ctr2 >=0;ctr2--)
-	 			localBodyBox.removeItem(ctr2);
-	 			localBodyBox.addItem("No Available Villages/Towns");
+	 			lbLocalBody.removeItem(ctr2);
+	 			lbLocalBody.addItem("No Available Villages/Towns");
 			if(stateText!="Select State")
 			dea.getDistrictsByStateName(stateText, new AsyncCallback<List<Districts>>(){
 				public void onFailure(Throwable caught) 
@@ -853,12 +871,12 @@ public class GSTCloudUI  extends Composite {
   		
 			 	public void onSuccess(List<Districts> result) 
 				{
-			 		int count3 = districtBox.getItemCount();	
+			 		int count3 = lbDistrict.getItemCount();	
 			 		for (int ctr3 = count3-1; ctr3 >=0 ;ctr3--)
-			 			districtBox.removeItem(ctr3);
-			 			districtBox.addItem("Select District");
+			 			lbDistrict.removeItem(ctr3);
+			 			lbDistrict.addItem("Select District");
 			 		for (int row = 0; row < result.size(); row ++) 
-			 			districtBox.addItem(result.get(row).getDistrictName());
+			 			lbDistrict.addItem(result.get(row).getDistrictName());
 			 		
 				}
 				
@@ -867,15 +885,15 @@ public class GSTCloudUI  extends Composite {
 			
 		}
 		
-		else if(event.getSource() == districtBox)
+		else if(event.getSource() == lbDistrict)
 		{
 			String districtText = new String();
-			int selectedIndex=districtBox.getSelectedIndex();
-			districtText=districtBox.getItemText(selectedIndex);
-			int count = localBodyBox.getItemCount();	
+			int selectedIndex=lbDistrict.getSelectedIndex();
+			districtText=lbDistrict.getItemText(selectedIndex);
+			int count = lbLocalBody.getItemCount();	
 	 		for (int i = count-1; i >=0;i--)
-	 			localBodyBox.removeItem(i);
-	 			localBodyBox.addItem("No Available Villages/Towns");
+	 			lbLocalBody.removeItem(i);
+	 			lbLocalBody.addItem("No Available Villages/Towns");
 			if (districtText!="Select District")
 			dea.getLocalBodiesByDistrictName(districtText, new AsyncCallback<List<LocalBodies>>(){
 				public void onFailure(Throwable caught) 
@@ -885,12 +903,12 @@ public class GSTCloudUI  extends Composite {
   		
 			 	public void onSuccess(List<LocalBodies> result) 
 				{
-			 		int count = localBodyBox.getItemCount();	
+			 		int count = lbLocalBody.getItemCount();	
 			 		for (int i = count-1; i >=0;i--)
-			 			localBodyBox.removeItem(i);
-			 			localBodyBox.addItem("Select Villages/Town");
+			 			lbLocalBody.removeItem(i);
+			 			lbLocalBody.addItem("Select Villages/Town");
 			 		for (int row = 0; row < result.size(); row ++) 
-			 			localBodyBox.addItem(result.get(row).getLocalBodyName());
+			 			lbLocalBody.addItem(result.get(row).getLocalBodyName());
 			 		
 				}
 				
@@ -904,33 +922,33 @@ public class GSTCloudUI  extends Composite {
 		}
 	}
 
-	@UiHandler("latLongSearch")
+	@UiHandler("btnLatLngSearch")
 	public void onKeyUp(KeyUpEvent event) 
 	{
 		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) 
 		{
-			Double radius = new Double(SpeRadBox.getText());
+			Double radius = new Double(tbLatLngRadius.getText());
 			
-			errorLabel.setText("");
+			lblError.setText("");
 			String latChck = new String();
-			latChck = latitudeBox.getText();
+			latChck = tbLatitude.getText();
 			String longChck = new String();
-			longChck = longitudeBox.getText();
+			longChck = tbLongitude.getText();
 			if (!FieldVerifier.isaNumber(latChck,longChck))
 			  {
-				errorLabel.setText("Enter only digits");
+				lblError.setText("Enter only digits");
 				return;
 			  }
-			//Integer latCheck = new Integer (latitudeBox.getText());
-			//Integer longCheck = new Integer (longitudeBox.getText());
-			if (!FieldVerifier.isValidNumber(latitudeBox.getText(),longitudeBox.getText())) 
+			//Integer latCheck = new Integer (tbLatitude.getText());
+			//Integer longCheck = new Integer (tbLongitude.getText());
+			if (!FieldVerifier.isValidNumber(tbLatitude.getText(),tbLongitude.getText())) 
 			  {
-				errorLabel.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
+				lblError.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
 				return;
 			  }
 			
-			Double lat = new Double(latitudeBox.getText());	
-			Double lng = new Double(longitudeBox.getText());
+			Double lat = new Double(tbLatitude.getText());	
+			Double lng = new Double(tbLongitude.getText());
 			LatLng point = LatLng.newInstance(lat,lng);
 			drawCircleFromRadius(point,radius,60);
 			map.setCenter(point); 
@@ -950,7 +968,7 @@ public class GSTCloudUI  extends Composite {
 	    map.addControl(new MapTypeControl());
 	   
 	    
-	    map.setSize("693px", "377px");
+	    map.setSize("765px", "480px");
 	//    map.setGoogleBarEnabled(true);
 	    map.addControl(new LargeMapControl3D());
 	    map.addControl(new ScaleControl());
@@ -1073,10 +1091,10 @@ public class GSTCloudUI  extends Composite {
 	private void setupDialogBox(){
 
 		// We can set the id of a widget by accessing its Element
-		dialogVPanel.add(new HTML("<b>Sending coordinates to the server:</b>"));
-		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		dialogBox.setWidget(dialogVPanel);
+		vpDialogBox.add(new HTML("<b>Sending coordinates to the server:</b>"));
+		vpDialogBox.add(new HTML("<br><b>Server replies:</b>"));
+		vpDialogBox.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+		dialogBox.setWidget(vpDialogBox);
 
 		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() 
@@ -1156,59 +1174,59 @@ public class GSTCloudUI  extends Composite {
 		datagrid.setTableModelService(landmarksModelService);
 		datagrid.addRowSelectionListener(new RowSelectionListener() {
 			public void onRowSelected(AdvancedTable sender, String rowId) {
-				labelMessages.setText("Row " + rowId + " selected.");
+				lblMessages.setText("Row " + rowId + " selected.");
 			}
 		});
-		datagrid.setSize("1152px", "100px");
-		datagrid.setPageSize(3);
-		vpdg.add(datagrid);
+		datagrid.setSize("1280px", "100px");
+		datagrid.setPageSize(5);
+		vpDataGird.add(datagrid);
 
-		textBoxFilter.setWidth("100%");
-		buttonApplyFilter.addClickListener(new ClickListener() {
+		tbFilter.setWidth("100%");
+		btnApplyFilter.addClickListener(new ClickListener() {
 		public void onClick(Widget sender) {
-				String filterText = textBoxFilter.getText();
+				String filterText = tbFilter.getText();
 				DataFilter filter = new DataFilter("keyword", filterText); 
 				DataFilter[] filters = {filter};
 				datagrid.applyFilters(filters);
-				labelMessages.setText("Filter '" + filterText +"' applied.");
+				lblMessages.setText("Filter '" + filterText +"' applied.");
 			}
 		});
-		buttonApplyFilter.setWidth("100");
-		tablePanel1.setCellWidth(buttonApplyFilter, "100");
-		tablePanel1.setCellHorizontalAlignment(
-		buttonApplyFilter, HasHorizontalAlignment.ALIGN_RIGHT);
+		btnApplyFilter.setWidth("128px");
+		hpTable.setCellWidth(btnApplyFilter, "100");
+		hpTable.setCellHorizontalAlignment(
+		btnApplyFilter, HasHorizontalAlignment.ALIGN_RIGHT);
 
-		clearFilterButton.addClickListener(new ClickListener() {
+		btnClearFilter.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
 				datagrid.applyFilters(null);
-				textBoxFilter.setText("");
-				labelMessages.setText("Filter cleaned.");
+				tbFilter.setText("");
+				lblMessages.setText("Filter cleaned.");
 			}
 		});
-		clearFilterButton.setWidth("100");
-		tablePanel1.setCellWidth(clearFilterButton, "100");
+		btnClearFilter.setWidth("128px");
+		hpTable.setCellWidth(btnClearFilter, "100");
 
-		buttonMarkAll.addClickListener(new ClickListener() {
+		btnMarkAll.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
 				datagrid.markAllRows();
 			}
 		});
-		buttonMarkAll.setWidth("128px");
+		btnMarkAll.setWidth("128px");
 
-		buttonMarkNothing.addClickListener(new ClickListener() {
+		btnMarkNothing.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
 				datagrid.clearMarkedRows();
 			}
 		});
-		buttonMarkNothing.setSize("136px", "24px");
+		btnMarkNothing.setWidth("128px");
 
-		buttonShowMarked.addClickListener(new ClickListener() {
+		btnShowMarked.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
 				Set markedRows = datagrid.getMarkedRows();
 				Window.alert("Marked rows:" + markedRows.toString());				
 		}
 		});
-		buttonShowMarked.setSize("128px", "24px");
+		btnShowMarked.setWidth("128px");
 }
 
 }
