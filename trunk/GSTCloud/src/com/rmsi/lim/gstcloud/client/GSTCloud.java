@@ -121,7 +121,7 @@ public class GSTCloud implements EntryPoint
 	private static final String SERVER_ERROR = "An error occurred while "
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
-	GSTCloudUI w =new GSTCloudUI();
+	GSTCloudUI uiObject =new GSTCloudUI();
 
 	/**
 	  * Create a remote service proxy to talk to the server-side Greeting service.
@@ -1254,27 +1254,17 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void setupFileUpload(){
 		upload.setName("KmlFileUpload"); 
-		w.adminform.setWidget(w.hp5);
-		w.adminform.setAction(GWT.getModuleBaseURL()+"FileUp");
-		 w.adminform.setEncoding(FormPanel.ENCODING_MULTIPART);
-		 w.adminform.setMethod(FormPanel.METHOD_POST);
-		 w.hp5.add(upload);
+		uiObject.fpAdmin.setWidget(uiObject.hpAdmin);
+		uiObject.fpAdmin.setAction(GWT.getModuleBaseURL()+"FileUp");
+		 uiObject.fpAdmin.setEncoding(FormPanel.ENCODING_MULTIPART);
+		 uiObject.fpAdmin.setMethod(FormPanel.METHOD_POST);
+		 uiObject.hpAdmin.add(upload);
 	}
 	
 	public void onModuleLoad()
 	{
-		
-		
 
-		w.stateBox.addItem("Select State");
-		w.districtBox.addItem("No Available Districts");
-		w.localBodyBox.addItem("No Available Villages/Towns");
-		w.setupMap();
-//		w.hp5.add(upload);
 		setupFileUpload();
-		w.layerLoader();
-		w.setupLayerManager();
-		w.setupTablePanel();
 		title2 = new HTML(applicationTitle2);
 		Window.setTitle(applicationTitle2);
 //		title2.setStylePrimaryName("title");
@@ -1324,7 +1314,7 @@ public class GSTCloud implements EntryPoint
 //	    vp.setWidth("100%");
 //	    vp.setStylePrimaryName("vp");
 	    // Create the popup dialog box
-		RootPanel.get().add(w);
+		RootPanel.get().add(uiObject);
 	    
 	}
 

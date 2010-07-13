@@ -155,6 +155,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		 buttonRefresh.setText("Refresh");
 		navigationPanel.add(buttonRefresh);
 		navigationPanel.setCellHeight(buttonRefresh, "23px");
+		buttonRefresh.setStyleName("Button");
 		buttonRefresh.setSize("70", "23");
 		navigationPanel.setCellVerticalAlignment(buttonRefresh, 
 			HasVerticalAlignment.ALIGN_BOTTOM);
@@ -188,6 +189,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		buttonFirstPage.setSize("25", "23");
 		navigationPanel.setCellVerticalAlignment(buttonFirstPage, 
 			HasVerticalAlignment.ALIGN_BOTTOM);
+		buttonFirstPage.setStyleName("Button");
 	    buttonFirstPage.addClickHandler(this);
 		buttonFirstPage.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
@@ -205,6 +207,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		buttonPrevPage.setSize("20", "23");
 		navigationPanel.setCellVerticalAlignment(buttonPrevPage, 
 			HasVerticalAlignment.ALIGN_BOTTOM);
+		buttonPrevPage.setStyleName("Button");
 		buttonPrevPage.addClickHandler(this);
 		buttonPrevPage.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
@@ -222,6 +225,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		buttonNextPage.setSize("20", "23");
 		navigationPanel.setCellVerticalAlignment(buttonNextPage, 
 			HasVerticalAlignment.ALIGN_BOTTOM);
+		buttonNextPage.setStyleName("Button");
 		buttonNextPage.addClickHandler(this);
 		buttonNextPage.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
@@ -239,6 +243,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		buttonLastPage.setSize("25", "23");
 		navigationPanel.setCellVerticalAlignment(buttonLastPage,
 			HasVerticalAlignment.ALIGN_BOTTOM);
+		buttonLastPage.setStyleName("Button");
 	buttonLastPage.addClickHandler(this);
 		buttonLastPage.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
