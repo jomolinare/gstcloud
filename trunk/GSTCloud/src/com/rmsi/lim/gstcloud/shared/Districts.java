@@ -17,7 +17,7 @@ public class Districts implements IsSerializable
 	
 	//@ForeignKey
 	@Persistent
-	private Long stateId;
+	private String  stateName;
 	
     @Persistent
     private String districtName;
@@ -33,9 +33,9 @@ public class Districts implements IsSerializable
     	
     }
     
-    public Districts(Long stateId,String districtName,Double latitude, Double longitude) 
+    public Districts(String stateName,String districtName,Double latitude, Double longitude) 
     {
-        this.stateId = stateId;
+        this.stateName = stateName;
         this.districtName = districtName;
         this.latitude=latitude;
         this.longitude=longitude;
@@ -46,9 +46,9 @@ public class Districts implements IsSerializable
         return districtId;
     }
     
-    public long getStateId() 
+    public String getStateName() 
     {
-        return stateId;
+        return stateName;
     }
 
     public String getDistrictName() {
@@ -68,9 +68,9 @@ public class Districts implements IsSerializable
     	this.districtId = districtId;
     }
     
-    public void setStateId(Long stateId) 
+    public void setStateName(String stateName) 
     {
-    	this.stateId = stateId;
+    	this.stateName = stateName;
     }
 
     public void setDistrictName(String stateName) {

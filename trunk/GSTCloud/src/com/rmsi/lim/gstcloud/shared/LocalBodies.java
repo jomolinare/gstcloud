@@ -15,7 +15,7 @@ public class LocalBodies implements IsSerializable
     private Long localBodyId;
 	
 	@Persistent
-	private Long districtId;
+	private String districtName;
 	
     @Persistent
     private String localBodyType;
@@ -34,18 +34,18 @@ public class LocalBodies implements IsSerializable
     	
     }
     
-    public LocalBodies(Long districtId, String localBodyType,String localBodyName,Double latitude, Double longitude) 
+    public LocalBodies(String districtName, String localBodyType,String localBodyName,Double latitude, Double longitude) 
     {
-    	this.districtId = districtId;
+    	this.districtName = districtName;
     	this.localBodyType = localBodyType;
         this.localBodyName = localBodyName;
         this.latitude=latitude;
         this.longitude=longitude;
     }
 
-    public long getDistrictId() 
+    public String getDistrictName() 
     {
-        return districtId;
+        return districtName;
     }
 
     public String getLocalBodyType() {
@@ -70,8 +70,8 @@ public class LocalBodies implements IsSerializable
         this.localBodyId = localBodyId;
     }
     
-    public void setDistrictId(Long districtId) {
-        this.districtId = districtId;
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
     }
     
     public void setLocalBodyType(String localBodyType) {

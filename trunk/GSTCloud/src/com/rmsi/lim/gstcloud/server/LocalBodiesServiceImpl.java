@@ -116,10 +116,12 @@ public class LocalBodiesServiceImpl extends RemoteServiceServlet implements Loca
 //	}
 	public List<Districts> getDistrictsByStateName(String stateName)
 	{
-		String querySearchStates = "SELECT FROM com.rmsi.lim.gstcloud.shared.States WHERE stateName =='" + stateName +"'" ;
-		List<States> statesReturned=(List<States>)pm.newQuery(querySearchStates).execute();
-		
-		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE stateId ==" + statesReturned.get(0).getStateId();
+//		String querySearchStates = "SELECT FROM com.rmsi.lim.gstcloud.shared.States WHERE stateName =='" + stateName +"'" ;
+//		List<States> statesReturned=(List<States>)pm.newQuery(querySearchStates).execute();
+//		
+//		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE stateId ==" + statesReturned.get(0).getStateId();
+//		
+		String querySearchDistricts ="SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE stateName =='" + stateName +"'" ;
 		Query searchQ = pm.newQuery(querySearchDistricts);
 		//searchQ.setSerializeRead(true);
 		
@@ -138,10 +140,11 @@ public class LocalBodiesServiceImpl extends RemoteServiceServlet implements Loca
 	
 	public List<LocalBodies> getLocalBodiesByDistrictName(String districtName)
 	{
-		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE districtName =='" + districtName +"'" ;
-		List<Districts> districtsReturned=(List<Districts>)pm.newQuery(querySearchDistricts).execute();
-		
-		String querySearchLocalBodies = "SELECT FROM com.rmsi.lim.gstcloud.shared.LocalBodies WHERE districtId ==" + districtsReturned.get(0).getDistrictId();
+//		String querySearchDistricts = "SELECT FROM com.rmsi.lim.gstcloud.shared.Districts WHERE districtName =='" + districtName +"'" ;
+//		List<Districts> districtsReturned=(List<Districts>)pm.newQuery(querySearchDistricts).execute();
+//		
+//		String querySearchLocalBodies = "SELECT FROM com.rmsi.lim.gstcloud.shared.LocalBodies WHERE districtId ==" + districtsReturned.get(0).getDistrictId();
+		String querySearchLocalBodies = "SELECT FROM com.rmsi.lim.gstcloud.shared.LocalBodies WHERE districtName =='" + districtName +"'" ;
 		Query searchQ = pm.newQuery(querySearchLocalBodies);
 		//searchQ.setSerializeRead(true);
 		List<LocalBodies> localBodiesReturned=(List<LocalBodies>)searchQ.execute();

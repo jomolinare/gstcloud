@@ -1,18 +1,15 @@
 package com.rmsi.lim.gstcloud.client;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import com.google.gwt.maps.client.geom.LatLng;
 import com.rmsi.lim.gstcloud.shared.Landmarks;
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
@@ -21,34 +18,24 @@ import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.ScaleControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.event.MapDragEndHandler;
-import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
-import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.rmsi.lim.gstcloud.shared.DataFilter;
@@ -56,64 +43,23 @@ import com.rmsi.lim.gstcloud.shared.Districts;
 import com.rmsi.lim.gstcloud.shared.FieldVerifier;
 import com.rmsi.lim.gstcloud.shared.Layer;
 import com.rmsi.lim.gstcloud.shared.LayerManager;
-import com.rmsi.lim.gstcloud.shared.LayerTree;
 import com.rmsi.lim.gstcloud.shared.LocalBodies;
 import com.rmsi.lim.gstcloud.shared.States;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import java.util.HashMap;
-import com.google.gwt.maps.client.geocode.Geocoder;
-import com.google.gwt.maps.client.geocode.LatLngCallback;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.rmsi.lim.gstcloud.shared.LayerItem;
-import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
-import java.util.List;
-import com.rmsi.lim.gstcloud.shared.Landmarks;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.MapType;
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.LargeMapControl3D;
-import com.google.gwt.maps.client.control.MapTypeControl;
-import com.google.gwt.maps.client.control.ScaleControl;
-import com.google.gwt.maps.client.event.MapClickHandler;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.LatLngBounds;
-import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.Polygon;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
-import com.rmsi.lim.gstcloud.shared.Districts;
-import com.rmsi.lim.gstcloud.shared.FieldVerifier;
-import com.rmsi.lim.gstcloud.shared.Layer;
-import com.rmsi.lim.gstcloud.shared.LayerManager;
-import com.rmsi.lim.gstcloud.shared.LocalBodies;
-import com.rmsi.lim.gstcloud.shared.States;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.shared.GwtEvent;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
-//import com.rmsi.lim.gstcloud.client.GSTCloud.MyHandler;
+	//import com.rmsi.lim.gstcloud.client.GSTCloud.MyHandler;
 //@SuppressWarnings("deprecation")
 
 public class GSTCloudUI  extends Composite {
@@ -225,6 +171,7 @@ public class GSTCloudUI  extends Composite {
 	
 	private AdvancedTable datagrid = new AdvancedTable();
 	final FileUpload upload = new FileUpload();
+    Geocoder geocoder = new Geocoder();
 	
 	Button closeButton = new Button();
 	
@@ -377,22 +324,22 @@ public class GSTCloudUI  extends Composite {
 	 */
 	private void DistrictsLoader()
 	{
-		 final Districts d1 = new Districts(new Long(1840),"East Delhi",28.53,77.13);
-		 final Districts d2 = new Districts(new Long(1840),"West Delhi",28.595,77.102);
-		 final Districts d3 = new Districts(new Long(1840),"South Delhi",28.500,77.100);
-		 final Districts d4 = new Districts(new Long(1838),"Varanasi",25.20,83.00);
-		 final Districts d5 = new Districts(new Long(1842),"Bombay",18.55,72.54);
-		 final Districts d6 = new Districts(new Long(1837),"Ernakulam (Cochin)",10.00,76.15);
-		 final Districts d7 = new Districts(new Long(1837),"Kannur",11.52,75.25);
-		 final Districts d8 = new Districts(new Long(1839),"Amritsar",31.37,74.55);
-		 final Districts d9 = new Districts(new Long(1839),"Ludhiana",30.55,75.54);
-		 final Districts d10 = new Districts(new Long(1841),"Kaithal",29.48,78.26);
-		 final Districts d11 = new Districts(new Long(1845),"Vasco",15.25,73.43);
-		 final Districts d12 = new Districts(new Long(1844),"Leh Ladakh",34.10,77.40);
-		 final Districts d13 = new Districts(new Long(1844),"Srinagar",30.40,77.00);
-		 final Districts d14 = new Districts(new Long(1844),"Jammu",32.43,74.54);
-		 final Districts d15 = new Districts(new Long(1843),"Ahemdabad",23.03,72.40);
-		 final Districts d16 = new Districts(new Long(1843),"Vadodra",22.00,73.16);
+		 final Districts d1 = new Districts("Delhi","East Delhi",28.53,77.13);
+		 final Districts d2 = new Districts("Delhi","West Delhi",28.595,77.102);
+		 final Districts d3 = new Districts("Delhi","South Delhi",28.500,77.100);
+		 final Districts d4 = new Districts("Uttar Pradesh","Varanasi",25.20,83.00);
+		 final Districts d5 = new Districts("Maharashtra","Bombay",18.55,72.54);
+		 final Districts d6 = new Districts("Kerala","Ernakulam (Cochin)",10.00,76.15);
+		 final Districts d7 = new Districts("Kerala","Kannur",11.52,75.25);
+		 final Districts d8 = new Districts("Punjab","Amritsar",31.37,74.55);
+		 final Districts d9 = new Districts("Punjab","Ludhiana",30.55,75.54);
+		 final Districts d10 = new Districts("Punjab","Kaithal",29.48,78.26);
+		 final Districts d11 = new Districts("Goa","Vasco",15.25,73.43);
+		 final Districts d12 = new Districts("Jammu and Kashmir","Leh Ladakh",34.10,77.40);
+		 final Districts d13 = new Districts("Jammu and Kashmir","Srinagar",30.40,77.00);
+		 final Districts d14 = new Districts("Jammu and Kashmir","Jammu",32.43,74.54);
+		 final Districts d15 = new Districts("Gujarat","Ahemdabad",23.03,72.40);
+		 final Districts d16 = new Districts("Gujarat","Vadodra",22.00,73.16);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -429,12 +376,12 @@ public class GSTCloudUI  extends Composite {
 	 */
 	private void LocalBodyLoader()
 	{
-		final LocalBodies l1 = new LocalBodies(new Long(1889),"Town","Chilla Saroda Bangar",28.29,77.00);
-		final LocalBodies l2 = new LocalBodies(new Long(1889),"village","Kondli",28.11,77.29);
-		final LocalBodies l3 = new LocalBodies(new Long(1887),"Town","Dwarka Sub City",28.19,77.00);
-		final LocalBodies l4 = new LocalBodies(new Long(1887),"village","Najafgarh",27.11,77.909);
-		final LocalBodies l5 = new LocalBodies(new Long(1884),"village","Bersarai",28.97,77.98);
-		final LocalBodies l6 = new LocalBodies(new Long(1884),"Town","Hauz Khas",28.90,76.11);
+		final LocalBodies l1 = new LocalBodies("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
+		final LocalBodies l2 = new LocalBodies("East Delhi","village","Kondli",28.11,77.29);
+		final LocalBodies l3 = new LocalBodies("South Delhi","Town","Dwarka Sub City",28.19,77.00);
+		final LocalBodies l4 = new LocalBodies("South Delhi","village","Najafgarh",27.11,77.909);
+		final LocalBodies l5 = new LocalBodies("South Delhi","village","Bersarai",28.97,77.98);
+		final LocalBodies l6 = new LocalBodies("South Delhi","Town","Hauz Khas",28.90,76.11);
 		
 		
 		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
@@ -527,19 +474,18 @@ public class GSTCloudUI  extends Composite {
 		    	    }*/		
 		    }
 	
-	@UiHandler({"btnAdminLoad","btnAdminDisplay","btnGeoCodedClear","tbGeoCodedRadius","tbGeoCodedAddress","btnLatLngSearch","btnLatLngClear", "tbLatitude","tbLongitude","tbLatLngRadius","tbAttribute","tbAttributeRadius","btnAttributeSearch","btnAttributeClear","btnSpatialSearch","btnSpatialClear","tbSpatialRadius"})
+	@UiHandler({"btnAdminLoad","btnAdminDisplay","btnGeoCodedSearch","btnGeoCodedClear","tbGeoCodedRadius","tbGeoCodedAddress","btnLatLngSearch","btnLatLngClear", "tbLatitude","tbLongitude","tbLatLngRadius","tbAttribute","tbAttributeRadius","btnAttributeSearch","btnAttributeClear","btnSpatialSearch","btnSpatialClear","tbSpatialRadius"})
 	public void onClick(ClickEvent event) {
 		eventMessageClick(event);
 	}
 	
 	private void eventMessageClick(GwtEvent<?> event) {		
-//		if (event.getSource()==btnGeoCodedSearch)	
-//		{
-//			String boxText = new String();
-//			boxText = tbGeoCodedAddress.getText().trim().replace("'", "\\'");
-//			showAddress(boxText);
-//			}
-		if (event.getSource()==btnAdminLoad)
+		if (event.getSource()==btnGeoCodedSearch)	
+		{
+			System.out.println("button clicked");
+			showAddress(tbGeoCodedAddress.getText());
+		}
+		else if (event.getSource()==btnAdminLoad)
 		{
 			fpAdmin.submit();
 			/*final AsyncCallback geoCallBack= new AsyncCallback<String>() 
@@ -822,23 +768,30 @@ public class GSTCloudUI  extends Composite {
 		}
 }
 
-//	private void showAddress(final String address) {
-//	    //InfoWindow info = map.getInfoWindow();
-//	    geocoder.getLatLng(address, new LatLngCallback() {
-//	      public void onFailure() {
-//	        //Window.alert(address + " not found");
-//	    	  System.out.println(address+ "not found");
-//	      }
-//	      public void onSuccess(LatLng point) {
-//	          map.setCenter(point, 13);
-//	          Marker marker = new Marker(point);
-//	          map.addOverlay(marker);
-//	          //info.open(marker, new InfoWindowContent(address));
-//	          //displayLatLng(point);
-//	        }
-//	      });
-//	}	
-	
+	private void showAddress(final String address) {
+		System.out.println(address);
+		final InfoWindow info = map.getInfoWindow();
+	    try{
+		geocoder.getLatLng(address, new LatLngCallback() {
+	      public void onFailure() {
+	        //Window.alert(address + " not found");
+	    	  System.out.println(address+ "not found");
+	      }
+	      public void onSuccess(LatLng point) {
+	    	  map.setCenter(point, 13);
+	          Marker marker = new Marker(point);
+	          map.addOverlay(marker);
+	          drawCircleFromRadius(point,new Double(tbGeoCodedRadius.getText()),60);
+	          info.open(marker, new InfoWindowContent(address));
+//	          displayLatLng(point);
+	        }
+	      });
+	}	
+	    catch(Exception ex){
+	    	 System.out.println(ex.getMessage());
+	    		    	 
+	    }
+	}
 	@UiHandler({"lbDistrict","lbState"})
 	public void onChange(ChangeEvent event)
 	{
