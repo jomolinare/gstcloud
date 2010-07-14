@@ -3,6 +3,8 @@ package com.rmsi.lim.gstcloud.client;
 
 import java.util.List;
 import java.util.Set;
+
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.rmsi.lim.gstcloud.shared.Landmarks;
 import com.google.gwt.core.client.GWT;
@@ -273,7 +275,7 @@ public class GSTCloudUI  extends Composite {
 		lbDistrict.addItem("No Available Districts");
 		lbLocalBody.addItem("No Available Villages/Towns");
 		setupMap();
-		hpAdmin.add(upload);
+//		hpAdmin.add(upload);
 		layerLoader();
 		setupLayerManager();
 		setupTablePanel();
@@ -482,7 +484,6 @@ public class GSTCloudUI  extends Composite {
 	private void eventMessageClick(GwtEvent<?> event) {		
 		if (event.getSource()==btnGeoCodedSearch)	
 		{
-			System.out.println("button clicked");
 			showAddress(tbGeoCodedAddress.getText());
 		}
 		else if (event.getSource()==btnAdminLoad)
@@ -761,7 +762,7 @@ public class GSTCloudUI  extends Composite {
 			   	          drawCircleFromRadius(point,radius,60);
 			   	          map.setCenter(point, 10);
 						// Add an info window to highlight a point of interest
-				    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+				    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is " + result.get(row).getPlaceName()));
 					}
 			    }
 			});
@@ -769,29 +770,40 @@ public class GSTCloudUI  extends Composite {
 }
 
 	private void showAddress(final String address) {
-		System.out.println(address);
+		
 		final InfoWindow info = map.getInfoWindow();
+		final Label latLabel = new Label();
+		final Label lngLabel = new Label();
 	    try{
 		geocoder.getLatLng(address, new LatLngCallback() {
 	      public void onFailure() {
 	        //Window.alert(address + " not found");
-	    	  System.out.println(address+ "not found");
+	    	  System.out.println(address+ " not found");
 	      }
 	      public void onSuccess(LatLng point) {
+	    	 
 	    	  map.setCenter(point, 13);
 	          Marker marker = new Marker(point);
 	          map.addOverlay(marker);
 	          drawCircleFromRadius(point,new Double(tbGeoCodedRadius.getText()),60);
-	          info.open(marker, new InfoWindowContent(address));
-//	          displayLatLng(point);
+	          
+	          NumberFormat fmt = NumberFormat.getFormat("#.0000000#");
+	  	      latLabel.setText(fmt.format(point.getLatitude()));
+	  	      lngLabel.setText(fmt.format(point.getLongitude()));
+	          String address1 = address.toUpperCase();
+	          String lab = new String("Latitude: " + latLabel + "Longitude: " + lngLabel );
+//	          info.open(marker, new InfoWindowContent("Address: " + add ));
+	          info.open(marker, new InfoWindowContent(lab +"Address: " + address1 ));
 	        }
 	      });
 	}	
 	    catch(Exception ex){
 	    	 System.out.println(ex.getMessage());
-	    		    	 
 	    }
 	}
+	
+	
+	
 	@UiHandler({"lbDistrict","lbState"})
 	public void onChange(ChangeEvent event)
 	{
