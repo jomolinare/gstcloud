@@ -250,22 +250,22 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void DistrictsLoader()
 	{
-		final Districts d1 = new Districts(new Long(1840),"East Delhi",28.53,77.13);
-		 final Districts d2 = new Districts(new Long(1840),"West Delhi",28.595,77.102);
-		 final Districts d3 = new Districts(new Long(1840),"South Delhi",28.500,77.100);
-		 final Districts d4 = new Districts(new Long(1838),"Varanasi",25.20,83.00);
-		 final Districts d5 = new Districts(new Long(1842),"Bombay",18.55,72.54);
-		 final Districts d6 = new Districts(new Long(1837),"Ernakulam (Cochin)",10.00,76.15);
-		 final Districts d7 = new Districts(new Long(1837),"Kannur",11.52,75.25);
-		 final Districts d8 = new Districts(new Long(1839),"Amritsar",31.37,74.55);
-		 final Districts d9 = new Districts(new Long(1839),"Ludhiana",30.55,75.54);
-		 final Districts d10 = new Districts(new Long(1841),"Kaithal",29.48,78.26);
-		 final Districts d11 = new Districts(new Long(1845),"Vasco",15.25,73.43);
-		 final Districts d12 = new Districts(new Long(1844),"Leh Ladakh",34.10,77.40);
-		 final Districts d13 = new Districts(new Long(1844),"Srinagar",30.40,77.00);
-		 final Districts d14 = new Districts(new Long(1844),"Jammu",32.43,74.54);
-		 final Districts d15 = new Districts(new Long(1843),"Ahemdabad",23.03,72.40);
-		 final Districts d16 = new Districts(new Long(1843),"Vadodra",22.00,73.16);
+		 final Districts d1 = new Districts("Delhi","East Delhi",28.53,77.13);
+		 final Districts d2 = new Districts("Delhi","West Delhi",28.595,77.102);
+		 final Districts d3 = new Districts("Delhi","South Delhi",28.500,77.100);
+		 final Districts d4 = new Districts("Uttar Pradesh","Varanasi",25.20,83.00);
+		 final Districts d5 = new Districts("Maharashtra","Bombay",18.55,72.54);
+		 final Districts d6 = new Districts("Kerala","Ernakulam (Cochin)",10.00,76.15);
+		 final Districts d7 = new Districts("Kerala","Kannur",11.52,75.25);
+		 final Districts d8 = new Districts("Punjab","Amritsar",31.37,74.55);
+		 final Districts d9 = new Districts("Punjab","Ludhiana",30.55,75.54);
+		 final Districts d10 = new Districts("Punjab","Kaithal",29.48,78.26);
+		 final Districts d11 = new Districts("Goa","Vasco",15.25,73.43);
+		 final Districts d12 = new Districts("Jammu and Kashmir","Leh Ladakh",34.10,77.40);
+		 final Districts d13 = new Districts("Jammu and Kashmir","Srinagar",30.40,77.00);
+		 final Districts d14 = new Districts("Jammu and Kashmir","Jammu",32.43,74.54);
+		 final Districts d15 = new Districts("Gujarat","Ahemdabad",23.03,72.40);
+		 final Districts d16 = new Districts("Gujarat","Vadodra",22.00,73.16);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -303,12 +303,12 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void LocalBodyLoader()
 	{
-		final LocalBodies l1 = new LocalBodies(new Long(1889),"Town","Chilla Saroda Bangar",28.29,77.00);
-		final LocalBodies l2 = new LocalBodies(new Long(1889),"village","Kondli",28.11,77.29);
-		final LocalBodies l3 = new LocalBodies(new Long(1887),"Town","Dwarka Sub City",28.19,77.00);
-		final LocalBodies l4 = new LocalBodies(new Long(1887),"village","Najafgarh",27.11,77.909);
-		final LocalBodies l5 = new LocalBodies(new Long(1884),"village","Bersarai",28.97,77.98);
-		final LocalBodies l6 = new LocalBodies(new Long(1884),"Town","Hauz Khas",28.90,76.11);
+		final LocalBodies l1 = new LocalBodies("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
+		final LocalBodies l2 = new LocalBodies("East Delhi","village","Kondli",28.11,77.29);
+		final LocalBodies l3 = new LocalBodies("South Delhi","Town","Dwarka Sub City",28.19,77.00);
+		final LocalBodies l4 = new LocalBodies("South Delhi","village","Najafgarh",27.11,77.909);
+		final LocalBodies l5 = new LocalBodies("South Delhi","village","Bersarai",28.97,77.98);
+		final LocalBodies l6 = new LocalBodies("South Delhi","Town","Hauz Khas",28.90,76.11);
 		
 		
 		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
