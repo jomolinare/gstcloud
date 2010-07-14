@@ -255,8 +255,8 @@ color: red;
 					<g:FormPanel ui:field="fpAdmin" />
 					<g:HorizontalPanel ui:field="hpAdmin">
 <!--					<g:Button ui:field="submitButton" text="Submit" styleName="{style.Button}" />-->
-					</g:HorizontalPanel>
-					<g:HorizontalPanel>
+<!--					</g:HorizontalPanel>-->
+<!--					<g:HorizontalPanel>-->
 					<g:Button ui:field="btnAdminLoad" text="Load" styleName="{style.Button}" />
 					<g:Button ui:field="btnAdminDisplay" text="Display" styleName="{style.Button}" />
 					</g:HorizontalPanel>
