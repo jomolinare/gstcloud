@@ -13,14 +13,14 @@
 
   <!-- Other module inherits                                      -->
   <inherits name="com.google.gwt.maps.GoogleMaps" />
-  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAGt86K09TmfKzrelwDOWGFhTSW6bmLxFd-KFgSA5FLmKWbZH2LRSt1zJEKSEzSPNHv91QYndtDyg1Wg"></script>
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA-AzHcGjZ3SxP8fnOdmb05BSQPTF7mvTf44WInCcU4qU7rNyq2hTRu_YMzWGFrn3dZTGXt93FHs5nkg"></script>
    
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.rmsi.lim.gstcloud.client.GSTCloud'/>
   
   <!-- Specify the paths for translatable code                    -->
-  <source path='client'/>
+  <source path='client'/><!--
   <source path='shared'/>
-    <!-- Specification for UiBinder.                         -->
+  --><!-- Specification for UiBinder.                         -->
   <inherits name="com.google.gwt.uibinder.UiBinder"/>
 </module>
