@@ -47,8 +47,10 @@ import com.google.gwt.user.client.ui.TableListener;
 //import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
-import com.rmsi.lim.gstcloud.shared.DataFilter;
-import com.rmsi.lim.gstcloud.shared.TableColumn;
+import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
+import com.rmsi.lim.gstcloud.client.model.TableColumn;
 
 public class AdvancedTable extends Composite implements ClickHandler,EventHandler {
 	
