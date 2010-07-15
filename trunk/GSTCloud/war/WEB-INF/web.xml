@@ -14,7 +14,7 @@
 
   <servlet>
     <servlet-name>loadBlockGroups</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.LoadBlockGroupGeometryServlet</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LoadBlockGroupGeometryServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>loadBlockGroups</servlet-name>
@@ -23,7 +23,7 @@
     
   <servlet>
     <servlet-name>readStaticIndex</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.ReadStaticIndexServlet</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.ReadStaticIndexServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -34,7 +34,7 @@
   
   <servlet>
     <servlet-name>strTreeTest</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.STRTreeTest</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.STRTreeTest</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>strTreeTest</servlet-name>
@@ -43,7 +43,7 @@
   
   <servlet>
     <servlet-name>helloWorld</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.HelloWorldServlet</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.HelloWorldServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>helloWorld</servlet-name>
@@ -52,7 +52,7 @@
   
   <servlet>
     <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.GisCloudServiceImpl</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.GisCloudServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -63,7 +63,7 @@
   
   <servlet>
     <servlet-name>loadServlet</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.LandmarksServiceImpl</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarksServiceImpl</servlet-class>
   </servlet>
    <servlet-mapping>
     <servlet-name>loadServlet</servlet-name>
@@ -72,7 +72,7 @@
  
   <servlet>
   <servlet-name>loadLocalServlet</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.LocalBodiesServiceImpl</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.SpatialBodiesServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>loadLocalServlet</servlet-name>
@@ -81,7 +81,7 @@
   
   <servlet>
   <servlet-name>loadLayerServlet</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.LayerServiceImpl</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LayerServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>loadLayerServlet</servlet-name>
@@ -90,7 +90,7 @@
      
       <servlet>
   <servlet-name>TableModelServlet</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.LandmarksTableModelServiceImpl</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarksTableModelServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>TableModelServlet</servlet-name>
@@ -99,7 +99,7 @@
      
      <servlet>
 		<servlet-name>FileUpServlet</servlet-name>
-		<servlet-class>com.rmsi.lim.gstcloud.server.FileUp</servlet-class>
+		<servlet-class>com.rmsi.lim.gstcloud.server.servlets.FileUp</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
