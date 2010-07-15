@@ -6,7 +6,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
-import com.rmsi.lim.gstcloud.server.BlockGroup;
+import com.rmsi.lim.gstcloud.server.model.BlockGroup;
+
 import org.junit.Test;
 
 import com.Ostermiller.util.CSVParse;
