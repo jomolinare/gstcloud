@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.rmsi.lim.gstcloud.shared.Landmarks;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,21 +49,34 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.rmsi.lim.gstcloud.shared.DataFilter;
-import com.rmsi.lim.gstcloud.shared.Districts;
-import com.rmsi.lim.gstcloud.shared.FieldVerifier;
-import com.rmsi.lim.gstcloud.shared.Layer;
-import com.rmsi.lim.gstcloud.shared.LayerManager;
-import com.rmsi.lim.gstcloud.shared.LayerTree;
-import com.rmsi.lim.gstcloud.shared.LocalBodies;
-import com.rmsi.lim.gstcloud.shared.States;
+import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
+import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
+import com.rmsi.lim.gstcloud.client.interfaces.LayerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
+import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesService;
+import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesServiceAsync;
+import com.rmsi.lim.gstcloud.client.model.District;
+import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
+import com.rmsi.lim.gstcloud.client.model.Layer;
+import com.rmsi.lim.gstcloud.client.model.LocalBody;
+import com.rmsi.lim.gstcloud.client.model.State;
+import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
+import com.rmsi.lim.gstcloud.client.utilities.FieldVerifier;
+import com.rmsi.lim.gstcloud.client.view.AdvancedTable;
+import com.rmsi.lim.gstcloud.client.view.LayerItem;
+import com.rmsi.lim.gstcloud.client.view.LayerManager;
+import com.rmsi.lim.gstcloud.client.view.LayerTree;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import java.util.HashMap;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.rmsi.lim.gstcloud.shared.LayerItem;
 import com.google.gwt.user.client.rpc.IsSerializable;
 /**
 * Entry point classes define <code>onModuleLoad()</code>.
@@ -130,8 +142,8 @@ public class GSTCloud implements EntryPoint
 			.create(GisCloudService.class);
 	private final LandmarksServiceAsync fea = GWT
 		    .create(LandmarksService.class);
-	private final LocalBodiesServiceAsync dea = GWT
-	        .create(LocalBodiesService.class);
+	private final SpatialBodiesServiceAsync dea = GWT
+	        .create(SpatialBodiesService.class);
 	private final LayerServiceAsync layerService = GWT
     		.create(LayerService.class);
 	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
@@ -210,15 +222,15 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void StatesLoader()
 	{
-		 final States s1 = new States("Delhi",28.38, 77.12 ,10);
-		 final States s2 = new States("Uttar Pradesh",27.40,80.00,9);
-		 final States s3 = new States("Maharashtra",20.00,76.00,11);
-		 final States s4 = new States("Kerala",10.00,76.25,12);
-		 final States s5 = new States("Punjab",30.40,75.50,10);
-		 final States s6 = new States("Haryana",30.30,74.60,8);
-		 final States s7 = new States("Goa",28.00,72.00,9);
-		 final States s8 = new States("Jammu and Kashmir",32.44,74.54,11);
-		 final States s9 = new States("Gujarat",23.00,72.00,9);
+		 final State s1 = new State("Delhi",28.38, 77.12 ,10);
+		 final State s2 = new State("Uttar Pradesh",27.40,80.00,9);
+		 final State s3 = new State("Maharashtra",20.00,76.00,11);
+		 final State s4 = new State("Kerala",10.00,76.25,12);
+		 final State s5 = new State("Punjab",30.40,75.50,10);
+		 final State s6 = new State("Haryana",30.30,74.60,8);
+		 final State s7 = new State("Goa",28.00,72.00,9);
+		 final State s8 = new State("Jammu and Kashmir",32.44,74.54,11);
+		 final State s9 = new State("Gujarat",23.00,72.00,9);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -250,22 +262,22 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void DistrictsLoader()
 	{
-		 final Districts d1 = new Districts("Delhi","East Delhi",28.53,77.13);
-		 final Districts d2 = new Districts("Delhi","West Delhi",28.595,77.102);
-		 final Districts d3 = new Districts("Delhi","South Delhi",28.500,77.100);
-		 final Districts d4 = new Districts("Uttar Pradesh","Varanasi",25.20,83.00);
-		 final Districts d5 = new Districts("Maharashtra","Bombay",18.55,72.54);
-		 final Districts d6 = new Districts("Kerala","Ernakulam (Cochin)",10.00,76.15);
-		 final Districts d7 = new Districts("Kerala","Kannur",11.52,75.25);
-		 final Districts d8 = new Districts("Punjab","Amritsar",31.37,74.55);
-		 final Districts d9 = new Districts("Punjab","Ludhiana",30.55,75.54);
-		 final Districts d10 = new Districts("Punjab","Kaithal",29.48,78.26);
-		 final Districts d11 = new Districts("Goa","Vasco",15.25,73.43);
-		 final Districts d12 = new Districts("Jammu and Kashmir","Leh Ladakh",34.10,77.40);
-		 final Districts d13 = new Districts("Jammu and Kashmir","Srinagar",30.40,77.00);
-		 final Districts d14 = new Districts("Jammu and Kashmir","Jammu",32.43,74.54);
-		 final Districts d15 = new Districts("Gujarat","Ahemdabad",23.03,72.40);
-		 final Districts d16 = new Districts("Gujarat","Vadodra",22.00,73.16);
+		 final District d1 = new District("Delhi","East Delhi",28.53,77.13);
+		 final District d2 = new District("Delhi","West Delhi",28.595,77.102);
+		 final District d3 = new District("Delhi","South Delhi",28.500,77.100);
+		 final District d4 = new District("Uttar Pradesh","Varanasi",25.20,83.00);
+		 final District d5 = new District("Maharashtra","Bombay",18.55,72.54);
+		 final District d6 = new District("Kerala","Ernakulam (Cochin)",10.00,76.15);
+		 final District d7 = new District("Kerala","Kannur",11.52,75.25);
+		 final District d8 = new District("Punjab","Amritsar",31.37,74.55);
+		 final District d9 = new District("Punjab","Ludhiana",30.55,75.54);
+		 final District d10 = new District("Punjab","Kaithal",29.48,78.26);
+		 final District d11 = new District("Goa","Vasco",15.25,73.43);
+		 final District d12 = new District("Jammu and Kashmir","Leh Ladakh",34.10,77.40);
+		 final District d13 = new District("Jammu and Kashmir","Srinagar",30.40,77.00);
+		 final District d14 = new District("Jammu and Kashmir","Jammu",32.43,74.54);
+		 final District d15 = new District("Gujarat","Ahemdabad",23.03,72.40);
+		 final District d16 = new District("Gujarat","Vadodra",22.00,73.16);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -303,12 +315,12 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void LocalBodyLoader()
 	{
-		final LocalBodies l1 = new LocalBodies("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
-		final LocalBodies l2 = new LocalBodies("East Delhi","village","Kondli",28.11,77.29);
-		final LocalBodies l3 = new LocalBodies("South Delhi","Town","Dwarka Sub City",28.19,77.00);
-		final LocalBodies l4 = new LocalBodies("South Delhi","village","Najafgarh",27.11,77.909);
-		final LocalBodies l5 = new LocalBodies("South Delhi","village","Bersarai",28.97,77.98);
-		final LocalBodies l6 = new LocalBodies("South Delhi","Town","Hauz Khas",28.90,76.11);
+		final LocalBody l1 = new LocalBody("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
+		final LocalBody l2 = new LocalBody("East Delhi","village","Kondli",28.11,77.29);
+		final LocalBody l3 = new LocalBody("South Delhi","Town","Dwarka Sub City",28.19,77.00);
+		final LocalBody l4 = new LocalBody("South Delhi","village","Najafgarh",27.11,77.909);
+		final LocalBody l5 = new LocalBody("South Delhi","village","Bersarai",28.97,77.98);
+		final LocalBody l6 = new LocalBody("South Delhi","Town","Hauz Khas",28.90,76.11);
 		
 		
 		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
@@ -504,14 +516,14 @@ public class GSTCloud implements EntryPoint
 					String boxText = new String();
 					boxText = addressBox.getText().trim().replace("'", "\\'");
 					
-					fea.searchByAddress(boxText,new AsyncCallback<List<Landmarks>>()
+					fea.searchLandmarkByName(boxText,new AsyncCallback<List<LandmarkDTO>>()
 					{
 						public void onFailure(Throwable caught) 
 						{
 								
 						}
 
-					    public void onSuccess(List<Landmarks> result ) 
+					    public void onSuccess(List<LandmarkDTO> result ) 
 					    {
 					    	Double radius = new Double(SpeRadBox.getText());
 
@@ -578,14 +590,14 @@ public class GSTCloud implements EntryPoint
   		vSpatialPanel.add(stateBox);
   			stateBox.setWidth("180px");
   			stateBox.addItem("Select State");
-  		dea.getStates(new AsyncCallback<List<States>>()
+  		dea.getStates(new AsyncCallback<List<State>>()
   		{
   			public void onFailure(Throwable caught) 
 			 	{		 
 		     
 			 	}
   		
-			 	public void onSuccess(List<States> result) 
+			 	public void onSuccess(List<State> result) 
 				{
 			 		String state = new String();
 			 		int rowCount = result.size();
@@ -638,14 +650,14 @@ public class GSTCloud implements EntryPoint
 									 /**
 									  * This function call brings the attributes of the state by the name specified.
 									  */
-									 dea.getStateByName(sName,new AsyncCallback<States>()
+									 dea.getStateByName(sName,new AsyncCallback<State>()
 										{
 											public void onFailure(Throwable caught) 
 											{
 												
 											}
 
-											public void onSuccess(States result ) 
+											public void onSuccess(State result ) 
 											{									
 												LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 												map.addOverlay(new Marker(point));
@@ -661,14 +673,14 @@ public class GSTCloud implements EntryPoint
 								 /**
 								  * This function call brings the attributes of the District by the name specified.
 								  */
-								 dea.getDistrictByName(dName,new AsyncCallback<Districts>()			
+								 dea.getDistrictByName(dName,new AsyncCallback<District>()			
 										 {
 											public void onFailure(Throwable caught) 
 											{
 											
 											}
 
-											public void onSuccess(Districts result ) 
+											public void onSuccess(District result ) 
 											{
 												LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 												map.addOverlay(new Marker(point));
@@ -684,14 +696,14 @@ public class GSTCloud implements EntryPoint
 							 /**
 							  * This function call brings the attributes of the Local Body by the name specified.
 							  */
-							 dea.getLocalBodyByName(lbName,new AsyncCallback<LocalBodies>()			
+							 dea.getLocalBodyByName(lbName,new AsyncCallback<LocalBody>()			
 									 {
 										public void onFailure(Throwable caught) 
 										{
 										
 										}
 
-										public void onSuccess(LocalBodies result ) 
+										public void onSuccess(LocalBody result ) 
 										{
 											LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
 											map.addOverlay(new Marker(point));
@@ -737,13 +749,13 @@ public class GSTCloud implements EntryPoint
 			 			localBodyBox.removeItem(ctr2);
 			 			localBodyBox.addItem("No Available Villages/Towns");
 					if(stateText!="Select State")
-					dea.getDistrictsByStateName(stateText, new AsyncCallback<List<Districts>>(){
+					dea.getDistrictsByStateName(stateText, new AsyncCallback<List<District>>(){
 						public void onFailure(Throwable caught) 
 					 	{		 
 							
 					 	}
 		  		
-					 	public void onSuccess(List<Districts> result) 
+					 	public void onSuccess(List<District> result) 
 						{
 					 		int count3 = districtBox.getItemCount();	
 					 		for (int ctr3 = count3-1; ctr3 >=0 ;ctr3--)
@@ -769,13 +781,13 @@ public class GSTCloud implements EntryPoint
 			 			localBodyBox.removeItem(i);
 			 			localBodyBox.addItem("No Available Villages/Towns");
 					if (districtText!="Select District")
-					dea.getLocalBodiesByDistrictName(districtText, new AsyncCallback<List<LocalBodies>>(){
+					dea.getLocalBodiesByDistrictName(districtText, new AsyncCallback<List<LocalBody>>(){
 						public void onFailure(Throwable caught) 
 					 	{		 
 							
 					 	}
 		  		
-					 	public void onSuccess(List<LocalBodies> result) 
+					 	public void onSuccess(List<LocalBody> result) 
 						{
 					 		int count = localBodyBox.getItemCount();	
 					 		for (int i = count-1; i >=0;i--)
@@ -961,14 +973,14 @@ public class GSTCloud implements EntryPoint
 
 			
 			else if (event.getSource()==displayButton) 
-					 fea.displayStation(new AsyncCallback<List<Landmarks>>() 
+					 fea.getLandMarks(new AsyncCallback<List<LandmarkDTO>>() 
 					 {
 						 public void onFailure(Throwable caught) 
 						 {
 							 
 					     }
 
-						 public void onSuccess(List<Landmarks> result) 
+						 public void onSuccess(List<LandmarkDTO> result) 
 								{
 									
 									int rowCount = result.size();
