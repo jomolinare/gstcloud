@@ -3,10 +3,7 @@ package com.rmsi.lim.gstcloud.client;
 
 import java.util.List;
 import java.util.Set;
-
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.rmsi.lim.gstcloud.shared.Landmarks;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,13 +37,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.rmsi.lim.gstcloud.shared.DataFilter;
-import com.rmsi.lim.gstcloud.shared.Districts;
-import com.rmsi.lim.gstcloud.shared.FieldVerifier;
-import com.rmsi.lim.gstcloud.shared.Layer;
-import com.rmsi.lim.gstcloud.shared.LayerManager;
-import com.rmsi.lim.gstcloud.shared.LocalBodies;
-import com.rmsi.lim.gstcloud.shared.States;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -63,6 +53,28 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 	//import com.rmsi.lim.gstcloud.client.GSTCloud.MyHandler;
 //@SuppressWarnings("deprecation")
+import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
+import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
+import com.rmsi.lim.gstcloud.client.interfaces.LayerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
+import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesService;
+import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesServiceAsync;
+import com.rmsi.lim.gstcloud.client.model.District;
+import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
+import com.rmsi.lim.gstcloud.client.model.Layer;
+import com.rmsi.lim.gstcloud.client.model.LocalBody;
+import com.rmsi.lim.gstcloud.client.model.State;
+import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
+import com.rmsi.lim.gstcloud.client.utilities.FieldVerifier;
+import com.rmsi.lim.gstcloud.client.utilities.GSTCloudConstants;
+import com.rmsi.lim.gstcloud.client.utilities.GSTCloudUtils;
+import com.rmsi.lim.gstcloud.client.view.AdvancedTable;
+import com.rmsi.lim.gstcloud.client.view.LayerManager;
 
 public class GSTCloudUI  extends Composite {
 	 
@@ -179,68 +191,30 @@ public class GSTCloudUI  extends Composite {
 	
 	private final GisCloudServiceAsync gisCloudService = GWT
 	.create(GisCloudService.class);
-	private final LandmarksServiceAsync fea = GWT
+	private final LandmarksServiceAsync landMarksService = GWT
     .create(LandmarksService.class);
-	private final LocalBodiesServiceAsync dea = GWT
-    .create(LocalBodiesService.class);
+	private final SpatialBodiesServiceAsync spatialBodiesService = GWT
+    .create(SpatialBodiesService.class);
 	private final LayerServiceAsync layerService = GWT
 	.create(LayerService.class);
 	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
 	LayerManager lm = new LayerManager();
 
-	/**
-	 * Draws a circle at a specified radius with a green outline.this functions takes the following as its parameters.
-	 * @param center
-	 * @param radius
-	 * @param nbOfPoints
-	 * Earth's radius is taken in meters.The Latitude and Longitude are constituted in a single LatLng class.
-	 * The number of points calculated is always 60 
-	 */
-	public void drawCircleFromRadius(LatLng center, double radius,int nbOfPoints) 
-	{
-		
-			 LatLngBounds bounds = LatLngBounds.newInstance();
-			 LatLng[] circlePoints = new LatLng[nbOfPoints];
-
-			 double EARTH_RADIUS = 6371000;
-			 double d = radius / EARTH_RADIUS;
-			 double lat1 = Math.toRadians(center.getLatitude());
-			 double lng1 = Math.toRadians(center.getLongitude());
-
-			 double a = 0;
-			 double step = 360.0 / (double) nbOfPoints;
-			 for (int i = 0; i < nbOfPoints; i++) 
-			 {
-				 double tc = Math.toRadians(a);
-				 double lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1)* Math.sin(d) 
-						                    * Math.cos(tc));
-				 double lng2 = lng1 + Math.atan2(Math.sin(tc) * Math.sin(d) * Math.cos(lat1),
-			                   Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
-				 LatLng point = LatLng.newInstance(Math.toDegrees(lat2), Math.toDegrees(lng2));
-				 circlePoints[i] = point;
-				 bounds.extend(point);
-				 a += step;
-			 }
-
-			 Polygon circle = new Polygon(circlePoints, "green", 1, 1, "green", 0);
-			 map.setCenter(center,10);
-			 map.addOverlay(circle);
-			 return ;
-	}
+	
 	
 	public GSTCloudUI() {
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		
-		  dea.getStates(new AsyncCallback<List<States>>()
+		  spatialBodiesService.getStates(new AsyncCallback<List<State>>()
 			  		{
 			  			public void onFailure(Throwable caught) 
 						 	{		 
 					     
 						 	}
 			  		
-						 	public void onSuccess(List<States> result) 
+						 	public void onSuccess(List<State> result) 
 							{
 						 		if(result.size()== 0)
 						 		{
@@ -251,12 +225,12 @@ public class GSTCloudUI  extends Composite {
 						 			
 							}
 			  		});
-		dea.getStates(new AsyncCallback<List<States>>()
+		spatialBodiesService.getStates(new AsyncCallback<List<State>>()
   		{
   			public void onFailure(Throwable caught) 
 			 	{		 
 			 	}
-			 	public void onSuccess(List<States> result) 
+			 	public void onSuccess(List<State> result) 
 				{
 			 		String state = new String();
 			 		int rowCount = result.size();
@@ -275,11 +249,53 @@ public class GSTCloudUI  extends Composite {
 		lbDistrict.addItem("No Available Districts");
 		lbLocalBody.addItem("No Available Villages/Towns");
 		setupMap();
-//		hpAdmin.add(upload);
+		//hpAdmin.add(upload);
 		layerLoader();
 		setupLayerManager();
 		setupTablePanel();
 	}
+	
+	/**
+	 * This Function is used to find the Landmarks within a circle using Proximity Search of JavaGeoModel
+	 * @param point Centerpoint of the search circle
+	 * @param radius Radius of the search circle
+	 * @param map 
+	 */
+	private void drawLandMarksWithinCircle(final LatLng point,final Double radius)
+	{
+		landMarksService.displayLandmarksWithinDistance
+		(point.getLatitude(), 
+		 point.getLongitude(),
+		 new Double(tbLatLngRadius.getText()), 
+		 new AsyncCallback<List<LandmarkDTO>>()
+		{
+			public void onFailure(Throwable caught) 
+			{
+			}
+		    public void onSuccess(List<LandmarkDTO> result ) 
+		    {
+		    //	tbAttributeRadius.setValue("Running");
+		    	int rowCount = result.size();
+		    	
+		    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(point,radius,60));
+		    	map.setCenter(point, 10);
+		    	map.addOverlay(new Marker(point));
+				for (int row = 0; row < rowCount; row ++)
+				{
+					Double pntlat = result.get(row).getLatitude();
+					Double pntlng = result.get(row).getLongitude();
+					LatLng point = LatLng.newInstance(pntlat,pntlng);
+//					// Add a marker
+		   	          map.addOverlay(new Marker(point));
+		   	          
+		   	          
+					
+				}
+		    }
+		});
+	}
+	
+	
 	
 	/**
 	 *This is a function with hard coded values of 9 States.The properties include the state name,Latitude ,longitude
@@ -287,15 +303,15 @@ public class GSTCloudUI  extends Composite {
 	 */	
 	private void StatesLoader()
 	{
-		 final States s1 = new States("Delhi",28.38, 77.12 ,10);
-		 final States s2 = new States("Uttar Pradesh",27.40,80.00,9);
-		 final States s3 = new States("Maharashtra",20.00,76.00,11);
-		 final States s4 = new States("Kerala",10.00,76.25,12);
-		 final States s5 = new States("Punjab",30.40,75.50,10);
-		 final States s6 = new States("Haryana",30.30,74.60,8);
-		 final States s7 = new States("Goa",28.00,72.00,9);
-		 final States s8 = new States("Jammu and Kashmir",32.44,74.54,11);
-		 final States s9 = new States("Gujarat",23.00,72.00,9);
+		 final State s1 = new State("Delhi",28.38, 77.12 ,10);
+		 final State s2 = new State("Uttar Pradesh",27.40,80.00,9);
+		 final State s3 = new State("Maharashtra",20.00,76.00,11);
+		 final State s4 = new State("Kerala",10.00,76.25,12);
+		 final State s5 = new State("Punjab",30.40,75.50,10);
+		 final State s6 = new State("Haryana",30.30,74.60,8);
+		 final State s7 = new State("Goa",28.00,72.00,9);
+		 final State s8 = new State("Jammu and Kashmir",32.44,74.54,11);
+		 final State s9 = new State("Gujarat",23.00,72.00,9);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -310,15 +326,15 @@ public class GSTCloudUI  extends Composite {
 				} 
 			};
 			
-			dea.loadStates(s1, geoCallBack);
-			dea.loadStates(s2, geoCallBack);
-			dea.loadStates(s3, geoCallBack);
-			dea.loadStates(s4, geoCallBack);
-			dea.loadStates(s5, geoCallBack);
-			dea.loadStates(s6, geoCallBack);
-			dea.loadStates(s7, geoCallBack);
-			dea.loadStates(s8, geoCallBack);
-			dea.loadStates(s9, geoCallBack);
+			spatialBodiesService.loadStates(s1, geoCallBack);
+			spatialBodiesService.loadStates(s2, geoCallBack);
+			spatialBodiesService.loadStates(s3, geoCallBack);
+			spatialBodiesService.loadStates(s4, geoCallBack);
+			spatialBodiesService.loadStates(s5, geoCallBack);
+			spatialBodiesService.loadStates(s6, geoCallBack);
+			spatialBodiesService.loadStates(s7, geoCallBack);
+			spatialBodiesService.loadStates(s8, geoCallBack);
+			spatialBodiesService.loadStates(s9, geoCallBack);
 	}
 	/**
 	 *This is a function with hard coded values of 16 Districts for all the states loaded.The properties include 
@@ -326,22 +342,22 @@ public class GSTCloudUI  extends Composite {
 	 */
 	private void DistrictsLoader()
 	{
-		 final Districts d1 = new Districts("Delhi","East Delhi",28.53,77.13);
-		 final Districts d2 = new Districts("Delhi","West Delhi",28.595,77.102);
-		 final Districts d3 = new Districts("Delhi","South Delhi",28.500,77.100);
-		 final Districts d4 = new Districts("Uttar Pradesh","Varanasi",25.20,83.00);
-		 final Districts d5 = new Districts("Maharashtra","Bombay",18.55,72.54);
-		 final Districts d6 = new Districts("Kerala","Ernakulam (Cochin)",10.00,76.15);
-		 final Districts d7 = new Districts("Kerala","Kannur",11.52,75.25);
-		 final Districts d8 = new Districts("Punjab","Amritsar",31.37,74.55);
-		 final Districts d9 = new Districts("Punjab","Ludhiana",30.55,75.54);
-		 final Districts d10 = new Districts("Punjab","Kaithal",29.48,78.26);
-		 final Districts d11 = new Districts("Goa","Vasco",15.25,73.43);
-		 final Districts d12 = new Districts("Jammu and Kashmir","Leh Ladakh",34.10,77.40);
-		 final Districts d13 = new Districts("Jammu and Kashmir","Srinagar",30.40,77.00);
-		 final Districts d14 = new Districts("Jammu and Kashmir","Jammu",32.43,74.54);
-		 final Districts d15 = new Districts("Gujarat","Ahemdabad",23.03,72.40);
-		 final Districts d16 = new Districts("Gujarat","Vadodra",22.00,73.16);
+		 final District d1 = new District("Delhi","East Delhi",28.53,77.13);
+		 final District d2 = new District("Delhi","West Delhi",28.595,77.102);
+		 final District d3 = new District("Delhi","South Delhi",28.500,77.100);
+		 final District d4 = new District("Uttar Pradesh","Varanasi",25.20,83.00);
+		 final District d5 = new District("Maharashtra","Bombay",18.55,72.54);
+		 final District d6 = new District("Kerala","Ernakulam (Cochin)",10.00,76.15);
+		 final District d7 = new District("Kerala","Kannur",11.52,75.25);
+		 final District d8 = new District("Punjab","Amritsar",31.37,74.55);
+		 final District d9 = new District("Punjab","Ludhiana",30.55,75.54);
+		 final District d10 = new District("Punjab","Kaithal",29.48,78.26);
+		 final District d11 = new District("Goa","Vasco",15.25,73.43);
+		 final District d12 = new District("Jammu and Kashmir","Leh Ladakh",34.10,77.40);
+		 final District d13 = new District("Jammu and Kashmir","Srinagar",30.40,77.00);
+		 final District d14 = new District("Jammu and Kashmir","Jammu",32.43,74.54);
+		 final District d15 = new District("Gujarat","Ahemdabad",23.03,72.40);
+		 final District d16 = new District("Gujarat","Vadodra",22.00,73.16);
 	
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
@@ -355,22 +371,22 @@ public class GSTCloudUI  extends Composite {
 					System.out.println("success");
 				} 
 			};
-			dea.loadDistricts(d1, geoCallBack);
-			dea.loadDistricts(d2, geoCallBack);
-			dea.loadDistricts(d3, geoCallBack);
-			dea.loadDistricts(d4, geoCallBack);
-			dea.loadDistricts(d5, geoCallBack);
-			dea.loadDistricts(d6, geoCallBack);
-			dea.loadDistricts(d7, geoCallBack);
-			dea.loadDistricts(d8, geoCallBack);
-			dea.loadDistricts(d9, geoCallBack);
-			dea.loadDistricts(d10, geoCallBack);
-			dea.loadDistricts(d11, geoCallBack);
-			dea.loadDistricts(d12, geoCallBack);
-			dea.loadDistricts(d13, geoCallBack);
-			dea.loadDistricts(d14, geoCallBack);
-			dea.loadDistricts(d15, geoCallBack);
-			dea.loadDistricts(d16, geoCallBack);	
+			spatialBodiesService.loadDistricts(d1, geoCallBack);
+			spatialBodiesService.loadDistricts(d2, geoCallBack);
+			spatialBodiesService.loadDistricts(d3, geoCallBack);
+			spatialBodiesService.loadDistricts(d4, geoCallBack);
+			spatialBodiesService.loadDistricts(d5, geoCallBack);
+			spatialBodiesService.loadDistricts(d6, geoCallBack);
+			spatialBodiesService.loadDistricts(d7, geoCallBack);
+			spatialBodiesService.loadDistricts(d8, geoCallBack);
+			spatialBodiesService.loadDistricts(d9, geoCallBack);
+			spatialBodiesService.loadDistricts(d10, geoCallBack);
+			spatialBodiesService.loadDistricts(d11, geoCallBack);
+			spatialBodiesService.loadDistricts(d12, geoCallBack);
+			spatialBodiesService.loadDistricts(d13, geoCallBack);
+			spatialBodiesService.loadDistricts(d14, geoCallBack);
+			spatialBodiesService.loadDistricts(d15, geoCallBack);
+			spatialBodiesService.loadDistricts(d16, geoCallBack);	
 	}
 	/**
 	 *This is a function with hard coded values of 6 Local Bodies for all the Districts loaded.The properties include 
@@ -378,12 +394,12 @@ public class GSTCloudUI  extends Composite {
 	 */
 	private void LocalBodyLoader()
 	{
-		final LocalBodies l1 = new LocalBodies("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
-		final LocalBodies l2 = new LocalBodies("East Delhi","village","Kondli",28.11,77.29);
-		final LocalBodies l3 = new LocalBodies("South Delhi","Town","Dwarka Sub City",28.19,77.00);
-		final LocalBodies l4 = new LocalBodies("South Delhi","village","Najafgarh",27.11,77.909);
-		final LocalBodies l5 = new LocalBodies("South Delhi","village","Bersarai",28.97,77.98);
-		final LocalBodies l6 = new LocalBodies("South Delhi","Town","Hauz Khas",28.90,76.11);
+		final LocalBody l1 = new LocalBody("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
+		final LocalBody l2 = new LocalBody("East Delhi","village","Kondli",28.11,77.29);
+		final LocalBody l3 = new LocalBody("South Delhi","Town","Dwarka Sub City",28.19,77.00);
+		final LocalBody l4 = new LocalBody("South Delhi","village","Najafgarh",27.11,77.909);
+		final LocalBody l5 = new LocalBody("South Delhi","village","Bersarai",28.97,77.98);
+		final LocalBody l6 = new LocalBody("South Delhi","Town","Hauz Khas",28.90,76.11);
 		
 		
 		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
@@ -399,12 +415,12 @@ public class GSTCloudUI  extends Composite {
 			} 
 		};
 		
-		dea.loadLocalBody(l1, geoCallBack);
-		dea.loadLocalBody(l2, geoCallBack);
-		dea.loadLocalBody(l3, geoCallBack);
-		dea.loadLocalBody(l4, geoCallBack);
-		dea.loadLocalBody(l5, geoCallBack);
-		dea.loadLocalBody(l6, geoCallBack);
+		spatialBodiesService.loadLocalBody(l1, geoCallBack);
+		spatialBodiesService.loadLocalBody(l2, geoCallBack);
+		spatialBodiesService.loadLocalBody(l3, geoCallBack);
+		spatialBodiesService.loadLocalBody(l4, geoCallBack);
+		spatialBodiesService.loadLocalBody(l5, geoCallBack);
+		spatialBodiesService.loadLocalBody(l6, geoCallBack);
 		
 		
 	}
@@ -482,96 +498,34 @@ public class GSTCloudUI  extends Composite {
 	}
 	
 	private void eventMessageClick(GwtEvent<?> event) {		
-		if (event.getSource()==btnGeoCodedSearch)	
-		{
-			showAddress(tbGeoCodedAddress.getText());
-		}
-		else if (event.getSource()==btnAdminLoad)
+		if (event.getSource()==btnAdminLoad)
 		{
 			fpAdmin.submit();
-			/*final AsyncCallback geoCallBack= new AsyncCallback<String>() 
-			{
-				public void onFailure(Throwable caught) 
-				{
-					System.out.println("failure");	
-				}
-
-				public void onSuccess(String result) 
-				{
-					System.out.println("success");
-				} 
-			};
-			
-			fea.loadKML(upload.getFilename(), new AsyncCallback<String>() {
-				public void onFailure(Throwable caught) 
-				{
-					System.out.println("failure");	
-				}
-
-				public void onSuccess(String result) 
-				{
-					System.out.println("success");
-				}
-					
-					
-			});			
-			System.out.println("file uploaded");
-*/		}
-		
-		
-
-
+		}
 		else if (event.getSource()==btnAdminDisplay) 
-				 fea.displayStation(new AsyncCallback<List<Landmarks>>() 
-				 {
-					 public void onFailure(Throwable caught) 
-					 {
-				
-				     }
-
-					 public void onSuccess(List<Landmarks> result) 
-							{
-								
-								int rowCount = result.size();
-								for (int row = 0; row < rowCount; row ++) 
-								{
-												
-									String cat = result.get(row).getCategory();	
-									Double lat = result.get(row).getLatitude();
-									Double lng = result.get(row).getLongitude();
-									String name = result.get(row).getPlaceName();
-																	
-									LatLng point = LatLng.newInstance(lat,lng);
-															
-                                    // Add a marker
-									map.addOverlay(new Marker(point));
-									map.setCenter(point,15);
-									
-									// Add an info window to highlight a point of interest
-									map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
-								}	
-								
-							}
-			
-				 });	
-
-	else if (event.getSource()==btnGeoCodedClear) 
+			showAllLandmarks();
+		else if (event.getSource()==btnGeoCodedSearch)	
+		{
+			showByGeoCodedAddress(tbGeoCodedAddress.getText());
+		}
+		else if (event.getSource()==btnGeoCodedClear) 
 		{
 			tbGeoCodedRadius.setValue("");
 			tbGeoCodedAddress.setValue("");
+			tbGeoCodedRadius.setValue("");
 			map.clearOverlays();
 		}
-		else if (event.getSource()==tbGeoCodedRadius) 
+		else if (event.getSource()==btnSpatialSearch) 
 		{
-			tbGeoCodedRadius.setValue("");
+		    showBySpatialLocation();		 
 		}
-		else if (event.getSource()==tbGeoCodedAddress) 
-		{
-			tbGeoCodedAddress.setValue("");
-		}
-		else if (event.getSource()==tbSpatialRadius) 
-		{
-			tbSpatialRadius.setValue("");
+		else if (event.getSource()==btnSpatialClear)
+			{
+				map.clearOverlays();
+			}
+		else if (event.getSource()==btnLatLngSearch)	
+		{			
+			showByLatLong();
 		}
 		else if (event.getSource()==btnLatLngClear) 
 		{
@@ -580,140 +534,16 @@ public class GSTCloudUI  extends Composite {
 			tbLatLngRadius.setValue("");
 			map.clearOverlays();
 		}
-		else if (event.getSource()==btnSpatialSearch) 
-			 
-			 {
-				 int selectedIndex=lbLocalBody.getSelectedIndex();
-				 if(selectedIndex==-1 || lbLocalBody.getItemText(selectedIndex )== "Select Villages/Town"||lbLocalBody.getItemText(selectedIndex )== "No Available Villages/Town")
-				 {
-					 selectedIndex = lbDistrict.getSelectedIndex();
-					 if(selectedIndex==-1 ||lbDistrict.getItemText( selectedIndex)== "Select District"||lbDistrict.getItemText( selectedIndex)=="No Available Districts")
-					 {
-						 selectedIndex=lbState.getSelectedIndex();
-						 if(lbState.getItemText( selectedIndex)== "Select State")
-						 {
-//							 dialogBox.setText("Atleast Enter name of the State");
-						 }	
-						 else
-						 {
-							 String sName = lbState.getItemText( lbState.getSelectedIndex());
-							 /**
-							  * This function call brings the attributes of the state by the name specified.
-							  */
-							 dea.getStateByName(sName,new AsyncCallback<States>()
-								{
-									public void onFailure(Throwable caught) 
-									{
-										
-									}
-
-									public void onSuccess(States result ) 
-									{									
-										LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
-										map.addOverlay(new Marker(point));
-										map.setCenter(point,result.getZoomLevel());
-										drawCircleFromRadius(point,new Double(tbLatLngRadius.getText()),60);
-									}
-								});
-						 }
-					 }
-					 else
-					 {
-						 String dName = lbDistrict.getItemText( lbDistrict.getSelectedIndex());
-						 /**
-						  * This function call brings the attributes of the District by the name specified.
-						  */
-						 dea.getDistrictByName(dName,new AsyncCallback<Districts>()			
-								 {
-									public void onFailure(Throwable caught) 
-									{
-									
-									}
-
-									public void onSuccess(Districts result ) 
-									{
-										LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
-										map.addOverlay(new Marker(point));
-										map.setCenter(point,15);
-										drawCircleFromRadius(point,new Double(tbLatLngRadius.getText()),60);
-									}
-								 });
-					 }
-				 }
-				 else
-				 {
-					 String lbName = lbLocalBody.getItemText( lbLocalBody.getSelectedIndex());
-					 /**
-					  * This function call brings the attributes of the Local Body by the name specified.
-					  */
-					 dea.getLocalBodyByName(lbName,new AsyncCallback<LocalBodies>()			
-							 {
-								public void onFailure(Throwable caught) 
-								{
-								
-								}
-
-								public void onSuccess(LocalBodies result ) 
-								{
-									LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
-									map.addOverlay(new Marker(point));
-									map.setCenter(point,15);
-									drawCircleFromRadius(point,new Double(tbLatLngRadius.getText()),60);
-								}
-							 });
-				 }
+		else if(event.getSource()== btnAttributeClear){
+			tbAttributeRadius.setValue("");
+			tbAttribute.setValue("");
+			map.clearOverlays();
 		}
-		/**
-		 * Deletes all the Overlays displayed on the map
-		 */
-		else if (event.getSource()==btnSpatialClear)
-			{
-				map.clearOverlays();
-			}
-		
-//		catch (Exception ex) 
-//		 {
-//			 System.out.println(ex.getMessage());
-//		 }
-
-			
-	
-		
-		else if (event.getSource()==btnLatLngSearch)	
-		{	
-			Double radius = new Double(tbLatLngRadius.getText());
-			lblError.setText("");
-			String latChck = new String();
-			latChck = tbLatitude.getText();
-			String longChck = new String();
-			longChck = tbLongitude.getText();
-			String spradChck = new String();
-			spradChck = tbLatLngRadius.getText();
-			if (!FieldVerifier.isaNumber(latChck,longChck))
-			{
-				lblError.setText("Enter only digits");
-				tbLatitude.setValue("Enter again");
-				tbLongitude.setValue("Enter again");
-				tbLatLngRadius.setValue("Enter again");
-				return;
-			}
-			//Double latCheck = new Integer (tbLatitude.getText());
-			//Double longCheck = new Integer (tbLongitude.getText());
-			if (!FieldVerifier.isValidNumber(tbLatitude.getText(),tbLongitude.getText())) 
-			{
-				lblError.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
-				tbLatitude.setValue("Enter again");
-				tbLongitude.setValue("Enter again");
-				tbLatLngRadius.setValue("Enter again");
-				return;
-			}
-			Double lat = new Double(tbLatitude.getText());	
-			Double lng = new Double(tbLongitude.getText());
-			LatLng point = LatLng.newInstance(lat,lng);
-			drawCircleFromRadius(point,radius,60);
-			map.setCenter(point,10);
+		else if (event.getSource()==btnAttributeSearch)	
+		{
+			showByName(tbAttribute.getText().trim().replace("'", "\\'"));
 		}
-		else if (event.getSource()==tbLatitude)
+		/*else if (event.getSource()==tbLatitude)
 		{
 			tbLatitude.setValue("");
 		}
@@ -731,77 +561,217 @@ public class GSTCloudUI  extends Composite {
 		else if(event.getSource()== tbAttributeRadius){
 			tbAttributeRadius.setValue("");
 		}
-		else if(event.getSource()== btnAttributeClear){
-			tbAttributeRadius.setValue("");
-			tbAttribute.setValue("");
-			map.clearOverlays();
-		}
-		else if (event.getSource()==btnAttributeSearch)	
+		else if (event.getSource()==tbGeoCodedRadius) 
 		{
-////			check for creation of object fea,
-		
-			String boxText = new String();
-			boxText = tbAttribute.getText().trim().replace("'", "\\'");
-			fea.searchByAddress(boxText,new AsyncCallback<List<Landmarks>>()
-			{
-				public void onFailure(Throwable caught) 
-				{
-				}
-			    public void onSuccess(List<Landmarks> result ) 
-			    {
-			    //	tbAttributeRadius.setValue("Running");
-			    	Double radius = new Double(tbAttributeRadius.getText());
-					int rowCount = result.size();
-					for (int row = 0; row < rowCount; row ++)
-					{
-						Double lat = result.get(row).getLatitude();
-						Double lng = result.get(row).getLongitude();
-						LatLng point = LatLng.newInstance(lat,lng);
-//						// Add a marker
-			   	          map.addOverlay(new Marker(point));
-			   	          drawCircleFromRadius(point,radius,60);
-			   	          map.setCenter(point, 10);
-						// Add an info window to highlight a point of interest
-				    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is " + result.get(row).getPlaceName()));
-					}
-			    }
-			});
+			tbGeoCodedRadius.setValue("");
 		}
-}
-
-	private void showAddress(final String address) {
+		else if (event.getSource()==tbGeoCodedAddress) 
+		{
+			tbGeoCodedAddress.setValue("");
+		}
+		else if (event.getSource()==tbSpatialRadius) 
+		{
+			tbSpatialRadius.setValue("");
+		}*/
 		
+}
+	private void showAllLandmarks(){
+		landMarksService.getLandMarks(new AsyncCallback<List<LandmarkDTO>>() 
+				 {
+					 public void onFailure(Throwable caught) 
+					 {
+				
+				     }
+
+					 public void onSuccess(List<LandmarkDTO> result) 
+							{
+								
+								int rowCount = result.size();
+								for (int row = 0; row < rowCount; row ++) 
+								{
+												
+									String cat = result.get(row).getCategory();	
+									Double lat = result.get(row).getLatitude();
+									Double lng = result.get(row).getLongitude();
+									String name = result.get(row).getPlaceName();
+																	
+									LatLng point = LatLng.newInstance(lat,lng);
+															
+                                   // Add a marker
+									map.addOverlay(new Marker(point));
+									//map.setCenter(point,15);
+									
+									// Add an info window to highlight a point of interest
+									//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+									
+								}	
+								
+							}
+			
+				 });
+	}
+	
+	private void showBySpatialLocation(){
+		int selectedIndex=lbLocalBody.getSelectedIndex();
+		 if(selectedIndex==-1 || lbLocalBody.getItemText(selectedIndex )== "Select Villages/Town"||lbLocalBody.getItemText(selectedIndex )== "No Available Villages/Town")
+		 {
+			 selectedIndex = lbDistrict.getSelectedIndex();
+			 if(selectedIndex==-1 ||lbDistrict.getItemText( selectedIndex)== "Select District"||lbDistrict.getItemText( selectedIndex)=="No Available Districts")
+			 {
+				 selectedIndex=lbState.getSelectedIndex();
+				 if(lbState.getItemText( selectedIndex)== "Select State")
+				 {
+//					 dialogBox.setText("At least Enter name of the State");
+				 }	
+				 else
+				 {
+					 String sName = lbState.getItemText( lbState.getSelectedIndex());
+					 /**
+					  * This function call brings the attributes of the state by the name specified.
+					  */
+					 spatialBodiesService.getStateByName(sName,new AsyncCallback<State>()
+						{
+							public void onFailure(Throwable caught) 
+							{
+								
+							}
+
+							public void onSuccess(State result ) 
+							{									
+								LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
+								//map.addOverlay(new Marker(point));
+								//map.setCenter(point,result.getZoomLevel());
+								//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
+								drawLandMarksWithinCircle(point,new Double(tbLatLngRadius.getText()));
+							}
+						});
+				 }
+			 }
+			 else
+			 {
+				 String dName = lbDistrict.getItemText( lbDistrict.getSelectedIndex());
+				 /**
+				  * This function call brings the attributes of the District by the name specified.
+				  */
+				 spatialBodiesService.getDistrictByName(dName,new AsyncCallback<District>()			
+						 {
+							public void onFailure(Throwable caught) 
+							{
+							
+							}
+
+							public void onSuccess(District result ) 
+							{
+								LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
+								//map.addOverlay(new Marker(point));
+								//map.setCenter(point,15);
+								//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
+								drawLandMarksWithinCircle(point,new Double(tbLatLngRadius.getText()));
+							}
+						 });
+			 }
+		 }
+		 else
+		 {
+			 String lbName = lbLocalBody.getItemText( lbLocalBody.getSelectedIndex());
+			 /**
+			  * This function call brings the attributes of the Local Body by the name specified.
+			  */
+			 spatialBodiesService.getLocalBodyByName(lbName,new AsyncCallback<LocalBody>()			
+					 {
+						public void onFailure(Throwable caught) 
+						{
+						
+						}
+
+						public void onSuccess(LocalBody result ) 
+						{
+							LatLng point = LatLng.newInstance(result.getLatitude(),result.getLongitude());
+							//map.addOverlay(new Marker(point));
+							//map.setCenter(point,15);
+							//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
+							drawLandMarksWithinCircle(point,new Double(tbLatLngRadius.getText()));
+						}
+					 });
+		 }
+	}
+	
+	private void showByLatLong(){
+		final Double radius = new Double(tbLatLngRadius.getText());
+		lblError.setText("");
+		if (!FieldVerifier.isaNumber(tbLatitude.getText(),tbLongitude.getText()))
+		{
+			lblError.setText("Enter only digits");
+			tbLatitude.setValue("Enter again");
+			tbLongitude.setValue("Enter again");
+			tbLatLngRadius.setValue("Enter again");
+			return;
+		}
+		if (!FieldVerifier.isValidNumber(tbLatitude.getText(),tbLongitude.getText())) 
+		{
+			lblError.setText("Please enter the latitude b/w -90 to +90 and longitude b/w -180 to 180");
+			tbLatitude.setValue("Enter again");
+			tbLongitude.setValue("Enter again");
+			tbLatLngRadius.setValue("Enter again");
+			return;
+		}
+		final LatLng centerPoint = LatLng.newInstance(new Double(tbLatitude.getText()),new Double(tbLongitude.getText()));
+		drawLandMarksWithinCircle(centerPoint,new Double(tbLatLngRadius.getText()));
+	}
+	private void showByName(String landMarkName){
+		landMarksService.searchLandmarkByName(landMarkName,new AsyncCallback<List<LandmarkDTO>>()
+				{
+					public void onFailure(Throwable caught) 
+					{
+					}
+				    public void onSuccess(List<LandmarkDTO> result ) 
+				    {
+				    //	tbAttributeRadius.setValue("Running");
+				    	Double radius = new Double(tbAttributeRadius.getText());
+						int rowCount = result.size();
+						for (int row = 0; row < rowCount; row ++)
+						{
+							Double lat = result.get(row).getLatitude();
+							Double lng = result.get(row).getLongitude();
+							LatLng centerPoint = LatLng.newInstance(lat,lng);
+//							// Add a marker
+				   	          //map.addOverlay(new Marker(centerPoint));
+				   	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,radius,60,map);
+				   	          //map.setCenter(centerPoint, 10);
+							// Add an info window to highlight a point of interest
+					    	  
+					    	  
+					    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+					    	  drawLandMarksWithinCircle(centerPoint,new Double(tbLatLngRadius.getText()));
+						}
+				    }
+				});
+	}
+
+	private void showByGeoCodedAddress(final String address) {
 		final InfoWindow info = map.getInfoWindow();
-		final Label latLabel = new Label();
-		final Label lngLabel = new Label();
 	    try{
 		geocoder.getLatLng(address, new LatLngCallback() {
 	      public void onFailure() {
 	        //Window.alert(address + " not found");
-	    	  System.out.println(address+ " not found");
+	    	  System.out.println(address+ "not found");
 	      }
-	      public void onSuccess(LatLng point) {
-	    	 
-	    	  map.setCenter(point, 13);
-	          Marker marker = new Marker(point);
-	          map.addOverlay(marker);
-	          drawCircleFromRadius(point,new Double(tbGeoCodedRadius.getText()),60);
-	          
-	          NumberFormat fmt = NumberFormat.getFormat("#.0000000#");
-	  	      latLabel.setText(fmt.format(point.getLatitude()));
-	  	      lngLabel.setText(fmt.format(point.getLongitude()));
-	          String address1 = address.toUpperCase();
-	          String lab = new String("Latitude: " + latLabel + "Longitude: " + lngLabel );
-//	          info.open(marker, new InfoWindowContent("Address: " + add ));
-	          info.open(marker, new InfoWindowContent(lab +"Address: " + address1 ));
+	      public void onSuccess(LatLng centerPoint) {
+	    	  //map.setCenter(centerPoint, 13);
+	          //Marker marker = new Marker(centerPoint);
+	          //map.addOverlay(marker);
+	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,new Double(tbGeoCodedRadius.getText()),60,map);
+	          drawLandMarksWithinCircle(centerPoint,new Double(tbLatLngRadius.getText()));
+	          //info.open(marker, new InfoWindowContent(address));
+//	          displayLatLng(point);
 	        }
 	      });
 	}	
 	    catch(Exception ex){
 	    	 System.out.println(ex.getMessage());
+	    		    	 
 	    }
 	}
-	
 	
 	
 	@UiHandler({"lbDistrict","lbState"})
@@ -828,13 +798,13 @@ public class GSTCloudUI  extends Composite {
 	 			lbLocalBody.removeItem(ctr2);
 	 			lbLocalBody.addItem("No Available Villages/Towns");
 			if(stateText!="Select State")
-			dea.getDistrictsByStateName(stateText, new AsyncCallback<List<Districts>>(){
+			spatialBodiesService.getDistrictsByStateName(stateText, new AsyncCallback<List<District>>(){
 				public void onFailure(Throwable caught) 
 			 	{		 
 					
 			 	}
   		
-			 	public void onSuccess(List<Districts> result) 
+			 	public void onSuccess(List<District> result) 
 				{
 			 		int count3 = lbDistrict.getItemCount();	
 			 		for (int ctr3 = count3-1; ctr3 >=0 ;ctr3--)
@@ -860,13 +830,13 @@ public class GSTCloudUI  extends Composite {
 	 			lbLocalBody.removeItem(i);
 	 			lbLocalBody.addItem("No Available Villages/Towns");
 			if (districtText!="Select District")
-			dea.getLocalBodiesByDistrictName(districtText, new AsyncCallback<List<LocalBodies>>(){
+			spatialBodiesService.getLocalBodiesByDistrictName(districtText, new AsyncCallback<List<LocalBody>>(){
 				public void onFailure(Throwable caught) 
 			 	{		 
 					
 			 	}
   		
-			 	public void onSuccess(List<LocalBodies> result) 
+			 	public void onSuccess(List<LocalBody> result) 
 				{
 			 		int count = lbLocalBody.getItemCount();	
 			 		for (int i = count-1; i >=0;i--)
@@ -887,7 +857,7 @@ public class GSTCloudUI  extends Composite {
 		}
 	}
 
-	@UiHandler("btnLatLngSearch")
+	@UiHandler({"tbLatLngRadius","tbLatitude","tbLongitude"})
 	public void onKeyUp(KeyUpEvent event) 
 	{
 		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) 
@@ -914,9 +884,9 @@ public class GSTCloudUI  extends Composite {
 			
 			Double lat = new Double(tbLatitude.getText());	
 			Double lng = new Double(tbLongitude.getText());
-			LatLng point = LatLng.newInstance(lat,lng);
-			drawCircleFromRadius(point,radius,60);
-			map.setCenter(point); 
+//			LatLng point = LatLng.newInstance(lat,lng);
+//			GSTCloudUtils.drawSearchCircleOnScreen(point,radius,60,map);
+//			map.setCenter(point); 
 		}
 	}
 
@@ -929,10 +899,12 @@ public class GSTCloudUI  extends Composite {
 	    map.addMapType(MapType.getHybridMap());
 	    map.addMapType(MapType.getSatelliteMap());
 	    map.addMapType(MapType.getNormalMap());
+	    map.addMapType(MapType.getPhysicalMap());
 	    map.setCurrentMapType(MapType.getNormalMap());
-	    map.addControl(new MapTypeControl());
-	   
 	    
+	    map.addControl(new MapTypeControl());
+	    
+	    //map.setGoogleBarEnabled(true);
 	    map.setSize("765px", "480px");
 	//    map.setGoogleBarEnabled(true);
 	    map.addControl(new LargeMapControl3D());
