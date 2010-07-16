@@ -2,7 +2,7 @@ package com.rmsi.lim.gstcloud.client.model;
 
 import java.util.List;
 
-import com.beoui.geocell.model.Point;
+
 import com.google.gwt.user.client.rpc.IsSerializable; 
 
 
