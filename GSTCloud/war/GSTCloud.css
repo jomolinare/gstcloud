@@ -1,83 +1,138 @@
-/** Add css rules here for your application. */
+<ui:style>
+*{margin:0; padding:0;}
+.page-body{width:100%; height:100%; background:#f6f6f6 url('images/bg-body.png') repeat-x 0 0; font:0.8em/ 100% Arial, Verdana, Tahoma, Helvetica, sans-serif; color:#000;
+}
+.wrapper{margin:0 auto; padding:0; width:950px; background:url('images/bg-graphics.png') repeat-x 0 0;}
+.header{position:relative; float:left; clear:both; width:950px;}
+.queries{float:left; border:1px solid #6ab5c0; background:#e4f8fb url('images/bg-pannel.png') repeat-x 0 0; width:232px; padding:5px; margin:40px 5px 0px 0px;}
+.map{float:left; height:500px; width:700px; padding:10px; border:1px solid #d3f9ff; background:#f0fdff url('images/bg-map.png') repeat-x 0 0;}
+.datag{float:left; clear:both; width:950px;}
 
-.map
+
+.d-none{display:none;}
+.c-logo{position:absolute; top:25px; margin-left:10px;}
+.r-logo{float:right; margin-top:14px;}
+
+/**Stack Panel*/
+.stackp {float:left; clear:both; width:232px; height:500px;}
+.stacklabel{color:#00375c; font-weight: normal; border-bottom: 1px solid #9fcbe9; cursor:pointer; padding:4px 0px 4px 5px; font-size:110%;}
+.tabPanel{ width:100%; height:100%;}
+.vLatLongPanel{width:100%; height:100%; border-bottom:1px solid #9fcbe9; background:#f6feff; padding:2px;}
+.label{color:#004a55; font-size:100%; margin-right:2px; padding:2px; border:1px solid #ddd; cursor: pointer;}
+
+.textlabel{float:left; overflow:hidden; color:#333; border:1px solid #d45;}
+.tblarge{float:left; width:180px;}
+
+.hack1{height:100px; width:20px;}
+.hack2{height:150px; width:20px;}
+.hack3{height:80px; width:20px;}
+.hack4{height:150px; width:20px;}
+
+/**QueryTab Panel*/
+
+
+/**Admin Panel*/
+.adminp  { 
+position:absolute;
+width:25%;
+background:#f6feff;
+left:0%;
+top:55%;
+}
+
+/**Admin Login Panel*/
+.logio{ 
+position:absolute;
+background:#f6feff;
+height:100%;
+width:100%;
+left:85%;
+top:0%;
+}
+
+/**Layer Manager Panel*/
+.layerm{
+position:absolute;
+background:#f6feff;
+padding: 8px;
+height:100%;
+width:100%; 
+left:85%;
+top:8%;
+}
+
+/**Tools Panel*/
+.tools{
+position:absolute;
+height:100%;
+width:100%;
+left:25%;
+top:8%;
+background:#f6feff;
+}
+
+/**Map Panel (mapwrapper)*/
+
+
+/**DataGird Panel*/
+
+
+/**Legend Panel (not defined yet!!)*/
+.legend{ 
+position:absolute;
+height:23%;
+width:33%;
+border:1px solid #000000;
+left:67%;
+top:77%;
+}
+
+/**Panels inside QueryTabPanel*/
+
+
+/**Style for panels (Ends Here)*/
+
+/**TextBox size*/
+
+.tbsmall{
+width:120px;
+}
+
+/**Button*/
+.Button 
 {
-	width: 700px;
-	padding: 8px;
-	background: #ffffff;
-	border: 1px solid black;
-	margin-top: 20px;
-	margin-bottom: 10px;
+ display: block;
+ font-size: 9pt;
 }
 
-.title
-{
-	color: #000000;	
-	font-size: 22pt;
-	font-weight: bolder;
-	margin-top: 20px;
-}
-.titlet
-{
-	color: red;	
-	font-size: 10pt;
-	font-weight: bold;
-	margin-top: 20px;
+/**Font Styles*/
+h4{
+color: red;	
+font-size: 10pt;
+font-weight: bold;
+margin-top: 20px;
 }
 
-/** Example rules used by the template application (remove for your app) */
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
+h5{
+color:blue;
+font-size: 10pt;
+font-weight: bold;
+text-align:center;
 }
 
-.sendButton {
-  display: block;
-  font-size: 16pt;
-}
+/**Labels of QueryTabPanel */
 
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-  width: 400px;
-}
 
-.dialogVPanel {
-  margin: 5px;
-}
+/**Labels of StackLayoutPanel*/
 
-.serverResponseLabelError {
-  color: red;
-}
 
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-  margin: 15px 6px 6px;
-}
+/**Normal TextLabel*/
 
-.PushButton
-{
-    border                      :   1px solid #666;
-    margin                      :   3px 1px;
-    font-size                   :   90%;
-    cursor                      :   hand;
-    cursor                      :   pointer;
-    background-color            :   green;
-    padding                     :   0 5px;
+
+/**Style for DialogBox*/
+.vpDialogBox{
 }
- .VerticalPanel 
- {
- 	background: green;
- 	width: 700px;
-	padding: 8px;
-	border: 1px solid black;
-	margin-top: 20px;
-	margin-bottom: 10px;
- }
- .Button 
- {
-  display: block;
-  font-size: 9pt;
-}
+	
+	
+
+		</ui:style>
