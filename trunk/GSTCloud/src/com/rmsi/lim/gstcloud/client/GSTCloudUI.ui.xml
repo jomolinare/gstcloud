@@ -4,331 +4,241 @@
 	xmlns:gw="urn:import:com.google.gwt.maps.client"
 	xmlns:at="urn:import:com.rmsi.lim.gstcloud.client">
 	
-	<ui:style>
-		
-.layerm  {
-position:absolute;
-background: green;
- /**	height:700px;*/
-/** 	width: 700px; */
-	padding: 8px;
-	border: 1px solid black;
-	
-height:66.5%;
-width:15%; 
-border:1px solid #000000;
-left:85%;
-top:8%;
 
+<!--Main Panel(vp)(Starts Here)	-->
+<g:VerticalPanel ui:field="pb" styleName="page-body" >
+<g:VerticalPanel ui:field="vp" styleName="wrapper" >
+	 
+<!--Header Panel(CloudGIS Text)	(Starts Here) -->
+	 <g:HorizontalPanel >		
+	 	<g:VerticalPanel styleName="header">
+	 	<g:HTML>
+	 		<img src="images/lo-cloud.png" title="Brand Cloud GIS" alt="Brand Cloud GIS" class="c-logo" />
+	 		<img src="images/logo-rmsi.png" title="Brand RMSI" alt="Brand RMSI" class="r-logo" />
+	 		<h3 class="d-none">Cloud GIS</h3></g:HTML>
+	 	</g:VerticalPanel>					
 
-}
-
-.logio  { 
-position:absolute;
-height:8%;
-width:15%;
-border:1px solid #000000;
-left:85%;
-top:0%;
-}
-
-.queries  {
-position:absolute;
-background: green;
- /**	height:700px;*/
-/** 	width: 700px; */
-	padding: 8px;
-	border: 1px solid black;
-	margin-top: 20px;
-	margin-bottom: 10px;
-height:66.5%;
-width:25%;
-border:1px solid #000000;
-left:0%;
-top:5.5%;
-}
-
-.map  { 
-position:absolute;
-height:58.7%;
-width:60%;
-border:1px solid #000000;
-left:25%;
-top:14.8%;
-}
-.tools  {
-position:absolute;
-height:0.1%;
-width:60%;
-border:1px solid #000000;
-left:25%;
-top:8%;
-}
-.adminp  { 
-position:absolute;
-width:25%;
-background: green;
-border: 2px solid black;
-left:0%;
-top:55%;
-}
-.datag  {
-position:absolute;
-height:12%;
-width:100%;
-top:74.5%;
-}
-
-.legend  { 
-position:absolute;
-height:23%;
-width:33%;
-border:1px solid #000000;
-left:67%;
-top:77%;
-}
-.lattextbox1{
-	width:180px;
-}
-
-.lattextbox2{
-	width:120px;
-}
-.vLatLongPanel{
-	height:150px;
-	width:250px;
-	}
-.tabPanel{
-	top:0%;
-	left:0%;
-	width:100%;
-	height:240px;
-	border: 2px solid black;
-	}
- .VerticalPanel 
- {
- 	background: green;
- 	height:70%;
- 	width: 20%; 
-	padding: 8px;
-	border: 1px solid black;
-	margin-top: 20px;
-	margin-bottom: 10px;
-	top:10%;
- }
- .Button 
- {
-  display: block;
-  font-size: 9pt;
-}
-h4{
-/**text-align:center;*/
-color: red;	
-	font-size: 10pt;
-	font-weight: bold;
-	margin-top: 20px;
-}
-/** Add css rules here for your application. */
-
-
-
-/** Example rules used by the template application (remove for your app) */
- h5{
-  color:blue;
-  font-size: 10pt;
-	font-weight: bold;
-	text-align:center;
-}
-
-.label{
-	color:  white;
-	font-weight: bold;	
-	font-size: 11pt;
-	margin-right:5px;
-	background-color:#777777;
-	cursor: pointer;
-	border: 2px solid black;
-}
-.textlabel{
-	color:#AAAAAA;
-	font-weight: bold;	
-	font-size: 11pt;
-	margin-right:5px;
-	}
-
-.header{
-	position:absolute;
-	left:50%;
-	}
-.vpDialogBox{
-	}
-
-		</ui:style>
-	
-<g:VerticalPanel ui:field="vp" >
-                 <g:HorizontalPanel >		
-				 	<g:VerticalPanel styleName="{style.header}">
-				 	<g:HTML><h3>Cloud GIS</h3></g:HTML></g:VerticalPanel>
-					<g:VerticalPanel styleName="{style.logio}">
-					
-				  	<g:HTML><h5>Login/out Panel</h5></g:HTML>
-				  	</g:VerticalPanel>
-				 </g:HorizontalPanel>
+<!--Header Panel(CloudGIS Text)(Ends Here)	 -->
+	 </g:HorizontalPanel>
 				  
-  <g:HorizontalPanel ui:field="hp">
-	<g:VerticalPanel styleName="{style.queries}" ui:field="vp1">
-<!--			 <g:VerticalPanel styleName="{style.queries}">-->
-			 <g:HTML><h4>Site Search</h4></g:HTML>
-			 <g:TabLayoutPanel barUnit='PX' barHeight='20' styleName="{style.tabPanel}"  ui:field="queryTabPanel" >	
-				<g:tab>
-					<g:customHeader size='5'>
-          			<g:Label styleName="{style.label}">LatLong </g:Label>
+<!--Horizontal Panel, holds VerticalPanel(vp1) and Map  -->
+	<g:HorizontalPanel ui:field="hp">
+	
+<!--Vertical Panel, holds StackLayoutPanel	-->
+		<g:VerticalPanel styleName="queries" ui:field="vp1">
+
+<!--StackLayout Panel(Starts Here), holds QueryTabPanel,AdminPanel,AdminLogin,LayerManager,ToolsPanel-->
+			 <g:StackLayoutPanel ui:field="stp" styleName="stackp">
+			 		<g:stack>
+			 		<g:customHeader size='25'>
+          			<g:Label styleName="stacklabel">Site Search </g:Label>
         			</g:customHeader>
-				    	<g:VerticalPanel ui:field="vpLatLng" styleName="{style.vLatLongPanel}" >
-						<g:Label ui:field="lblLatitude" text="P1 Latitude" styleName="{style.textlabel}" />
-						<g:TextBox ui:field="tbLatitude" styleName="{style.lattextbox1}" text="Enter Lattitude"></g:TextBox>
-						<g:Label ui:field="lblLongitude" text="P1 Longitude" styleName="{style.textlabel}" />
-						<g:TextBox ui:field="tbLongitude" styleName="{style.lattextbox1}" text="Enter Longitude"></g:TextBox>
-						<g:Label ui:field="lblLatLngRadius" text="Specified Radius" styleName="{style.textlabel}"/>
-						<g:TextBox ui:field="tbLatLngRadius" styleName="{style.lattextbox2}" text="Enter Radius" />
+        			
+<!--QuertTabPanel(Starts Here), holds LatLngPanel,AttributePanel,SpatialPanel,GeoCodedPanel-->
+			 		 <g:TabLayoutPanel barUnit='PX' barHeight='20' styleName="tabPanel"  ui:field="queryTabPanel" >	
+					<g:tab>
+					<g:customHeader size='5'>
+          			<g:Label styleName="label">LatLong </g:Label>
+        			</g:customHeader>
+        			
+<!--LatLngPanel	(Starts Here)	-->
+				    	<g:VerticalPanel ui:field="vpLatLng" styleName="vLatLongPanel" >
+						<g:Label ui:field="lblLatitude" text="Latitude:" styleName="textlabel" />
+						<g:TextBox ui:field="tbLatitude" styleName="tblarge" text="Enter Lattitude"></g:TextBox>
+						<g:Label ui:field="lblLongitude" text="Longitude:" styleName="textlabel" />
+						<g:TextBox ui:field="tbLongitude" styleName="tblarge" text="Enter Longitude"></g:TextBox>
+						<g:Label ui:field="lblLatLngRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:TextBox ui:field="tbLatLngRadius" styleName="tbsmall" text="Enter Radius" />
 						<g:HorizontalPanel ui:field="hpLatLng">
-							<g:Button ui:field="btnLatLngSearch" text="Search" styleName="{style.Button}" />
-							<g:Button ui:field="btnLatLngClear" text="Clear" styleName="{style.Button}" />
+							<g:Button ui:field="btnLatLngSearch" text="Search" styleName="Button" />
+							<g:Button ui:field="btnLatLngClear" text="Clear" styleName="Button" />
 						</g:HorizontalPanel>
 						<g:Label ui:field="lblError"></g:Label>
-					</g:VerticalPanel>
-	
-				</g:tab>
-				<g:tab>
-					<g:customHeader size='5'>
-          			<g:Label styleName="{style.label}">Attribute</g:Label>
-        			</g:customHeader>    	
-				    	<g:VerticalPanel ui:field="vpAttribute" styleName="{style.vLatLongPanel}" >
-						<g:Label ui:field="lblAttribute" text="Address :" styleName="{style.textlabel}"/>
-						<g:TextBox ui:field="tbAttribute" styleName="{style.lattextbox1}" text="Enter Address"></g:TextBox>
-						<g:Label ui:field="lblAttributeRadius" text="Specified Radius" styleName="{style.textlabel}"/>
-						<g:TextBox ui:field="tbAttributeRadius" styleName="{style.lattextbox2}" text="Enter Radius"></g:TextBox>
-						<g:HorizontalPanel ui:field="hpAttribute">
-							<g:Button ui:field="btnAttributeSearch" text="Search" styleName="{style.Button}" />
-							<g:Button ui:field="btnAttributeClear" text="Clear" styleName="{style.Button}" />
-						</g:HorizontalPanel>
-						</g:VerticalPanel>
-				</g:tab>
-				<g:tab>
-					<g:customHeader size='5'>
-          			<g:Label styleName="{style.label}">Spatial</g:Label>
-        			</g:customHeader>
-						<g:VerticalPanel ui:field="vpSpatial" styleName="{style.vLatLongPanel}" >
-						<g:Label ui:field="lblState" text="State:" styleName="{style.textlabel}"/>
-						<g:ListBox ui:field="lbState" />
-						<g:Label ui:field="districtLabel" text="District:" styleName="{style.textlabel}"/>
-						<g:ListBox ui:field="lbDistrict" />
-						<g:Label ui:field="lblLocalBody" text="Local Body:" styleName="{style.textlabel}"/>
-						<g:ListBox ui:field="lbLocalBody" />
-						<g:Label ui:field="lblSpatialRadius" text="Specified Radius" styleName="{style.textlabel}"/>
-						<g:TextBox ui:field="tbSpatialRadius" styleName="{style.lattextbox2}" text="Enter Radius"></g:TextBox>
-							<g:HorizontalPanel ui:field="hpSpatial">
-							<g:Button ui:field="btnSpatialSearch" text="Search" styleName="{style.Button}" />
-							<g:Button ui:field="btnSpatialClear" text="Clear" styleName="{style.Button}" />
-						</g:HorizontalPanel>
-						</g:VerticalPanel>
-				</g:tab>
-				<g:tab>
-					<g:customHeader size='5'>
-    			    <g:Label styleName="{style.label}">GeoCoded</g:Label>
-        			</g:customHeader>
-        				<g:VerticalPanel ui:field="vpGeoCoded" styleName="{style.vLatLongPanel}" >
-						<g:Label ui:field="lblGeoCodedAddress" text="Address:" styleName="{style.textlabel}"/>
-						<g:TextBox ui:field="tbGeoCodedAddress" text="Enter Address" />
-						<g:Label ui:field="lblGeoCodedRadius" text="Specified Radius:" styleName="{style.textlabel}"/>
-						<g:TextBox  ui:field="tbGeoCodedRadius"  text="Enter Radius"/>
-							<g:HorizontalPanel ui:field="hpGeoCoded">
-							<g:Button ui:field="btnGeoCodedSearch" text="Search" styleName="{style.Button}" />
-							<g:Button ui:field="btnGeoCodedClear" text="Clear" styleName="{style.Button}" />
-						</g:HorizontalPanel>
-						</g:VerticalPanel>
-				</g:tab>
-		</g:TabLayoutPanel>	
-<!--	</g:VerticalPanel>		-->
-				<g:VerticalPanel ui:field="vpAdmin"  styleName="{style.adminp}">
-					<g:HTML><h4>Admin Panel</h4></g:HTML>
-					<g:FormPanel ui:field="fpAdmin" />
-					<g:HorizontalPanel ui:field="hpAdmin">
-<!--					<g:Button ui:field="submitButton" text="Submit" styleName="{style.Button}" />-->
-<!--					</g:HorizontalPanel>-->
-<!--					<g:HorizontalPanel>-->
-					<g:Button ui:field="btnAdminLoad" text="Load" styleName="{style.Button}" />
-					<g:Button ui:field="btnAdminDisplay" text="Display" styleName="{style.Button}" />
-					</g:HorizontalPanel>
-				</g:VerticalPanel>
-		</g:VerticalPanel>
-					
-					<g:VerticalPanel >
-						<g:HorizontalPanel styleName="{style.tools}">
-						<g:HTML><h5>Tools Panel</h5></g:HTML> 
-						</g:HorizontalPanel>
-						<g:VerticalPanel styleName="{style.map}" ui:field="mapwrapper">	
-							<gw:MapWidget ui:field="map">
-							</gw:MapWidget>
-						</g:VerticalPanel>
+						<g:Label ui:field="nouse1" styleName="hack1" text="&nbsp;" />
 					</g:VerticalPanel>
 
-					<g:VerticalPanel styleName="{style.layerm}" ui:field="vp2">
-					<g:HTML><h4>Layer Manager Panel</h4>
-					</g:HTML>
+<!--LatLngPanel	(Ends Here)	-->
+				</g:tab>
+				<g:tab>
+					<g:customHeader size='5'>
+          			<g:Label styleName="label">Attribute</g:Label>
+        			</g:customHeader>    	
 				
-					
-					</g:VerticalPanel>
-			</g:HorizontalPanel>
-<!--			-->
+<!--AttributePanel (Starts Here)				-->
+				    	<g:VerticalPanel ui:field="vpAttribute" styleName="vLatLongPanel" >
+						<g:Label ui:field="lblAttribute" text="Name:" styleName="textlabel"/>
+						<g:TextBox ui:field="tbAttribute" styleName="tblarge" text="Enter Address"></g:TextBox>
+						<g:Label ui:field="lblAttributeRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:TextBox ui:field="tbAttributeRadius" styleName="tbsmall" text="Enter Radius"></g:TextBox>
+						<g:HorizontalPanel ui:field="hpAttribute">
+							<g:Button ui:field="btnAttributeSearch" text="Search" styleName="Button" />
+							<g:Button ui:field="btnAttributeClear" text="Clear" styleName="Button" />
+						</g:HorizontalPanel>
+								<g:Label ui:field="nouse2" styleName="hack2" text="&nbsp;" />
+						</g:VerticalPanel>
+
+<!--AttributePanel (Ends Here)				-->
+				</g:tab>
+				<g:tab>
+					<g:customHeader size='5'>
+          			<g:Label styleName="label">Spatial</g:Label>
+        			</g:customHeader>
+
+<!--SpatialPanel (Starts Here)				-->
+						<g:VerticalPanel ui:field="vpSpatial" styleName="vLatLongPanel" >
+						<g:Label ui:field="lblState" text="State:" styleName="textlabel"/>
+						<g:ListBox ui:field="lbState" />
+						<g:Label ui:field="districtLabel" text="District:" styleName="textlabel"/>
+						<g:ListBox ui:field="lbDistrict" />
+						<g:Label ui:field="lblLocalBody" text="Local Body:" styleName="textlabel"/>
+						<g:ListBox ui:field="lbLocalBody" />
+						<g:Label ui:field="lblSpatialRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:TextBox ui:field="tbSpatialRadius" styleName="tbsmall" text="Enter Radius"></g:TextBox>
+							<g:HorizontalPanel ui:field="hpSpatial">
+							<g:Button ui:field="btnSpatialSearch" text="Search" styleName="Button" />
+							<g:Button ui:field="btnSpatialClear" text="Clear" styleName="Button" />
+						</g:HorizontalPanel>
+							<g:Label ui:field="nouse3" styleName="hack3" text="&nbsp;" />
+						</g:VerticalPanel>
+
+<!--SpatialPanel (Ends Here)				-->
+				</g:tab>
+				<g:tab>
+					<g:customHeader size='5'>
+    			    <g:Label styleName="label">GeoCoded</g:Label>
+        			</g:customHeader>
+        	
+<!--GeoCodedPanel (Starts Here)			-->
+        				<g:VerticalPanel ui:field="vpGeoCoded" styleName="vLatLongPanel" >
+						<g:Label ui:field="lblGeoCodedAddress" text="Address:" styleName="textlabel"/>
+						<g:TextBox ui:field="tbGeoCodedAddress" text="Enter Address" />
+						<g:Label ui:field="lblGeoCodedRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:TextBox  ui:field="tbGeoCodedRadius"  text="Enter Radius"/>
+							<g:HorizontalPanel ui:field="hpGeoCoded">
+							<g:Button ui:field="btnGeoCodedSearch" text="Search" styleName="Button" />
+							<g:Button ui:field="btnGeoCodedClear" text="Clear" styleName="Button" />
+						</g:HorizontalPanel>
+							<g:Label ui:field="nouse4" styleName="hack4" text="&nbsp;" />
+						</g:VerticalPanel>
 			
-			<g:VerticalPanel ui:field="vpTable" styleName="{style.datag}">
+<!--GeoCodedPanel (Ends Here)			-->			
+				</g:tab>
+		
+<!--QueryTabPanel(Ends Here)	-->
+		</g:TabLayoutPanel>
+		</g:stack>
+		<g:stack>
+					<g:customHeader size='25'>
+    			    <g:Label styleName="stacklabel">Admin Panel</g:Label>
+        			</g:customHeader>
+<!--AdminPanel (Starts Here)-->
+				<g:VerticalPanel ui:field="vpAdmin"  styleName="adminp">
+					<g:HTML><h4></h4></g:HTML>
+					<g:FormPanel ui:field="fpAdmin" />
+					<g:VerticalPanel ui:field="vpAdmin1">
+					<g:HorizontalPanel ui:field="hpAdmin" />
+					<g:HorizontalPanel>
+					<g:Button ui:field="btnAdminLoad" text="Load" styleName="Button" />
+					<g:Button ui:field="btnAdminDisplay" text="Display" styleName="Button" />
+					</g:HorizontalPanel>
+					
+				</g:VerticalPanel>
+				</g:VerticalPanel>
+
+<!--AdminPanel (Ends Here)-->
+		</g:stack>
+		<g:stack>
+					<g:customHeader size='25'>
+    			    <g:Label styleName="stacklabel">Admin Login</g:Label>
+        			</g:customHeader>
+        			
+<!--Admin Login Panel (Starts Here)-->
+					<g:VerticalPanel styleName="logio">	
+				  	</g:VerticalPanel>
+				  	
+<!--Admin Login Panel (Ends Here)-->				  	
+		</g:stack>
+		<g:stack>
+					<g:customHeader size='25'>
+    			    <g:Label styleName="stacklabel">Layer Manager</g:Label>
+        			</g:customHeader>
+	
+<!--Layer Manger Panel (Starts Here)-->
+				<g:VerticalPanel styleName="layerm" ui:field="vp2">
+					</g:VerticalPanel>
+		
+<!--Layer Manger Panel (Ends Here)-->		
+		</g:stack>
+		<g:stack>
+					<g:customHeader size='25'>
+    			    <g:Label styleName="stacklabel">Tools</g:Label>
+        			</g:customHeader>
+<!--Tools Panel	(Starts Here)		-->
+						<g:HorizontalPanel styleName="tools">
+						</g:HorizontalPanel>
+		
+<!--Tools Panel	(Ends Here)		-->
+		</g:stack>
+	 
+<!--StackLayout Panel(Ends Here)	-->
+				</g:StackLayoutPanel>
+
+<!--VerticalPanel(vp1)(Ends Here)-->
+		</g:VerticalPanel>
+
+
+<!--Vertical Panel(mapwrapper), holds Map (Starts Here)-->
+						<g:VerticalPanel styleName="map" ui:field="mapwrapper">	
+						<gw:MapWidget ui:field="map">
+						</gw:MapWidget>
+						</g:VerticalPanel>
+						
+<!--Vertical Panel(mapwrapper), holds Map (Ends Here)-->
+
+<!--HorizontalPanel(hp)(Ends Here)					-->
+
+</g:HorizontalPanel>
+
+<!--Vertical Panel, holds DataGird, (Starts Here)-->
+			<g:VerticalPanel ui:field="vpTable" styleName="datag">
 				<g:VerticalPanel ui:field="vpDataGird">
 				</g:VerticalPanel>
+				
+<!--VerticalPanel Holding Buttons(Apply Filter,Clear Filter,Mark All,Mark Nothing,Show Marked) of DataGird,(Starts Here)		-->
 				<g:VerticalPanel>
 					<g:Label ui:field="lblMessages"></g:Label>
 					<g:HorizontalPanel ui:field="hp1"  >
 	      	  			<g:HorizontalPanel ui:field="hpTable" >
 				     	    <g:TextBox ui:field="tbFilter"></g:TextBox>
-				     	    <g:Button ui:field="btnApplyFilter"  text="Apply Filter" styleName="{style.Button}"></g:Button>
-				      	    <g:Button ui:field="btnClearFilter" text="Clear Filter" styleName="{style.Button}"></g:Button>
-				      	    <g:Button ui:field="btnMarkAll" text="Mark All" styleName="{style.Button}"></g:Button>
-				            <g:Button ui:field="btnMarkNothing" text="Mark Nothing" styleName="{style.Button}"></g:Button>
-				            <g:Button ui:field="btnShowMarked" text="Show Marked" styleName="{style.Button}"></g:Button>
+				     	    <g:Button ui:field="btnApplyFilter"  text="Apply Filter" styleName="Button"></g:Button>
+				      	    <g:Button ui:field="btnClearFilter" text="Clear Filter" styleName="Button"></g:Button>
+				      	    <g:Button ui:field="btnMarkAll" text="Mark All" styleName="Button"></g:Button>
+				            <g:Button ui:field="btnMarkNothing" text="Mark Nothing" styleName="Button"></g:Button>
+				            <g:Button ui:field="btnShowMarked" text="Show Marked" styleName="Button"></g:Button>
 				           </g:HorizontalPanel>
 	          		</g:HorizontalPanel>
 	         	 
-	        	 </g:VerticalPanel>
+<!--VerticalPanel Holding Buttons(Apply Filter,Clear Filter,Mark All,Mark Nothing,Show Marked) of DataGird,(Ends Here)		-->	         	 
+	         	 </g:VerticalPanel>
+	         	 
+<!--Vertical Panel, holds DataGird, (Ends Here) -->	         	 
 			</g:VerticalPanel>
-        
-        
-          <g:DialogBox ui:field="dialogBox" styleName="{style.vpDialogBox}" animationEnabled="true"
-       >
+
+<!--Dialogue Box (Starts Here)       -->
+          <g:DialogBox ui:field="dialogBox" styleName="vpDialogBox" animationEnabled="true">
 <!--    text="Remote Procedure Call"   	 <g:caption><b>Remote Procedure Call</b></g:caption>-->
   		 <g:HTMLPanel>
    			 <g:VerticalPanel ui:field="vpDialogBox">
     			<g:HTML ui:field="serverResponseLabel"></g:HTML>
-    			
     			<g:Label ui:field="textToServerLabel"></g:Label>
-<!--    			<g:Button ui:field='closeButton' styleName="{style.Button}">Close</g:Button> -->
+<!--    		<g:Button ui:field='closeButton' styleName="Button">Close</g:Button> -->
 			 </g:VerticalPanel>
    		</g:HTMLPanel>
+   		
+<!--Dialogue Box (Starts Here)       -->   		
       </g:DialogBox>
-      
-<!--	         <g:HorizontalPanel ui:field="hp1" styleName="{style.dgbuttons}">-->
-<!--	      	  <g:HorizontalPanel ui:field="hpTable">-->
-<!--	     	    <g:TextBox ui:field="tbFilter"></g:TextBox>-->
-<!--	     	    <g:Button ui:field="btnApplyFilter"  text="Apply Filter"></g:Button>-->
-<!--	      	    <g:Button ui:field="btnClearFilter" text="Clear Filter"></g:Button>-->
-<!--	      	    <g:Button ui:field="btnMarkAll" text="Mark All"></g:Button>-->
-<!--	            <g:Button ui:field="btnMarkNothing" text="Mark Nothing"></g:Button>-->
-<!--	            <g:Button ui:field="btnShowMarked" text="Show Marked"></g:Button>-->
-<!--	          </g:HorizontalPanel>-->
-<!--	         </g:HorizontalPanel>-->
-        
-        
-        
-        
+
+<!--Main Vertical Panel(vp)(Ends Here)      -->
         </g:VerticalPanel>
-    
-			</ui:UiBinder> 
+ </g:VerticalPanel>
+</ui:UiBinder> 
