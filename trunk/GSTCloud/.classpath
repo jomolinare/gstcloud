@@ -5,12 +5,20 @@
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAK"/>
-	<classpathentry kind="lib" path="D:/Shrikant/googlemaps_gwt_2_2_1.jar"/>
-	<classpathentry kind="lib" path="D:/Shrikant/gwt-maps-1.0.4/gwt-maps.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/java-topology-suite"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JavaAPIforKML"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/shrikant.agarwal/Desktop/ostermillerutils_1_07_00.jar"/>
+	<classpathentry kind="lib" path="D:/jars/ostermillerutils_1_07_00.jar"/>
+	<classpathentry kind="lib" path="D:/jars/googlemaps_gwt_2_2_1.jar"/>
+	<classpathentry kind="lib" path="D:/jars/gwt-maps.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/activation.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb1-impl.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-api.jar" sourcepath="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-api-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-api-doc.zip!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-impl.jar" sourcepath="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-impl.src.zip"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-xjc.jar" sourcepath="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-xjc.src.zip"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jsr173_1.0_api.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

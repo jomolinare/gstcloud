@@ -1,0 +1,1 @@
+Use jaxb-ri-20091104 for jaxb jars.
