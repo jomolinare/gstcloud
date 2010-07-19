@@ -88,7 +88,7 @@ public class GSTCloudUI  extends Composite {
  	
  //Main Fields
  @UiField 
- VerticalPanel vp,vp1,vp2,mapwrapper;
+ VerticalPanel pb,vp,vp1,vp2,mapwrapper;
  @UiField
  HorizontalPanel hp;
  @UiField
