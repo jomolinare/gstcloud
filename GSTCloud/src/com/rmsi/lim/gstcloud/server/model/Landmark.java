@@ -75,7 +75,7 @@ public class Landmark extends Geohashed implements LocationCapable,IsSerializabl
     }
 
 	public Landmark(LandmarkDTO station) {
-		this.setCategory(station.getPlaceName());
+		this.setCategory(station.getCategory());
 		this.setLatitude(station.getLatitude());
 		this.setLongitude(station.getLongitude());
 		 this.setPlaceName(station.getPlaceName());
