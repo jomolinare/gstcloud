@@ -148,7 +148,7 @@ public class GSTCloudUI  extends Composite {
  
  //Fields for AdminPanel
  @UiField
- VerticalPanel vpAdmin;
+ VerticalPanel vpAdmin,vpAdmin1;
  @UiField
  HorizontalPanel hpAdmin;
  @UiField
