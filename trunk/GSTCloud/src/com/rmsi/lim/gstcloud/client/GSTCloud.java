@@ -1266,7 +1266,7 @@ public class GSTCloud implements EntryPoint
 	 */
 	private void setupFileUpload(){
 		upload.setName("KmlFileUpload"); 
-		uiObject.fpAdmin.setWidget(uiObject.hpAdmin);
+		uiObject.fpAdmin.setWidget(uiObject.vpAdmin1);
 		uiObject.fpAdmin.setAction(GWT.getModuleBaseURL()+"FileUp");
 		 uiObject.fpAdmin.setEncoding(FormPanel.ENCODING_MULTIPART);
 		 uiObject.fpAdmin.setMethod(FormPanel.METHOD_POST);
