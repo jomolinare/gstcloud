@@ -1,6 +1,7 @@
 package com.rmsi.lim.gstcloud.client;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -13,14 +14,19 @@ import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.ScaleControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
+import com.google.gwt.maps.client.event.MarkerClickHandler;
+import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
+import com.google.gwt.maps.client.event.MarkerClickHandler.MarkerClickEvent;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLngBounds;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,6 +34,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -154,6 +161,10 @@ public class GSTCloudUI  extends Composite {
  @UiField
  Button btnAdminLoad,btnAdminDisplay;
  
+ //Fields for ToolPanel
+ @UiField
+ HorizontalPanel toolsPanel;
+ 
  //Fields for DialogBox
  @UiField
  VerticalPanel vpDialogBox;
@@ -178,7 +189,7 @@ public class GSTCloudUI  extends Composite {
  @UiField
  Button btnApplyFilter, btnClearFilter,btnMarkAll,btnMarkNothing,btnShowMarked;
 	
-	
+
 	/**
 	  * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
@@ -200,7 +211,7 @@ public class GSTCloudUI  extends Composite {
 	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
 	LayerManager lm = new LayerManager();
 
-	
+	private List<LatLng> listofClicks = new ArrayList<LatLng>();
 	
 	public GSTCloudUI() {
 		
@@ -253,6 +264,82 @@ public class GSTCloudUI  extends Composite {
 		layerLoader();
 		setupLayerManager();
 		setupTablePanel();
+		//setupUninorDemo();
+	}
+	
+	
+	
+	private void setupUninorDemo(){
+		
+		final MapClickHandler uniclick = 
+		new MapClickHandler() {
+		      public void onClick(MapClickEvent e) {
+		        MapWidget sender = e.getSender();
+		        Overlay overlay = e.getOverlay();
+		        LatLng point = e.getLatLng();
+
+		        if (overlay != null && overlay instanceof Marker) {
+		          sender.removeOverlay(overlay);
+		        } else {
+		          sender.addOverlay(new Marker(point));
+		          listofClicks.add(point);
+		        }
+		      }
+		     };
+		    
+		
+		
+		
+		final Button showOverLayButton;
+		final Button removeOverLayButton;
+		final Button startClicking= new Button ("Click required points");
+		startClicking.addClickHandler(new ClickHandler(){
+			 public void onClick(ClickEvent event) {
+				 map.addMapClickHandler(uniclick);
+			 }
+		});
+		toolsPanel.add(startClicking);
+	    // Toggle the visibility of the overlays by
+	    // adding and removing the overlay.
+		showOverLayButton = new Button("Add Territory Overlay");
+	    // Toggle the visibility of the overlays
+	    // using the show() and hide() methods
+		removeOverLayButton = new Button("Hide");
+		removeOverLayButton.setEnabled(false);
+		showOverLayButton.addClickHandler(new ClickHandler() {
+	      public void onClick(ClickEvent event) {
+	        map.removeMapClickHandler(uniclick);
+	        listofClicks.add(listofClicks.get(0));
+	        Polygon territoryOverLay = new Polygon(listofClicks.toArray(new LatLng[0]), "green", 1, 1, "green", 0.5);
+	    	map.addOverlay(territoryOverLay);
+	    	removeOverLayButton.setEnabled(true);
+	        //Create and add overlay 
+	        //toggleOverlay();
+	      }
+	    });
+		toolsPanel.add(showOverLayButton);
+
+	    removeOverLayButton.addClickHandler(new ClickHandler() {
+	      public void onClick(ClickEvent event) {
+	    	  map.clearOverlays();
+	    	  listofClicks.clear();
+	    	  showOverLayButton.setEnabled(true);
+	    	  //remove overlay
+	       /* if (geoXml == null) {
+	          return;
+	        }
+	        if (geoXml.isHidden()) {
+	          geoXml.setVisible(true);
+	          showHideButton.setText("Hide");
+	        } else {
+	          geoXml.setVisible(false);
+	          showHideButton.setText("Show");
+	        }*/
+	      }
+	    });
+
+	    toolsPanel.add(removeOverLayButton);
+	    //initWidget(panel);
 	}
 	
 	/**
@@ -261,12 +348,14 @@ public class GSTCloudUI  extends Composite {
 	 * @param radius Radius of the search circle
 	 * @param map 
 	 */
-	private void drawLandMarksWithinCircle(final LatLng point,final Double radius)
+	private void drawLandMarksWithinCircle(final LatLng point, final Double radius)
 	{
+		final Double localRadius=radius;
+		final LatLng localPoint =point;
 		landMarksService.displayLandmarksWithinDistance
-		(point.getLatitude(), 
-		 point.getLongitude(),
-		 new Double(tbLatLngRadius.getText()), 
+		(localPoint.getLatitude(), 
+		 localPoint.getLongitude(),
+		 localRadius, 
 		 new AsyncCallback<List<LandmarkDTO>>()
 		{
 			public void onFailure(Throwable caught) 
@@ -277,17 +366,31 @@ public class GSTCloudUI  extends Composite {
 		    //	tbAttributeRadius.setValue("Running");
 		    	int rowCount = result.size();
 		    	
-		    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(point,radius,60));
-		    	map.setCenter(point, 10);
-		    	map.addOverlay(new Marker(point));
+		    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
+		    	map.setCenter(localPoint, 10);
+		    	map.addOverlay(new Marker(localPoint));
 				for (int row = 0; row < rowCount; row ++)
 				{
-					Double pntlat = result.get(row).getLatitude();
-					Double pntlng = result.get(row).getLongitude();
-					LatLng point = LatLng.newInstance(pntlat,pntlng);
+					final LandmarkDTO lm =result.get(row);
+					Double pntlat = lm.getLatitude();
+					Double pntlng = lm.getLongitude();
+					final LatLng point = LatLng.newInstance(pntlat,pntlng);
 //					// Add a marker
-		   	          map.addOverlay(new Marker(point));
+					final Marker marker =new Marker(point);
 		   	          
+		   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
+		   	          public void onClick(MarkerClickEvent event) {
+		   	          InfoWindow info = map.getInfoWindow();
+		   	          info.open(marker,
+		   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
+		   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
+		   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
+		   	            		  "</tr><tr><td>Landmark Name</td><td>"+lm.getPlaceName()+
+		   	            		  "</td></tr>"));
+		   	        }
+		   	      });
+		   	      map.addOverlay(marker);
+
 		   	          
 					
 				}
@@ -303,7 +406,7 @@ public class GSTCloudUI  extends Composite {
 	 */	
 	private void StatesLoader()
 	{
-		 final State s1 = new State("Delhi",28.38, 77.12 ,10);
+		 /*final State s1 = new State("Delhi",28.38, 77.12 ,10);
 		 final State s2 = new State("Uttar Pradesh",27.40,80.00,9);
 		 final State s3 = new State("Maharashtra",20.00,76.00,11);
 		 final State s4 = new State("Kerala",10.00,76.25,12);
@@ -311,8 +414,20 @@ public class GSTCloudUI  extends Composite {
 		 final State s6 = new State("Haryana",30.30,74.60,8);
 		 final State s7 = new State("Goa",28.00,72.00,9);
 		 final State s8 = new State("Jammu and Kashmir",32.44,74.54,11);
-		 final State s9 = new State("Gujarat",23.00,72.00,9);
-	
+		 final State s9 = new State("Gujarat",23.00,72.00,9);*/
+		 final State s1 = new State("Delhi",28.635308,77.22496,0);
+		 final State s2 = new State("Uttar Pradesh",27.5705886,80.0981869,0);
+		 final State s3 = new State("Maharashtra",19.7514798,75.7138884,0);
+		 final State s4 = new State("Kerala",10.5143884,76.6412712,0);
+		 final State s5 = new State("Punjab",31.1471305,75.3412179,0);
+		 final State s6 = new State("Haryana",29.0587757,	76.085601,0);
+		 final State s7 = new State("Goa",15.4253792,73.9830029,0);
+		 final State s8 = new State("Jammu and Kashmir",34.1490875,76.8259652,0);
+		 final State s9 = new State("Gujarat",22.258652,71.1923805,0);
+		 
+		 
+		 
+		 
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
 				public void onFailure(Throwable caught) 
@@ -342,7 +457,7 @@ public class GSTCloudUI  extends Composite {
 	 */
 	private void DistrictsLoader()
 	{
-		 final District d1 = new District("Delhi","East Delhi",28.53,77.13);
+		 /*final District d1 = new District("Delhi","East Delhi",28.53,77.13);
 		 final District d2 = new District("Delhi","West Delhi",28.595,77.102);
 		 final District d3 = new District("Delhi","South Delhi",28.500,77.100);
 		 final District d4 = new District("Uttar Pradesh","Varanasi",25.20,83.00);
@@ -357,8 +472,27 @@ public class GSTCloudUI  extends Composite {
 		 final District d13 = new District("Jammu and Kashmir","Srinagar",30.40,77.00);
 		 final District d14 = new District("Jammu and Kashmir","Jammu",32.43,74.54);
 		 final District d15 = new District("Gujarat","Ahemdabad",23.03,72.40);
-		 final District d16 = new District("Gujarat","Vadodra",22.00,73.16);
-	
+		 final District d16 = new District("Gujarat","Vadodra",22.00,73.16);*/
+		 final District d1 = new District("Delhi","East Delhi",42.2989728,-74.8787711);
+		 final District d2 = new District("Delhi","West Delhi",42.2995281,-75.0082191);
+		 final District d3 = new District("Delhi","South Delhi",28.635308,77.22496);
+		 final District d4 = new District("Uttar Pradesh","Varanasi",25.309722,	82.988611);
+		 final District d5 = new District("Maharashtra","Bombay",19.017656,19.017656);
+		 final District d6 = new District("Kerala","Ernakulam (Cochin)",10.0448261,76.3275467);
+		 final District d7 = new District("Kerala","Kannur",	11.8688889,75.3555556);
+		 final District d8 = new District("Punjab","Amritsar",31.63089,74.871552);
+		 final District d9 = new District("Punjab","Ludhiana",30.90609,75.846786);
+		 final District d10 = new District("Punjab","Kaithal",29.795441,76.399269);
+		 final District d11 = new District("Goa","Vasco",15.4083333,73.7916667);
+		 final District d12 = new District("Jammu and Kashmir","Leh Ladakh",34.1490875,76.8259652);
+		 final District d13 = new District("Jammu and Kashmir","Srinagar",34.08278,74.808492);
+		 final District d14 = new District("Jammu and Kashmir","Jammu",32.709743,	74.851969);
+		 final District d15 = new District("Gujarat","Ahemdabad",23.039574,72.56602);
+		 final District d16 = new District("Gujarat","Vadodra",22.306549,	73.187576);
+		 
+		 
+		 
+		 
 		 final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 			{
 				public void onFailure(Throwable caught) 
@@ -394,12 +528,19 @@ public class GSTCloudUI  extends Composite {
 	 */
 	private void LocalBodyLoader()
 	{
-		final LocalBody l1 = new LocalBody("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
+		/*final LocalBody l1 = new LocalBody("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
 		final LocalBody l2 = new LocalBody("East Delhi","village","Kondli",28.11,77.29);
 		final LocalBody l3 = new LocalBody("South Delhi","Town","Dwarka Sub City",28.19,77.00);
 		final LocalBody l4 = new LocalBody("South Delhi","village","Najafgarh",27.11,77.909);
 		final LocalBody l5 = new LocalBody("South Delhi","village","Bersarai",28.97,77.98);
 		final LocalBody l6 = new LocalBody("South Delhi","Town","Hauz Khas",28.90,76.11);
+		*/
+		final LocalBody l1 = new LocalBody("South Delhi","Town","Chilla Saroda Bangar",	28.59577,77.30153);
+		final LocalBody l2 = new LocalBody("East Delhi","village","Kondli",	28.61464,77.32613);
+		final LocalBody l3 = new LocalBody("South Delhi","Town","Dwarka Sub City",28.6,77.0541667);
+		final LocalBody l4 = new LocalBody("South Delhi","village","Najafgarh",28.6063932,76.9815877);
+		final LocalBody l5 = new LocalBody("South Delhi","village","Bersarai",28.551276,77.1818935);
+		final LocalBody l6 = new LocalBody("South Delhi","Town","Hauz Khas",28.5497644,77.1973997);
 		
 		
 		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
@@ -612,6 +753,7 @@ public class GSTCloudUI  extends Composite {
 	}
 	
 	private void showBySpatialLocation(){
+		final Double radius = new Double(tbSpatialRadius.getText());
 		int selectedIndex=lbLocalBody.getSelectedIndex();
 		 if(selectedIndex==-1 || lbLocalBody.getItemText(selectedIndex )== "Select Villages/Town"||lbLocalBody.getItemText(selectedIndex )== "No Available Villages/Town")
 		 {
@@ -642,7 +784,7 @@ public class GSTCloudUI  extends Composite {
 								//map.addOverlay(new Marker(point));
 								//map.setCenter(point,result.getZoomLevel());
 								//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
-								drawLandMarksWithinCircle(point,new Double(tbLatLngRadius.getText()));
+								drawLandMarksWithinCircle(point,radius);
 							}
 						});
 				 }
@@ -666,7 +808,7 @@ public class GSTCloudUI  extends Composite {
 								//map.addOverlay(new Marker(point));
 								//map.setCenter(point,15);
 								//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
-								drawLandMarksWithinCircle(point,new Double(tbLatLngRadius.getText()));
+								drawLandMarksWithinCircle(point,radius);
 							}
 						 });
 			 }
@@ -690,7 +832,7 @@ public class GSTCloudUI  extends Composite {
 							//map.addOverlay(new Marker(point));
 							//map.setCenter(point,15);
 							//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
-							drawLandMarksWithinCircle(point,new Double(tbLatLngRadius.getText()));
+							drawLandMarksWithinCircle(point,radius);
 						}
 					 });
 		 }
@@ -716,9 +858,10 @@ public class GSTCloudUI  extends Composite {
 			return;
 		}
 		final LatLng centerPoint = LatLng.newInstance(new Double(tbLatitude.getText()),new Double(tbLongitude.getText()));
-		drawLandMarksWithinCircle(centerPoint,new Double(tbLatLngRadius.getText()));
+		drawLandMarksWithinCircle(centerPoint,radius);
 	}
 	private void showByName(String landMarkName){
+		final Double radius = new Double(tbAttributeRadius.getText());
 		landMarksService.searchLandmarkByName(landMarkName,new AsyncCallback<List<LandmarkDTO>>()
 				{
 					public void onFailure(Throwable caught) 
@@ -726,8 +869,7 @@ public class GSTCloudUI  extends Composite {
 					}
 				    public void onSuccess(List<LandmarkDTO> result ) 
 				    {
-				    //	tbAttributeRadius.setValue("Running");
-				    	Double radius = new Double(tbAttributeRadius.getText());
+				    
 						int rowCount = result.size();
 						for (int row = 0; row < rowCount; row ++)
 						{
@@ -742,14 +884,15 @@ public class GSTCloudUI  extends Composite {
 					    	  
 					    	  
 					    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
-					    	  drawLandMarksWithinCircle(centerPoint,new Double(tbLatLngRadius.getText()));
+					    	  drawLandMarksWithinCircle(centerPoint,radius);
 						}
 				    }
 				});
 	}
 
 	private void showByGeoCodedAddress(final String address) {
-		final InfoWindow info = map.getInfoWindow();
+		final Double radius = new Double(tbGeoCodedRadius.getText());
+		//final InfoWindow info = map.getInfoWindow();
 	    try{
 		geocoder.getLatLng(address, new LatLngCallback() {
 	      public void onFailure() {
@@ -757,11 +900,12 @@ public class GSTCloudUI  extends Composite {
 	    	  System.out.println(address+ "not found");
 	      }
 	      public void onSuccess(LatLng centerPoint) {
+	    	  final LatLng localPoint = centerPoint;
 	    	  //map.setCenter(centerPoint, 13);
 	          //Marker marker = new Marker(centerPoint);
 	          //map.addOverlay(marker);
 	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,new Double(tbGeoCodedRadius.getText()),60,map);
-	          drawLandMarksWithinCircle(centerPoint,new Double(tbLatLngRadius.getText()));
+	          drawLandMarksWithinCircle(localPoint,radius);
 	          //info.open(marker, new InfoWindowContent(address));
 //	          displayLatLng(point);
 	        }
@@ -904,21 +1048,22 @@ public class GSTCloudUI  extends Composite {
 	    
 	    map.addControl(new MapTypeControl());
 	    
-	    //map.setGoogleBarEnabled(true);
-	    map.setSize("765px", "480px");
+	    map.setGoogleBarEnabled(false);
+	    map.setSize("990px", "400px");
 	//    map.setGoogleBarEnabled(true);
 	    map.addControl(new LargeMapControl3D());
+	    
 	    map.addControl(new ScaleControl());
 	     /* Disable double-click for zoom so we can 
 	     * use double-click handler for other fun things
 	     */
 	   
-	    map.setDoubleClickZoom(false);
+	    map.setDoubleClickZoom(true);
 	    
 	    /*
 	     * Single click on map will send the map's 
 	     * center point for WITHIN query on the server*/
-	    map.addMapClickHandler(new MapClickHandler(){
+	   /* map.addMapClickHandler(new MapClickHandler(){
 
 			public void onClick(MapClickEvent event) {
 				LatLng point = event.getLatLng();
@@ -934,7 +1079,7 @@ public class GSTCloudUI  extends Composite {
 				
 			}
 	    	
-	    });
+	    });*/
 	    
 		/*
 		 * Zooming in close enough will put the map viewport
@@ -1107,15 +1252,15 @@ public class GSTCloudUI  extends Composite {
 	public void setupTablePanel()
 	{
 		datagrid.setAllowRowMark(true);
-		datagrid.setFirstColumnVisible(true);
+		datagrid.setFirstColumnVisible(false);
 		datagrid.setTableModelService(landmarksModelService);
 		datagrid.addRowSelectionListener(new RowSelectionListener() {
 			public void onRowSelected(AdvancedTable sender, String rowId) {
 				lblMessages.setText("Row " + rowId + " selected.");
 			}
 		});
-		datagrid.setSize("1280px", "100px");
-		datagrid.setPageSize(5);
+		datagrid.setSize("1260px", "100px");
+		datagrid.setPageSize(3);
 		vpDataGird.add(datagrid);
 
 		tbFilter.setWidth("100%");

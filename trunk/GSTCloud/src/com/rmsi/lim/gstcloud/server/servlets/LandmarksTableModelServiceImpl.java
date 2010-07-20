@@ -32,6 +32,7 @@ public class LandmarksTableModelServiceImpl extends RemoteServiceServlet impleme
 	private static final long serialVersionUID = 1L;
 
 	private TableColumn[] columns = new TableColumn[] {
+			new TableColumn("CurrentlySelected","Selected"),
 			new TableColumn("Category", "Category" ),
 			//new TableColumn("GeoCells", "GeoCells" ),
 			new TableColumn("Latitude","Latitude" ),
