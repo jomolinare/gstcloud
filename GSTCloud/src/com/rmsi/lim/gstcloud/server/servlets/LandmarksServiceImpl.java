@@ -54,7 +54,7 @@ public class LandmarksServiceImpl extends RemoteServiceServlet implements Landma
 	    for (int ctr=0;ctr<rowCount;ctr++)
 	    {
 	        Landmark temp =landmarklist.get(ctr);
-	    	tempList.add(new LandmarkDTO(temp.getCategory(),temp.getLatitude(),temp.getLongitude(),temp.getPlaceName()));
+	    	tempList.add(new LandmarkDTO(temp.getCategory(),temp.getLatitude(),temp.getLongitude(),temp.getPlaceName(),true));
 	    }
 		
 	    return tempList;
@@ -89,7 +89,7 @@ public class LandmarksServiceImpl extends RemoteServiceServlet implements Landma
 	    for (int ctr=0;ctr<rowCount;ctr++)
 	    {
 	    	Landmark temp =objects.get(ctr);
-	    	tempList.add(new LandmarkDTO(temp.getCategory(),temp.getLatitude(),temp.getLongitude(),temp.getPlaceName()));
+	    	tempList.add(new LandmarkDTO(temp.getCategory(),temp.getLatitude(),temp.getLongitude(),temp.getPlaceName(),true));
 	    }
 		
 	    return tempList;
@@ -108,7 +108,7 @@ public class LandmarksServiceImpl extends RemoteServiceServlet implements Landma
 	    {
 	        
 	    	 Landmark temp =landmarklist.get(ctr);
-		    tempList.add(new LandmarkDTO(temp.getCategory(),temp.getLatitude(),temp.getLongitude(),temp.getPlaceName()));
+		    tempList.add(new LandmarkDTO(temp.getCategory(),temp.getLatitude(),temp.getLongitude(),temp.getPlaceName(),true));
 	    }
 
 		return tempList; 

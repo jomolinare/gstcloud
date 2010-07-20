@@ -1,32 +1,38 @@
 <ui:style>
 *{margin:0; padding:0;}
-.page-body{width:100%; height:100%; background:#f6f6f6 url('images/bg-body.png') repeat-x 0 0; font:0.8em/ 100% Arial, Verdana, Tahoma, Helvetica, sans-serif; color:#000;
+.page-body{width:100%; height:100%; background:#f6f6f6 url('images/bg-body.png') repeat-x 0 0;
+font:0.8em/ 100% Arial, Verdana, Tahoma, Helvetica, sans-serif; color:#000;
 }
-.wrapper{margin:0 auto; padding:0; width:950px; background:url('images/bg-graphics.png') repeat-x 0 0;}
-.header{position:relative; float:left; clear:both; width:950px;}
+.wrapper{margin:0 auto; padding:0; width:1260px; background:url('images/bg-graphics.png') no-repeat 0 0;}
+.header{position:relative; float:left; clear:both; width:1260px;}
 .queries{float:left; border:1px solid #6ab5c0; background:#e4f8fb url('images/bg-pannel.png') repeat-x 0 0; width:232px; padding:5px; margin:40px 5px 0px 0px;}
-.map{float:left; height:500px; width:700px; padding:10px; border:1px solid #d3f9ff; background:#f0fdff url('images/bg-map.png') repeat-x 0 0;}
-.datag{float:left; clear:both; width:950px;}
+.map{float:left; height:400px; width:990px; padding:10px; border:1px solid #d3f9ff; background:#f0fdff url('images/bg-map.png') repeat-x 0 0;}
+.datag{float:left; clear:both; width:1260px; margin-top:4px; border:1px solid #d3f9ff;}
 
 
 .d-none{display:none;}
-.c-logo{position:absolute; top:25px; margin-left:10px;}
-.r-logo{float:right; margin-top:14px;}
+.c-logo{position:absolute; top:5px; margin-left:80px;}
+.r-logo{position:absolute; top:5px; margin-left:10px;}
 
 /**Stack Panel*/
-.stackp {float:left; clear:both; width:232px; height:500px;}
+.stackp {float:left; clear:both; width:232px; height:370px;}
 .stacklabel{color:#00375c; font-weight: normal; border-bottom: 1px solid #9fcbe9; cursor:pointer; padding:4px 0px 4px 5px; font-size:110%;}
 .tabPanel{ width:100%; height:100%;}
 .vLatLongPanel{width:100%; height:100%; border-bottom:1px solid #9fcbe9; background:#f6feff; padding:2px;}
 .label{color:#004a55; font-size:100%; margin-right:2px; padding:2px; border:1px solid #ddd; cursor: pointer;}
 
-.textlabel{float:left; overflow:hidden; color:#333; border:1px solid #d45;}
+.textlabel{float:left; overflow:hidden; color:#333;}
 .tblarge{float:left; width:180px;}
+
 
 .hack1{height:100px; width:20px;}
 .hack2{height:150px; width:20px;}
 .hack3{height:80px; width:20px;}
 .hack4{height:150px; width:20px;}
+
+.tbl-Data{width:1260px; border:1; height:100px; overflow:auto; cellspacing:2px; cellpadding:2px;}
+.tbl-Data TR TD{margin:2px; padding:0; background:#fff; border:0.02em solid #ddd;}
+.advancedTableHeader{background:#cdb;}
 
 /**QueryTab Panel*/
 

@@ -15,7 +15,7 @@
 	 	<g:HTML>
 	 		<img src="images/lo-cloud.png" title="Brand Cloud GIS" alt="Brand Cloud GIS" class="c-logo" />
 	 		<img src="images/logo-rmsi.png" title="Brand RMSI" alt="Brand RMSI" class="r-logo" />
-	 		<h3 class="d-none">Cloud GIS</h3></g:HTML>
+	 		<h3 class="d-none">RMSI Cloud GIS</h3></g:HTML>
 	 	</g:VerticalPanel>					
 
 <!--Header Panel(CloudGIS Text)(Ends Here)	 -->
@@ -174,7 +174,7 @@
     			    <g:Label styleName="stacklabel">Tools</g:Label>
         			</g:customHeader>
 <!--Tools Panel	(Starts Here)		-->
-						<g:HorizontalPanel styleName="tools">
+						<g:HorizontalPanel ui:field="toolsPanel" styleName="tools">
 						</g:HorizontalPanel>
 		
 <!--Tools Panel	(Ends Here)		-->
@@ -201,7 +201,7 @@
 
 <!--Vertical Panel, holds DataGird, (Starts Here)-->
 			<g:VerticalPanel ui:field="vpTable" styleName="datag">
-				<g:VerticalPanel ui:field="vpDataGird">
+				<g:VerticalPanel ui:field="vpDataGird"  styleName="tbl-Data">
 				</g:VerticalPanel>
 				
 <!--VerticalPanel Holding Buttons(Apply Filter,Clear Filter,Mark All,Mark Nothing,Show Marked) of DataGird,(Starts Here)		-->
@@ -221,7 +221,8 @@
 <!--VerticalPanel Holding Buttons(Apply Filter,Clear Filter,Mark All,Mark Nothing,Show Marked) of DataGird,(Ends Here)		-->	         	 
 	         	 </g:VerticalPanel>
 	         	 
-<!--Vertical Panel, holds DataGird, (Ends Here) -->	         	 
+<!--Vertical Panel, holds DataGird, (Ends Here) -->	 
+        	 
 			</g:VerticalPanel>
 
 <!--Dialogue Box (Starts Here)       -->
