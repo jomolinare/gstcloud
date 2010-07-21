@@ -422,6 +422,13 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	 */
 	public void updateTableData() {
 		showStatus("Loading...", STATUS_WAIT);
+		// Reset the active page number
+		this.currentPageIndex = 0;
+		
+		// Initialize the number of rows in the table:
+		// 1 header row + pageSize data rows
+		grid.resizeRows(1 + this.pageSize);
+		
 		this.tableModelService.applySpatialFilter(this.centerPoint.getLatitude(), this.centerPoint.getLongitude(), this.searchRadius, new AsyncCallback<String>(){
 			public void onFailure(Throwable caught) {
 				AdvancedTable.this.showStatus(
@@ -431,31 +438,26 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 			}
 			public void onSuccess(String result) 		
 			{
-				
+				updateRowsCount(new AsyncCallback<Integer>() {
+					public void onFailure(Throwable caught) {
+						AdvancedTable.this.showStatus(
+							"Can not get table rows count from the server.",
+							STATUS_ERROR);
+						System.out.println("checkpoint1");
+					}
+					public void onSuccess(Integer result) 
+					
+					{
+						System.out.println("check point 2");
+						AdvancedTable.this.updateRows();
+						System.out.println("check point3");
+					}
+				});
 			}
 		});
-		// Reset the active page number
-		this.currentPageIndex = 0;
 		
-		// Initialize the number of rows in the table:
-		// 1 header row + pageSize data rows
-		grid.resizeRows(1 + this.pageSize);
 		
-		this.updateRowsCount(new AsyncCallback<Integer>() {
-			public void onFailure(Throwable caught) {
-				AdvancedTable.this.showStatus(
-					"Can not get table rows count from the server.",
-					STATUS_ERROR);
-				System.out.println("checkpoint1");
-			}
-			public void onSuccess(Integer result) 
-			
-			{
-				System.out.println("check point 2");
-				AdvancedTable.this.updateRows();
-				System.out.println("check point3");
-			}
-		});
+		
 	}
 	
 	/**
