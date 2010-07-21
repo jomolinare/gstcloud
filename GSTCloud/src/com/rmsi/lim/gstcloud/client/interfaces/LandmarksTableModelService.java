@@ -13,4 +13,5 @@ public interface LandmarksTableModelService extends RemoteService {
 	public Integer getRowsCount(DataFilter[] filters);
 	public String[][] getRows(int startRow, int rowsCount,
 		DataFilter[] filters, String sortColumn, boolean sortOrder);
+	public String applySpatialFilter(Double lat, Double lng, Double rad);
 }

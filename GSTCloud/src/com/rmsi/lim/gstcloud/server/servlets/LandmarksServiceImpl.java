@@ -11,16 +11,15 @@ import junit.framework.Assert;
 
 import com.beoui.geocell.GeocellManager;
 import com.beoui.geocell.model.GeocellQuery;
-import com.beoui.utils.ObjectToSave;
-import com.google.appengine.api.datastore.Query;
-import com.google.gwt.maps.client.geom.LatLng;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.rmsi.lim.gstcloud.server.model.Landmark;
+import com.rmsi.lim.gstcloud.server.utilities.GSTCloudServerConstants;
 import com.rmsi.lim.gstcloud.server.utilities.PMF;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
-import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesService;
+
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
-import com.rmsi.lim.gstcloud.client.utilities.GSTCloudConstants;
+
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
@@ -72,7 +71,7 @@ public class LandmarksServiceImpl extends RemoteServiceServlet implements Landma
             GeocellQuery baseQuery = new GeocellQuery("category== categoryParam","String categoryParam", params);
 	        List<Landmark> objects = null;
 	        try {
-	            objects = GeocellManager.proximityFetch(centerPoint, GSTCloudConstants.maxSearchResults, distance, Landmark.class, baseQuery, pm);
+	            objects = GeocellManager.proximityFetch(centerPoint, GSTCloudServerConstants.maxSearchResults, distance, Landmark.class, baseQuery, pm);
 	            //Assert.assertTrue(objects.size() > 0);
 	        } catch (Exception e) {
 	            

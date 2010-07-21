@@ -9,4 +9,5 @@ public interface LandmarksTableModelServiceAsync {
 	public void getRowsCount(DataFilter[] filters, AsyncCallback<Integer> callback);
 	public void getRows(int startRow, int rowsCount,
 		DataFilter[] filters, String sortColumn, boolean sortOrder, AsyncCallback<String[][]> callback);
+	public void applySpatialFilter(Double lat, Double lng, Double rad,AsyncCallback<String> callback);
 }
