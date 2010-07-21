@@ -19,7 +19,7 @@ public class GSTCloudUtils {
 	{
 		
 			 LatLngBounds bounds = LatLngBounds.newInstance();
-			 LatLng[] circlePoints = new LatLng[nbOfPoints];
+			 LatLng[] circlePoints = new LatLng[nbOfPoints+1];
 
 			 //double EARTH_RADIUS = 6371000;
 			 double d = radius / GSTCloudConstants.EarthRadius;
