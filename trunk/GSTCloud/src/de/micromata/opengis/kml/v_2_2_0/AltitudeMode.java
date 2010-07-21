@@ -1,9 +1,9 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import ae.javax.xml.bind.annotation.XmlEnum;
-import ae.javax.xml.bind.annotation.XmlEnumValue;
-import ae.javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**

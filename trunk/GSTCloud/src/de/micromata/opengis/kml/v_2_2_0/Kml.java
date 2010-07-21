@@ -3,7 +3,7 @@ package de.micromata.opengis.kml.v_2_2_0;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,34 +11,31 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.URLDecoder;
-//import java.net.URLEncoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-//import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipOutputStream;
 import javax.xml.XMLConstants;
-import ae.javax.xml.bind.JAXBContext;
-//import javax.xml.bind.JAXBElement;
-import ae.javax.xml.bind.JAXBException;
-import ae.javax.xml.bind.Marshaller;
-import ae.javax.xml.bind.Unmarshaller;
-import ae.javax.xml.bind.annotation.XmlAccessType;
-import ae.javax.xml.bind.annotation.XmlAccessorType;
-import ae.javax.xml.bind.annotation.XmlAttribute;
-import ae.javax.xml.bind.annotation.XmlElement;
-import ae.javax.xml.bind.annotation.XmlElementRef;
-import ae.javax.xml.bind.annotation.XmlRootElement;
-import ae.javax.xml.bind.annotation.XmlSchemaType;
-import ae.javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-
 import com.sun.istack.NotNull;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import de.micromata.opengis.kml.v_2_2_0.gx.Tour;
@@ -182,10 +179,9 @@ public class Kml implements Cloneable
     protected String hint;
     private transient JAXBContext jc = null;
     private transient Marshaller m = null;
-    //private transient int missingNameCounter = (1);
-    private final static String SCHEMA_LOCATION = "src/main/resources/schema/ogckml/ogckml22.xsd";
+    private transient int missingNameCounter = (1);
+    private final static String SCHEMA_LOCATION = "scr/main/schema/ogckml/ogckml22.xsd";
 
-    private static final Logger log = Logger.getLogger(Kml.class.getName());
     public Kml() {
         super();
     }
@@ -648,10 +644,10 @@ public class Kml implements Cloneable
         return m;
     }
 
-  /*  *//**
+    /**
      * Internal method
      * 
-     *//*
+     */
     private void addKmzFile(Kml kmzFile, ZipOutputStream out, boolean mainfile)
         throws IOException
     {
@@ -670,7 +666,7 @@ public class Kml implements Cloneable
         out.putNextEntry(new ZipEntry(URLEncoder.encode(fileName, "UTF-8")));
         kmzFile.marshal(out);
         out.closeEntry();
-    }*/
+    }
 
     /**
      * Java to KML
@@ -749,14 +745,14 @@ public class Kml implements Cloneable
         }
     }
 
-   /* *//**
+    /**
      * Java to KML
      * The object graph is marshalled to a File object.
      * The object is not saved as a zipped .kmz file.
      * @see marshalKmz(String, Kml...)
      * 
-     *//*
-    public boolean marshal(final File filename)
+     */
+    /*public boolean marshal(final File filename)
         throws FileNotFoundException
     {
         OutputStream out = new FileOutputStream(filename);
@@ -803,10 +799,8 @@ public class Kml implements Cloneable
     public static Kml unmarshal(final File file, final boolean validate) {
         try {
             Unmarshaller unmarshaller = JAXBContext.newInstance((Kml.class)).createUnmarshaller();
-            Boolean valid;
             if (validate == true) {
-                valid=Kml.validate(unmarshaller);
-                System.out.println(valid.toString());
+                Kml.validate(unmarshaller);
             }
             InputSource input = new InputSource(new FileReader(file));
             SAXSource saxSource = new SAXSource(new NamespaceFilterXMLReader(validate), input);
@@ -871,26 +865,17 @@ public class Kml implements Cloneable
      */
     public static Kml unmarshal(final InputStream content) {
         try {
-            log.info("point  a");
-        	Unmarshaller unmarshaller = ae.javax.xml.bind.JAXBContext.newInstance((Kml.class)).createUnmarshaller();
-        	log.info("point  b");
+            Unmarshaller unmarshaller = JAXBContext.newInstance((Kml.class)).createUnmarshaller();
             InputSource input = new InputSource(content);
-            log.info("point  c");
             SAXSource saxSource = new SAXSource(new NamespaceFilterXMLReader(false), input);
-            log.info("point  d");
             Kml jaxbRootElement = ((Kml) unmarshaller.unmarshal(saxSource));
-            log.info("point  e");
             return jaxbRootElement;
         } catch (SAXException _x) {
-            
-        	log.info(_x.getStackTrace().toString());
-        	_x.printStackTrace();
+            _x.printStackTrace();
         } catch (ParserConfigurationException _x) {
-        	log.info(_x.getStackTrace().toString());
-        	_x.printStackTrace();
+            _x.printStackTrace();
         } catch (JAXBException _x) {
-        	log.info(_x.getStackTrace().toString());
-        	_x.printStackTrace();
+            _x.printStackTrace();
         }
         return null;
     }

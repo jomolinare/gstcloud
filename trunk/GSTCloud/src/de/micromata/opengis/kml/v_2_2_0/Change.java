@@ -4,11 +4,11 @@ package de.micromata.opengis.kml.v_2_2_0;
 import java.util.ArrayList;
 import java.util.List;
 
-import ae.javax.xml.bind.annotation.XmlAccessType;
-import ae.javax.xml.bind.annotation.XmlAccessorType;
-import ae.javax.xml.bind.annotation.XmlElementRef;
-import ae.javax.xml.bind.annotation.XmlRootElement;
-import ae.javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.gx.AnimatedUpdate;
 import de.micromata.opengis.kml.v_2_2_0.gx.FlyTo;
 import de.micromata.opengis.kml.v_2_2_0.gx.LatLonQuad;
