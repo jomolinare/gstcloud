@@ -1,10 +1,10 @@
 
 package de.micromata.opengis.kml.v_2_2_0.gx;
 
-import ae.javax.xml.bind.annotation.XmlAccessType;
-import ae.javax.xml.bind.annotation.XmlAccessorType;
-import ae.javax.xml.bind.annotation.XmlSeeAlso;
-import ae.javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.AbstractObject;
 
 
