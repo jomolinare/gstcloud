@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.model.TableColumn;
@@ -40,7 +39,12 @@ public class LandmarksTableModelServiceImpl extends RemoteServiceServlet impleme
 			new TableColumn("PlaceName","PlaceName")
 			};
 	
-
+	public String applySpatialFilter(Double lat, Double lng, Double rad){
+		LandmarksServiceImpl fea1 = new LandmarksServiceImpl();
+		this.allLandmarks=fea1.displayLandmarksWithinDistance(lat, lng, rad);
+		this.applyDataFilters(null);
+		return "filter applied";
+	}
 
 	private List<LandmarkDTO> allLandmarks ;
 

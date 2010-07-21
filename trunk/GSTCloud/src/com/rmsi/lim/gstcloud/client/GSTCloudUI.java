@@ -394,6 +394,10 @@ public class GSTCloudUI  extends Composite {
 		   	          
 					
 				}
+				datagrid.setCenterPoint(localPoint);
+				datagrid.setSearchRadius(localRadius);
+				
+				datagrid.updateTableData();
 		    }
 		});
 	}
@@ -648,6 +652,7 @@ public class GSTCloudUI  extends Composite {
 		else if (event.getSource()==btnGeoCodedSearch)	
 		{
 			showByGeoCodedAddress(tbGeoCodedAddress.getText());
+			
 		}
 		else if (event.getSource()==btnGeoCodedClear) 
 		{
@@ -1037,9 +1042,8 @@ public class GSTCloudUI  extends Composite {
 	public void setupMap()
 	{
       //LatLng saltLakeCountyCentroid = LatLng.newInstance(40.649387,-111.928711);
-		LatLng delhiCityCentroid = LatLng.newInstance(28.5332740008996,77.1380750260093);
 		
-	    map = new MapWidget(delhiCityCentroid, 15);
+	    map = new MapWidget(GSTCloudConstants.delhiCityCentroid, 15);
 	    map.addMapType(MapType.getHybridMap());
 	    map.addMapType(MapType.getSatelliteMap());
 	    map.addMapType(MapType.getNormalMap());

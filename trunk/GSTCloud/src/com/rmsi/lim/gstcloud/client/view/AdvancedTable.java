@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -48,6 +49,7 @@ import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
+import com.rmsi.lim.gstcloud.client.utilities.GSTCloudConstants;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
 import com.rmsi.lim.gstcloud.client.model.TableColumn;
@@ -99,6 +101,8 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	private int selectedRowIndex;
 	private Set markedRows = new HashSet();
 	
+	private LatLng centerPoint=LatLng.newInstance(new Double(GSTCloudConstants.delhiCityCentroid.getLatitude()),new Double(GSTCloudConstants.delhiCityCentroid.getLatitude())); 
+	private Double searchRadius=100000.0;
 	
 	
 	public AdvancedTable() {
@@ -418,7 +422,18 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	 */
 	public void updateTableData() {
 		showStatus("Loading...", STATUS_WAIT);
-
+		this.tableModelService.applySpatialFilter(this.centerPoint.getLatitude(), this.centerPoint.getLongitude(), this.searchRadius, new AsyncCallback<String>(){
+			public void onFailure(Throwable caught) {
+				AdvancedTable.this.showStatus(
+					"Could not apply spatial filter on the server.",
+					STATUS_ERROR);
+				System.out.println("checkpoint1");
+			}
+			public void onSuccess(String result) 		
+			{
+				
+			}
+		});
 		// Reset the active page number
 		this.currentPageIndex = 0;
 		
@@ -1069,7 +1084,19 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		int newHeight = originalHeight - NAVIGATION_PANEL_HEIGHT;
 		scrollPanelGrid.setHeight("" + newHeight + "px");
 	}
-
+	public LatLng getCenterPoint(){
+		return this.centerPoint;
+	}
+	public void setCenterPoint(LatLng centerPointIn){
+		this.centerPoint=centerPointIn;
+	}
+	
+	public Double getSearchRadius(){
+		return this.searchRadius;
+	}
+	public void setSearchRadius(Double searchRadiusIn){
+		this.searchRadius=searchRadiusIn;
+	}
 	
 
 	
