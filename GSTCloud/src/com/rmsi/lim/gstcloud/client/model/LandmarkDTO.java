@@ -22,6 +22,8 @@ public class LandmarkDTO  implements IsSerializable{
 //    private Long id;
 
 //    @Persistent
+	private boolean currentlySelected;
+	
     private String category;
 
 //    @Persistent
@@ -38,11 +40,12 @@ public class LandmarkDTO  implements IsSerializable{
     	
     }
     
-    public LandmarkDTO(String category,Double latitude, Double longitude, String placeName) {
+    public LandmarkDTO(String category,Double latitude, Double longitude, String placeName,boolean selected) {
         this.category = category;
         this.latitude=latitude;
         this.longitude=longitude;
         this.placeName = placeName;
+        this.currentlySelected=selected;
 //        this.setGeoCells(geoCells);
     }
 
@@ -57,7 +60,11 @@ public class LandmarkDTO  implements IsSerializable{
 //		 this.setPlaceName(landmark.getPlaceName());
 //	}
 
-	public String getCategory() {
+	public Boolean getCurrentlySelected(){
+		return currentlySelected;
+	}
+    
+    public String getCategory() {
         return category;
     }
 
@@ -72,7 +79,11 @@ public class LandmarkDTO  implements IsSerializable{
     public String getPlaceName() {
         return placeName;
     }
-
+    
+    public void setCurrentlySelected(boolean select){
+    	this.currentlySelected=select;
+    }
+    
     public void setCategory(String category) {
         this.category = category;
     }
