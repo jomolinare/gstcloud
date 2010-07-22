@@ -15,7 +15,7 @@ font:0.8em/ 100% Arial, Verdana, Tahoma, Helvetica, sans-serif; color:#000;
 .r-logo{position:absolute; top:5px; margin-left:10px;}
 
 /**Stack Panel*/
-.stackp {float:left; clear:both; width:232px; height:370px;}
+.stackp {float:left; clear:both; width:232px; height:300px;}
 .stacklabel{color:#00375c; font-weight: normal; border-bottom: 1px solid #9fcbe9; cursor:pointer; padding:4px 0px 4px 5px; font-size:110%;}
 .tabPanel{ width:100%; height:100%;}
 .vLatLongPanel{width:100%; height:100%; border-bottom:1px solid #9fcbe9; background:#f6feff; padding:2px;}
