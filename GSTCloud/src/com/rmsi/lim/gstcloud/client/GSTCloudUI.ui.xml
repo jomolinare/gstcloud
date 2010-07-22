@@ -26,7 +26,10 @@
 	
 <!--Vertical Panel, holds StackLayoutPanel	-->
 		<g:VerticalPanel styleName="queries" ui:field="vp1">
-
+<g:VerticalPanel ui:field="LoginHeader">
+    <g:Label styleName="stacklabel">Please Login</g:Label>
+        				
+</g:VerticalPanel>
 <!--StackLayout Panel(Starts Here), holds QueryTabPanel,AdminPanel,AdminLogin,LayerManager,ToolsPanel-->
 			 <g:StackLayoutPanel ui:field="stp" styleName="stackp">
 			 		<g:stack>
@@ -147,17 +150,7 @@
 
 <!--AdminPanel (Ends Here)-->
 		</g:stack>
-		<g:stack>
-					<g:customHeader size='25'>
-    			    <g:Label styleName="stacklabel">Admin Login</g:Label>
-        			</g:customHeader>
-        			
-<!--Admin Login Panel (Starts Here)-->
-					<g:VerticalPanel styleName="logio">	
-				  	</g:VerticalPanel>
-				  	
-<!--Admin Login Panel (Ends Here)-->				  	
-		</g:stack>
+		
 		<g:stack>
 					<g:customHeader size='25'>
     			    <g:Label styleName="stacklabel">Layer Manager</g:Label>
@@ -174,8 +167,8 @@
     			    <g:Label styleName="stacklabel">Tools</g:Label>
         			</g:customHeader>
 <!--Tools Panel	(Starts Here)		-->
-						<g:HorizontalPanel ui:field="toolsPanel" styleName="tools">
-						</g:HorizontalPanel>
+						<g:VerticalPanel ui:field="toolsPanel" styleName="tools">
+						</g:VerticalPanel>
 		
 <!--Tools Panel	(Ends Here)		-->
 		</g:stack>
@@ -183,6 +176,8 @@
 <!--StackLayout Panel(Ends Here)	-->
 				</g:StackLayoutPanel>
 
+<g:VerticalPanel>
+<g:Label ui:field="lblCenterPoint"></g:Label></g:VerticalPanel>
 <!--VerticalPanel(vp1)(Ends Here)-->
 		</g:VerticalPanel>
 

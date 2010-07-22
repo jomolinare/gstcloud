@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.Point;
+import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -19,13 +21,17 @@ import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.ScaleControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
+import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
+import com.google.gwt.maps.client.event.MapMoveEndHandler.MapMoveEndEvent;
 import com.google.gwt.maps.client.event.MarkerClickHandler.MarkerClickEvent;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.user.client.Window;
@@ -161,9 +167,13 @@ public class GSTCloudUI  extends Composite {
  @UiField
  Button btnAdminLoad,btnAdminDisplay;
  
+ //Fields for Footer
+ @UiField 
+ Label lblCenterPoint;
+ 
  //Fields for ToolPanel
  @UiField
- HorizontalPanel toolsPanel;
+ VerticalPanel toolsPanel;
  
  //Fields for DialogBox
  @UiField
@@ -190,6 +200,8 @@ public class GSTCloudUI  extends Composite {
  Button btnApplyFilter, btnClearFilter,btnMarkAll,btnMarkNothing,btnShowMarked;
 	
 
+ 
+ 
 	/**
 	  * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
@@ -264,81 +276,135 @@ public class GSTCloudUI  extends Composite {
 		layerLoader();
 		setupLayerManager();
 		setupTablePanel();
-		//setupUninorDemo();
+		setupUninorDemo();
 	}
 	
 	
 	
 	private void setupUninorDemo(){
 		
+		
+    
+		final Polygon UninorSalesTerritory = new Polygon(new LatLng[]
+		                            {LatLng.newInstance(28.538084182259816, 77.12526798248291),
+									 LatLng.newInstance(28.54713206234115, 77.14226245880127),
+									 LatLng.newInstance(28.535595879000425, 77.16075897216797),
+									 LatLng.newInstance(28.523266600650622, 77.14496612548828),
+									 LatLng.newInstance(28.528922411976097, 77.1419620513916)/*,
+									 LatLng.newInstance(28.538084182259816, 77.12526798248291),
+									 LatLng.newInstance(28.538084182259816, 77.12526798248291),
+									 LatLng.newInstance(28.538084182259816, 77.12526798248291),
+									 LatLng.newInstance(28.538084182259816, 77.12526798248291)*/
+									
+											},"red", 1, 1, "red", 0.5);
+		
+		final Button btnShowSearchOverlay = new Button("Create Search Overlay");
+		final Button btnHideTerritory = new Button("Clear Territory");
+		final Button btnSelectRetailers= new Button ("Select Retailers");
+		final Button btnShowTerritoryOverLay= new Button ("Show Resulting Territory");
+		
+		btnShowSearchOverlay.setEnabled(false);
+		btnShowTerritoryOverLay.setEnabled(false);
+		btnHideTerritory.setEnabled(false);
+		
 		final MapClickHandler uniclick = 
 		new MapClickHandler() {
 		      public void onClick(MapClickEvent e) {
-		        MapWidget sender = e.getSender();
-		        Overlay overlay = e.getOverlay();
+		        
+		    	MapWidget sender = e.getSender();
+		    	btnShowSearchOverlay.setEnabled(true);
+		    	Overlay overlay = e.getOverlay();
 		        LatLng point = e.getLatLng();
 
-		        if (overlay != null && overlay instanceof Marker) {
+		       /* if (overlay != null && overlay instanceof Marker) {
 		          sender.removeOverlay(overlay);
-		        } else {
-		          sender.addOverlay(new Marker(point));
-		          listofClicks.add(point);
+		          
+		        } else */{
+		          //sender.addOverlay(new Marker(point));
+		        	/*Icon icon = Icon.newInstance(
+		            "http://labs.google.com/ridefinder/images/mm_20_red.png");*/
+		        Icon icon = Icon.newInstance(
+		        "file://RetailerIcon.png");
+		        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+		        icon.setIconSize(Size.newInstance(12, 20));
+		        icon.setShadowSize(Size.newInstance(22, 20));
+		        icon.setIconAnchor(Point.newInstance(6, 20));
+		        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		        	MarkerOptions options = MarkerOptions.newInstance();
+		            options.setIcon(icon);
+		        	
+		         sender.addOverlay(new Marker(point, options));
+		         listofClicks.add(point);
 		        }
 		      }
 		     };
 		    
+		ClickHandler territoryClickHandler =new ClickHandler() {
+			  Polygon territoryOverlay ;
+		      public void onClick(ClickEvent event) {
+		    	  if (event.getSource()==btnSelectRetailers)
+		    	  {
+		    		  listofClicks.clear();
+		    		  map.clearOverlays();
+		    		  map.addMapClickHandler(uniclick);
+					  btnShowSearchOverlay.setEnabled(true);
+					  
+		    	  }
+		      else if (event.getSource()==btnShowSearchOverlay){
+		    		btnSelectRetailers.setEnabled(false);  
+			        map.removeMapClickHandler(uniclick);
+			        listofClicks.add(listofClicks.get(0));
+			        //map.clearOverlays();
+			        territoryOverlay = new Polygon(listofClicks.toArray(new LatLng[0]), "green", 1, 1, "green", 0.5);
+			    	map.addOverlay(territoryOverlay);
+			    	btnShowSearchOverlay.setEnabled(false);
+			    	btnHideTerritory.setEnabled(true);
+			    	btnShowTerritoryOverLay.setEnabled(true);
+			        //Create and add overlay 
+			        //toggleOverlay();
+			    	}
+			     
+			      else if (event.getSource()==btnHideTerritory){
+			    	  /*if (territoryOverlay!=null){
+			    	  map.removeOverlay(territoryOverlay);
+			    	  
+			    	  listofClicks.clear();
+			    	  //showOverLayButton.setEnabled(true);
+			    	  btnSelectRetailers.setEnabled(true);  
+			    	  }*/
+			    	  map.removeOverlay(territoryOverlay);
+			    	  
+			    	  listofClicks.clear();
+			    	  map.removeOverlay(UninorSalesTerritory);
+			    	  btnSelectRetailers.setEnabled(true);
+			    	  btnShowTerritoryOverLay.setEnabled(false);
+			    	  btnShowSearchOverlay.setEnabled(false);
+				      btnHideTerritory.setEnabled(false);
+			      }
+			      else if (event.getSource()==btnShowTerritoryOverLay){
+			    	  if (territoryOverlay!=null){
+				    	  map.removeOverlay(territoryOverlay);
+				    	  //map.clearOverlays();
+				    	  //listofClicks.clear();
+				    	  map.addOverlay(UninorSalesTerritory);
+				    	  //showOverLayButton.setEnabled(true);
+				    	  btnSelectRetailers.setEnabled(true);
+				    	  btnShowSearchOverlay.setEnabled(false);
+					      btnHideTerritory.setEnabled(true);
+					      
+				    	  }
+				      }
+		      }};
 		
-		
-		
-		final Button showOverLayButton;
-		final Button removeOverLayButton;
-		final Button startClicking= new Button ("Click required points");
-		startClicking.addClickHandler(new ClickHandler(){
-			 public void onClick(ClickEvent event) {
-				 map.addMapClickHandler(uniclick);
-			 }
-		});
-		toolsPanel.add(startClicking);
-	    // Toggle the visibility of the overlays by
-	    // adding and removing the overlay.
-		showOverLayButton = new Button("Add Territory Overlay");
-	    // Toggle the visibility of the overlays
-	    // using the show() and hide() methods
-		removeOverLayButton = new Button("Hide");
-		removeOverLayButton.setEnabled(false);
-		showOverLayButton.addClickHandler(new ClickHandler() {
-	      public void onClick(ClickEvent event) {
-	        map.removeMapClickHandler(uniclick);
-	        listofClicks.add(listofClicks.get(0));
-	        Polygon territoryOverLay = new Polygon(listofClicks.toArray(new LatLng[0]), "green", 1, 1, "green", 0.5);
-	    	map.addOverlay(territoryOverLay);
-	    	removeOverLayButton.setEnabled(true);
-	        //Create and add overlay 
-	        //toggleOverlay();
-	      }
-	    });
-		toolsPanel.add(showOverLayButton);
-
-	    removeOverLayButton.addClickHandler(new ClickHandler() {
-	      public void onClick(ClickEvent event) {
-	    	  map.clearOverlays();
-	    	  listofClicks.clear();
-	    	  showOverLayButton.setEnabled(true);
-	    	  //remove overlay
-	       /* if (geoXml == null) {
-	          return;
-	        }
-	        if (geoXml.isHidden()) {
-	          geoXml.setVisible(true);
-	          showHideButton.setText("Hide");
-	        } else {
-	          geoXml.setVisible(false);
-	          showHideButton.setText("Show");
-	        }*/
-	      }
-	    });
-
-	    toolsPanel.add(removeOverLayButton);
+		btnSelectRetailers.addClickHandler(territoryClickHandler);
+		toolsPanel.add(btnSelectRetailers);
+		btnShowSearchOverlay.addClickHandler(territoryClickHandler);
+		toolsPanel.add(btnShowSearchOverlay);
+		btnShowTerritoryOverLay.addClickHandler(territoryClickHandler);
+		toolsPanel.add(btnShowTerritoryOverLay);
+	    btnHideTerritory.addClickHandler(territoryClickHandler);
+	    toolsPanel.add(btnHideTerritory);
+	   
 	    //initWidget(panel);
 	}
 	
@@ -581,6 +647,10 @@ public class GSTCloudUI  extends Composite {
 		final Layer l2 = new Layer("Districts","Polygon");
 		final Layer l3 = new Layer("Local Body","Point");
 		final Layer l4 = new Layer("Landmark","Point");
+		final Layer l5 = new Layer("Tower","Point");
+		final Layer l6 = new Layer("Retailer","Point");
+		final Layer l7 = new Layer("Customer Service Center","Point");
+		
 		
 		final AsyncCallback geoCallBack= new AsyncCallback<String>() 
 		{
@@ -599,6 +669,9 @@ public class GSTCloudUI  extends Composite {
 		layerService.loadLayer(l2, geoCallBack);
 		layerService.loadLayer(l3, geoCallBack);
 		layerService.loadLayer(l4, geoCallBack);
+		layerService.loadLayer(l5, geoCallBack);
+		layerService.loadLayer(l6, geoCallBack);
+		layerService.loadLayer(l7, geoCallBack);
 	}
 	
 	@UiHandler("fpAdmin")
@@ -1063,7 +1136,12 @@ public class GSTCloudUI  extends Composite {
 	     */
 	   
 	    map.setDoubleClickZoom(true);
-	    
+	    lblCenterPoint.setText(map.getCenter().toString());	   
+	    map.addMapMoveEndHandler(new MapMoveEndHandler() {
+	        public void onMoveEnd(MapMoveEndEvent event) {
+	          lblCenterPoint.setText(map.getCenter().toString());
+	        }
+	      });
 	    /*
 	     * Single click on map will send the map's 
 	     * center point for WITHIN query on the server*/

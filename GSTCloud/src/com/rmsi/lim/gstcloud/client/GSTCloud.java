@@ -84,17 +84,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 @SuppressWarnings("deprecation")
 public class GSTCloud implements EntryPoint 
 {
-	
-	/**
+	/*
+	*//**
 	 * Map elements in the UI
-	 */
+	 *//*
 	private MapWidget map;
 	private VerticalPanel mapWrapper = new VerticalPanel();
-	/**
+	*//**
 	 * Other UI elements
-	 */
-	private static final String applicationTitle1 = "Site Search";
-	private static final String applicationTitle2 = "RMSI in the Cloud ";
+	 *//*
+	private static final String applicationTitle1 = "Site Search";*/
+	private static final String applicationTitle2 = "RMSI in the Cloud ";/*
 	private static final String applicationTitle3 = "Tools";
 	private static final String applicationTitle4 = "Admin Block";
 	
@@ -107,15 +107,15 @@ public class GSTCloud implements EntryPoint
 	
 	private DialogBox dialogBox;
 	
-	private HTML serverResponseLabel;
-	private HTML title1,title2,title3,title4;
+	private HTML serverResponseLabel;*/
+	private HTML title1,title2,title3,title4;/*
   
 	private Label textToServerLabel = new Label();
 	
 	TabPanel queryTabPanel = new TabPanel();
 	final FormPanel form = new FormPanel();
-	
-	final FileUpload upload = new FileUpload();
+	*/
+	final FileUpload upload = new FileUpload();/*
 	final Button loadButton = new Button("Load");
 	final Button displayButton = new Button ("Display");
 	public Button submitButton =new Button("submit");
@@ -125,7 +125,7 @@ public class GSTCloud implements EntryPoint
 	private HorizontalPanel tablePanel1 = new HorizontalPanel();
 	private HorizontalPanel hp1=new HorizontalPanel();
     private Label labelMessages = new Label();
-	private AdvancedTable datagrid = new AdvancedTable();
+	private AdvancedTable datagrid = new AdvancedTable();*/
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -137,7 +137,7 @@ public class GSTCloud implements EntryPoint
 
 	/**
 	  * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
+	 *//*
 	private final GisCloudServiceAsync gisCloudService = GWT
 			.create(GisCloudService.class);
 	private final LandmarksServiceAsync fea = GWT
@@ -148,14 +148,14 @@ public class GSTCloud implements EntryPoint
     		.create(LayerService.class);
 	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
 	LayerManager lm = new LayerManager();
-	/**
+	*//**
 	 * Draws a circle at a specified radius with a green outline.this functions takes the following as its parameters.
 	 * @param center
 	 * @param radius
 	 * @param nbOfPoints
 	 * Earth's radius is taken in meters.The Latitude and Longitude are constituted in a single LatLng class.
 	 * The number of points calculated is always 60 
-	 */
+	 *//*
 	public void drawCircleFromRadius(LatLng center, double radius,int nbOfPoints) 
 	{
 		
@@ -186,11 +186,11 @@ public class GSTCloud implements EntryPoint
 			 map.setCenter(center,10);
 			 map.addOverlay(circle);
 			 return ;
-	}
-	/**
+	}*//*
+	*//**
 	 *This is a function with hard coded values of 4 Layers and their Types.The data include the name of the
 	 *layer and its type (i.e point,polygon or line). 	 
-	 */
+	 *//*
 	private void layerLoader() 
 	{
 		final Layer l1 = new Layer("States","Polygon");
@@ -216,10 +216,10 @@ public class GSTCloud implements EntryPoint
 		layerService.loadLayer(l3, geoCallBack);
 		layerService.loadLayer(l4, geoCallBack);
 	}
-	/**
+	*//**
 	 *This is a function with hard coded values of 9 States.The properties include the state name,Latitude ,longitude
 	 *and the zoom level for the respective state.
-	 */
+	 *//*
 	private void StatesLoader()
 	{
 		 final State s1 = new State("Delhi",28.38, 77.12 ,10);
@@ -256,10 +256,10 @@ public class GSTCloud implements EntryPoint
 			dea.loadStates(s9, geoCallBack);
 	}
 	
-	/**
+	*//**
 	 *This is a function with hard coded values of 16 Districts for all the states loaded.The properties include 
 	 *the stateId,District name ,Latitude and longitude for the respective district.
-	 */
+	 *//*
 	private void DistrictsLoader()
 	{
 		 final District d1 = new District("Delhi","East Delhi",28.53,77.13);
@@ -309,10 +309,10 @@ public class GSTCloud implements EntryPoint
 			dea.loadDistricts(d16, geoCallBack);	
 	}
 	
-	/**
+	*//**
 	 *This is a function with hard coded values of 6 Local Bodies for all the Districts loaded.The properties include 
 	 *the districtId,LocalBody name ,Latitude and longitude for the respective LocalBody.
-	 */
+	 *//*
 	private void LocalBodyLoader()
 	{
 		final LocalBody l1 = new LocalBody("South Delhi","Town","Chilla Saroda Bangar",28.29,77.00);
@@ -345,12 +345,12 @@ public class GSTCloud implements EntryPoint
 		
 		
 	}
-	
-	/**
+	*//*
+	*//**
 	 * This panel contains the Text boxes for entering Latitude, Longitude and the Specified Radius and 
 	 * contains the buttons Search and clear.Search is used to search according to the textbox values and clear
 	 *  is to clear all the overlays displayed on the map.
-	 */
+	 *//*
 	private void setupLatLongPanel()
 	{
 		VerticalPanel vLatLongPanel = new VerticalPanel();
@@ -471,10 +471,10 @@ public class GSTCloud implements EntryPoint
 		latLongClear.addClickHandler(latLngSearchHandler);
 	}
 	
-	/**
+	*//**
 	 * this panel contains the Text boxes for entering Addresses and the Specified Radius of the place to search and contains the buttons Search and 
 	 * clear.search is used to search according to the textbox values and clear is to clear all the overlays displayed on the map.
-	 */
+	 *//*
 	
 	private void setupKeywordPanel()
 	{
@@ -556,10 +556,10 @@ public class GSTCloud implements EntryPoint
 		addressClear.addClickHandler(addressSearchHandler);
 	}
 	
-	/**
+	*//**
 	 * this panel contains the Text boxes for entering Addresses and the Specified Radius of the place to search and contains the buttons Search and 
 	 * clear.search is used to search according to the textbox values and clear is to clear all the overlays displayed on the map.
-	 */
+	 *//*
 	private void setupSpatialPanel()
 	{
 		Boolean dropdown = false;
@@ -647,9 +647,9 @@ public class GSTCloud implements EntryPoint
 								 else
 								 {
 									 String sName = stateBox.getItemText( stateBox.getSelectedIndex());
-									 /**
+									 *//**
 									  * This function call brings the attributes of the state by the name specified.
-									  */
+									  *//*
 									 dea.getStateByName(sName,new AsyncCallback<State>()
 										{
 											public void onFailure(Throwable caught) 
@@ -670,9 +670,9 @@ public class GSTCloud implements EntryPoint
 							 else
 							 {
 								 String dName = districtBox.getItemText( districtBox.getSelectedIndex());
-								 /**
+								 *//**
 								  * This function call brings the attributes of the District by the name specified.
-								  */
+								  *//*
 								 dea.getDistrictByName(dName,new AsyncCallback<District>()			
 										 {
 											public void onFailure(Throwable caught) 
@@ -693,9 +693,9 @@ public class GSTCloud implements EntryPoint
 						 else
 						 {
 							 String lbName = localBodyBox.getItemText( localBodyBox.getSelectedIndex());
-							 /**
+							 *//**
 							  * This function call brings the attributes of the Local Body by the name specified.
-							  */
+							  *//*
 							 dea.getLocalBodyByName(lbName,new AsyncCallback<LocalBody>()			
 									 {
 										public void onFailure(Throwable caught) 
@@ -713,9 +713,9 @@ public class GSTCloud implements EntryPoint
 									 });
 						 }
 				}
-				/**
+				*//**
 				 * Deletes all the Overlays displayed on the map
-				 */
+				 *//*
 				else if (event.getSource()==spatialClear)
 					{
 						map.clearOverlays();
@@ -820,10 +820,10 @@ public class GSTCloud implements EntryPoint
 		queryTabPanel.add(vSpatialPanel, "Spatial");
 	}
 
-	/**
+	*//**
 	 * this panel contains the Text boxes for entering Addresses and the Specified Radius of the place to search and contains the buttons Search and 
 	 * clear.search is used to search according to the textbox values and clear is to clear all the overlays displayed on the map.
-	 */
+	 *//*
 	
 	private void setupAttributePanel()
 	{
@@ -1007,9 +1007,9 @@ public class GSTCloud implements EntryPoint
 					 });	
 		}
 		
-		/**
+		*//**
 		 * Fired when the user types in the nameField.
-		 */
+		 *//*
 	
 	}
 	final MyHandler handler = new MyHandler();
@@ -1029,16 +1029,16 @@ public class GSTCloud implements EntryPoint
 	    map.setSize("700px", "450px");
 	    map.addControl(new LargeMapControl3D());
 	    map.addControl(new ScaleControl());
-	    /*
+	    
 	     * Disable double-click for zoom so we can 
 	     * use double-click handler for other fun things
-	     */
+	     
 	   
 	    map.setDoubleClickZoom(false);
 	    
-	    /*
+	    
 	     * Single click on map will send the map's 
-	     * center point for WITHIN query on the server*/
+	     * center point for WITHIN query on the server
 	    map.addMapClickHandler(new MapClickHandler(){
 
 			public void onClick(MapClickEvent event) {
@@ -1057,12 +1057,12 @@ public class GSTCloud implements EntryPoint
 	    	
 	    });
 	    
-		/*
+		
 		 * Zooming in close enough will put the map viewport
 		 * within Salt Lake County. Zooming out too far will
 		 * makes the map viewport larger than the county.
-		 */
-	   /* map.addMapZoomEndHandler(new MapZoomEndHandler(){
+		 
+	    map.addMapZoomEndHandler(new MapZoomEndHandler(){
 
 			public void onZoomEnd(MapZoomEndEvent event) {
 				
@@ -1140,17 +1140,17 @@ public class GSTCloud implements EntryPoint
 			
 	    	
 	    });
-	    */mapWrapper.add(map);
+	    mapWrapper.add(map);
 		mapWrapper.setStylePrimaryName("map");
 		mapWrapper.setCellHorizontalAlignment(map, HasHorizontalAlignment.ALIGN_CENTER);
 		mapWrapper.setBorderWidth(2);
 		
 	}
 	
-	/**
+	*//**
 	 * This Functions is used to set up a layer in a tree format by extracting the 
 	 * layer from the data base. 
-	 */
+	 *//*
 	private void setupLayerManager()
 	{
 		
@@ -1261,7 +1261,7 @@ public class GSTCloud implements EntryPoint
 	});
 	}
 		
-	/**
+	*//**
 	 * This is the entry point method.
 	 */
 	private void setupFileUpload(){
@@ -1329,7 +1329,7 @@ public class GSTCloud implements EntryPoint
 		RootPanel.get().add(uiObject);
 	    
 	}
-
+/*
 	protected void sendMapBounds(String bbox) 
 	{
 		gisCloudService.polygonInPolygon(bbox,
@@ -1474,4 +1474,5 @@ public class GSTCloud implements EntryPoint
 					}
 				});
 	
-	}}
+	}*/
+	}
