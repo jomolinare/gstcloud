@@ -8,7 +8,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import com.beoui.geocell.GeocellManager;
 import com.google.gwt.user.client.Window;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
+import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
 import com.rmsi.lim.gstcloud.server.model.Landmark;
+import com.rmsi.lim.gstcloud.server.model.Tower;
 import com.rmsi.lim.gstcloud.server.utilities.PMF;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
@@ -27,6 +29,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.List;
 //import java.util.logging.Logger;
 
@@ -36,19 +39,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @SuppressWarnings("unused")
 public class FileUp extends HttpServlet{
-	
-	//public static String s;
-	private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 1L;
 	PersistenceManager pm = PMF.get().getPersistenceManager();
+	String selectedLayer;
 	public void doPost(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
 		{ 
-        ServletFileUpload upload = new ServletFileUpload();    
+			selectedLayer=(String)(request.getSession().getAttribute("selectedlayer"));
+            ServletFileUpload upload = new ServletFileUpload();   
         
-           
         try{
             FileItemIterator iter = upload.getItemIterator(request);
 
@@ -64,26 +67,6 @@ public class FileUp extends HttpServlet{
      				Feature feature = kml.getFeature();
      				processFeature(null, feature);
      			}
-                
- 
-                /*// Process the input stream
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                int len;
-                byte[] buffer = new byte[8192];
-                while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-                    out.write(buffer, 0, len);
-                    
-                    //response.getOutputStream().write(buffer, 0, len);
-                 //s = buffer.toString();
-                 System.out.println(buffer);*/
-                 
-                 //}
-/*
-                int maxFileSize = 10*(1024*2); //10 megs max 
-                if (out.size() > maxFileSize) { 
-                    System.out.println("File is > than " + maxFileSize);
-                    return;
-                }*/
             }
         }
           catch(Exception e){
@@ -91,76 +74,6 @@ public class FileUp extends HttpServlet{
          }
         }      
     }
-	
-	
-/*	public String FileReturn(){
-    	return Global.str;
-	}*/
-	
-	
-
-	/*public void init(ServletConfig config) throws ServletException{
-		super.init(config);
-		}
-  
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(FileUp.class.getName());
-
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    try {
-      ServletFileUpload upload = new ServletFileUpload();
-      res.setContentType("text/plain");
-
-      FileItemIterator iterator = upload.getItemIterator(req);
-      while (iterator.hasNext()) {
-        FileItemStream item = iterator.next();
-        InputStream stream = item.openStream();
-
-        if (item.isFormField()) {
-          log.warning("Got a form field: " + item.getFieldName());
-        } else {
-          log.warning("Got an uploaded file: " + item.getFieldName() +
-                      ", name = " + item.getName());
-
-          // You now have the filename (item.getName() and the
-          // contents (which you can read from stream).  Here we just
-          // print them back out to the servlet output stream, but you
-          // will probably want to do something more interesting (for
-          // example, wrap them in a Blob and commit them to the
-          // datastore).
-          int len;
-        byte[] buffer = new byte[8192];
-           while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-            res.getOutputStream().write(buffer, 0, len);
-            String file = getServletContext().getRealPath(Global.str);
-            
-                res.setContentType("text/plain");
-                PrintWriter out = res.getWriter();
-            
-                returnFile(file, out);
-          }
-        }
-      }
-    } catch (Exception ex) {
-      throw new ServletException(ex);
-    }
-  }
-
-private void returnFile(String file, PrintWriter out) throws FileNotFoundException, IOException{
-	Reader in = null;
-	  	      try {
-	        in = new BufferedReader(new FileReader(file));
-	        char[] buf = new char[4 * 1024];  // 4K char buffer
-	        int charsRead;
-	  	        while ((charsRead = in.read(buf)) != -1) {
-	          out.write(buf, 0, charsRead);
-	        }
-	      }
-	  	      finally {
-	        if (in != null) in.close();
-	      }
-	    }*/
 	
 	public  void processFeature(Feature parentFeature, Feature feature)
 	{
@@ -208,8 +121,16 @@ private void returnFile(String file, PrintWriter out) throws FileNotFoundExcepti
 		
 		for (Coordinate coordinate : coordinates) 
 		{
+			if (selectedLayer==GSTCloudSharedConstants.Landmark)
+			{
 			Landmark land = new Landmark("Landmark",coordinate.getLatitude(),coordinate.getLongitude(),placemark.getName(),GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
 			pm.makePersistent(land);
+			}
+			else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0){
+			Tower twr = new Tower("Tower",placemark.getName(),"Uninor","Under Construction","Coverage",100.0,coordinate.getLatitude(),coordinate.getLongitude(),GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
+			pm.makePersistent(twr);
+			}
 		}	
 	}
+	
 }

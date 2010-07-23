@@ -13,6 +13,7 @@ import java.util.List;
   		String loadLayer(Layer layer);
  		List<Layer> getLayers();
 //  		LayerTree populateLayer();
+ 		String refreshMap(String sti);
  	}
 
 

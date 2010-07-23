@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -57,6 +58,12 @@ public class LayerServiceImpl extends RemoteServiceServlet implements LayerServi
 		   	{
 			}
 		return null;
+	}
+	
+	public String refreshMap(String sti){
+		HttpSession httpSession = this.getThreadLocalRequest().getSession();
+		httpSession.setAttribute("selectedlayer",sti);		 
+		return "success";
 	}
 
 }

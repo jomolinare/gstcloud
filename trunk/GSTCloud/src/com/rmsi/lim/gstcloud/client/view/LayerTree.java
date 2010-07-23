@@ -40,8 +40,7 @@ public class LayerTree extends Tree implements IsSerializable
 		CheckBox checkbox = new CheckBox(checkboxLabel);
 		LayerItem item = new LayerItem(checkbox,layer.getType());
 		layersList.add(item);
-		this.addItem(item);
-		
+		this.addItem(item);		
 	}
 	
 	public void dispLyrAftrShft(int index)

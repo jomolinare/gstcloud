@@ -77,17 +77,24 @@ import com.rmsi.lim.gstcloud.client.interfaces.LayerServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
 import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesService;
 import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.TowerService;
+import com.rmsi.lim.gstcloud.client.interfaces.TowerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.model.District;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.model.Layer;
 import com.rmsi.lim.gstcloud.client.model.LocalBody;
 import com.rmsi.lim.gstcloud.client.model.State;
+import com.rmsi.lim.gstcloud.client.model.TowerDTO;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
 import com.rmsi.lim.gstcloud.client.utilities.FieldVerifier;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudConstants;
+import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudUtils;
 import com.rmsi.lim.gstcloud.client.view.AdvancedTable;
 import com.rmsi.lim.gstcloud.client.view.LayerManager;
+import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
 
 public class GSTCloudUI  extends Composite {
 	 
@@ -108,6 +115,9 @@ public class GSTCloudUI  extends Composite {
  TabLayoutPanel queryTabPanel;
  @UiField
  MapWidget map;
+ //Fields for Header
+ @UiField
+ public Label lblsearchType;
  
  //Fields for LatLngPanel
  @UiField
@@ -206,7 +216,7 @@ public class GSTCloudUI  extends Composite {
 	  * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
 	
-	private AdvancedTable datagrid = new AdvancedTable();
+	private AdvancedTable datagrid ;//= new AdvancedTable();
 	final FileUpload upload = new FileUpload();
     Geocoder geocoder = new Geocoder();
 	
@@ -221,14 +231,17 @@ public class GSTCloudUI  extends Composite {
 	private final LayerServiceAsync layerService = GWT
 	.create(LayerService.class);
 	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
-	LayerManager lm = new LayerManager();
+	LayerManager lm = new LayerManager(this);
+	private final TowerTableModelServiceAsync towerModelService=GWT.create(TowerTableModelService.class);
+	private final TowerServiceAsync towerService = GWT
+    .create(TowerService.class);
+	private String selectedLayer;
 
 	private List<LatLng> listofClicks = new ArrayList<LatLng>();
 	
 	public GSTCloudUI() {
 		
 		initWidget(uiBinder.createAndBindUi(this));
-		
 		
 		  spatialBodiesService.getStates(new AsyncCallback<List<State>>()
 			  		{
@@ -245,29 +258,27 @@ public class GSTCloudUI  extends Composite {
 						 			GSTCloudUtils.DistrictsLoader();
 						 			GSTCloudUtils.LocalBodyLoader();
 						 		}
+						 		spatialBodiesService.getStates(new AsyncCallback<List<State>>()
+						 		  		{
+						 		  			public void onFailure(Throwable caught) 
+						 					 	{		 
+						 					 	}
+						 					 	public void onSuccess(List<State> result) 
+						 						{
+						 					 		String state = new String();
+						 					 		int rowCount = result.size();
+						 					 		for (int row = 0; row < rowCount; row ++) 
+						 					 		{
+						 					 			state = result.get(row).getStateName();
+						 					 			lbState.addItem(state);
+						 					 		}
+						 						}
+						 		  		});
 						 			
 							}
 			  		});
-		spatialBodiesService.getStates(new AsyncCallback<List<State>>()
-  		{
-  			public void onFailure(Throwable caught) 
-			 	{		 
-			 	}
-			 	public void onSuccess(List<State> result) 
-				{
-			 		String state = new String();
-			 		int rowCount = result.size();
-			 		for (int row = 0; row < rowCount; row ++) 
-			 		{
-			 			state = result.get(row).getStateName();
-			 			lbState.addItem(state);
-			 		}
-				}
-  		});
 		
 		
-		
-
 		lbState.addItem("Select State");
 		lbDistrict.addItem("No Available Districts");
 		lbLocalBody.addItem("No Available Villages/Towns");
@@ -278,13 +289,9 @@ public class GSTCloudUI  extends Composite {
 		setupTablePanel();
 		setupUninorDemo();
 	}
-	
-	
-	
+		
 	private void setupUninorDemo(){
 		
-		
-    
 		final Polygon UninorSalesTerritory = new Polygon(new LatLng[]
 		                            {LatLng.newInstance(28.538084182259816, 77.12526798248291),
 									 LatLng.newInstance(28.54713206234115, 77.14226245880127),
@@ -414,10 +421,12 @@ public class GSTCloudUI  extends Composite {
 	 * @param radius Radius of the search circle
 	 * @param map 
 	 */
-	private void drawLandMarksWithinCircle(final LatLng point, final Double radius)
+		
+	private void drawPointsWithinCircle(final LatLng point, final Double radius)
 	{
 		final Double localRadius=radius;
 		final LatLng localPoint =point;
+		if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0){
 		landMarksService.displayLandmarksWithinDistance
 		(localPoint.getLatitude(), 
 		 localPoint.getLongitude(),
@@ -456,35 +465,71 @@ public class GSTCloudUI  extends Composite {
 		   	        }
 		   	      });
 		   	      map.addOverlay(marker);
-
-		   	          
-					
 				}
 				datagrid.setCenterPoint(localPoint);
 				datagrid.setSearchRadius(localRadius);
-				
 				datagrid.updateTableData();
 		    }
 		});
+		}
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0)
+		{
+			towerService.displayTowersWithinDistance
+			(localPoint.getLatitude(), 
+			 localPoint.getLongitude(),
+			 localRadius, 
+			 new AsyncCallback<List<TowerDTO>>()
+			{
+				public void onFailure(Throwable caught) 
+				{
+				}
+			    public void onSuccess(List<TowerDTO> result ) 
+			    {
+			    //	tbAttributeRadius.setValue("Running");
+			    	int rowCount = result.size();
+			    	
+			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
+			    	map.setCenter(localPoint, 10);
+			    	map.addOverlay(new Marker(localPoint));
+					for (int row = 0; row < rowCount; row ++)
+					{
+						final TowerDTO lm =result.get(row);
+						Double pntlat = lm.getLatitude();
+						Double pntlng = lm.getLongitude();
+						final LatLng point = LatLng.newInstance(pntlat,pntlng);
+//						// Add a marker
+						final Marker marker =new Marker(point);
+			   	          
+			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
+			   	          public void onClick(MarkerClickEvent event) {
+			   	          InfoWindow info = map.getInfoWindow();
+			   	          info.open(marker,
+			   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
+			   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
+			   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
+			   	            		  "</tr><tr><td>Tower Name</td><td>"+lm.getName()+
+			   	            		  "</td></tr>"));
+			   	        }
+			   	      });
+			   	      map.addOverlay(marker);
+					}
+					datagrid.setCenterPoint(localPoint);
+					datagrid.setSearchRadius(localRadius);
+					datagrid.updateTableData();
+			    }
+			});
+		}
 	}
-	
-	
-	
-	
-	
-	
 	
 	@UiHandler("fpAdmin")
 	public void onSubmit(SubmitEvent event) 
     {
       if(event.getSource() == btnAdminLoad)
       {
-      
   	// This event is fired just before the form is submitted. We can take
       // this opportunity to perform validation.
         Window.alert("file uploaded");
         event.cancel();
-      
       }
     }
 
@@ -512,16 +557,18 @@ public class GSTCloudUI  extends Composite {
 	
 	@UiHandler({"btnAdminLoad","btnAdminDisplay","btnGeoCodedSearch","btnGeoCodedClear","tbGeoCodedRadius","tbGeoCodedAddress","btnLatLngSearch","btnLatLngClear", "tbLatitude","tbLongitude","tbLatLngRadius","tbAttribute","tbAttributeRadius","btnAttributeSearch","btnAttributeClear","btnSpatialSearch","btnSpatialClear","tbSpatialRadius"})
 	public void onClick(ClickEvent event) {
+		selectedLayer=lm.getLt().getSelectedItem().getText();
 		eventMessageClick(event);
 	}
 	
 	private void eventMessageClick(GwtEvent<?> event) {		
+		
 		if (event.getSource()==btnAdminLoad)
 		{
 			fpAdmin.submit();
 		}
 		else if (event.getSource()==btnAdminDisplay) 
-			showAllLandmarks();
+			showAll();
 		else if (event.getSource()==btnGeoCodedSearch)	
 		{
 			showByGeoCodedAddress(tbGeoCodedAddress.getText());
@@ -594,7 +641,9 @@ public class GSTCloudUI  extends Composite {
 		}*/
 		
 }
-	private void showAllLandmarks(){
+	private void showAll(){	
+		
+		 if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0){
 		landMarksService.getLandMarks(new AsyncCallback<List<LandmarkDTO>>() 
 				 {
 					 public void onFailure(Throwable caught) 
@@ -604,30 +653,77 @@ public class GSTCloudUI  extends Composite {
 
 					 public void onSuccess(List<LandmarkDTO> result) 
 							{
-								
 								int rowCount = result.size();
 								for (int row = 0; row < rowCount; row ++) 
 								{
-												
-									String cat = result.get(row).getCategory();	
-									Double lat = result.get(row).getLatitude();
-									Double lng = result.get(row).getLongitude();
-									String name = result.get(row).getPlaceName();
-																	
-									LatLng point = LatLng.newInstance(lat,lng);
-															
+									final LandmarkDTO lm=	result.get(row);
+									LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+									final Marker marker =new Marker(point);
+									marker.addMarkerClickHandler(new MarkerClickHandler() {
+							   	          public void onClick(MarkerClickEvent event) {
+								   	          InfoWindow info = map.getInfoWindow();
+								   	          info.open(marker,
+								   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
+								   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
+								   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
+								   	            		  "</tr><tr><td>Landmark Name</td><td>"+lm.getPlaceName()+
+								   	            		  "</td></tr>"));
+								   	        }
+								   	      });						
                                    // Add a marker
-									map.addOverlay(new Marker(point));
+									map.addOverlay(marker);
+									
+									//map.setCenter(point,15);
+									
+									// Add an info window to highlight a point of interest
+									//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+									
+								}
+								datagrid.updateTableData();
+							}
+				 });
+		 }
+		else  if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0){
+		towerService.getTowers(new AsyncCallback<List<TowerDTO>>() 
+				 {
+					 public void onFailure(Throwable caught) 
+					 {
+				
+				     }
+
+					 public void onSuccess(List<TowerDTO> result) 
+							{
+								int rowCount = result.size();
+								for (int row = 0; row < rowCount; row ++) 
+								{
+									final TowerDTO lm=	result.get(row);	
+									LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+									final Marker marker =new Marker(point);
+									marker.addMarkerClickHandler(new MarkerClickHandler() {
+							   	          public void onClick(MarkerClickEvent event) {
+								   	          InfoWindow info = map.getInfoWindow();
+								   	          info.open(marker,
+								   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
+								   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
+								   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
+								   	            		  "</tr><tr><td>Landmark Name</td><td>"+lm.getName()+
+								   	            		  "</td></tr>"));
+								   	        }
+								   	      });						
+                                  // Add a marker
+									map.addOverlay(marker);
+									
 									//map.setCenter(point,15);
 									
 									// Add an info window to highlight a point of interest
 									//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 									
 								}	
-								
+								datagrid.updateTableData();
 							}
-			
 				 });
+		}
+		 
 	}
 	
 	private void showBySpatialLocation(){
@@ -662,7 +758,7 @@ public class GSTCloudUI  extends Composite {
 								//map.addOverlay(new Marker(point));
 								//map.setCenter(point,result.getZoomLevel());
 								//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
-								drawLandMarksWithinCircle(point,radius);
+								drawPointsWithinCircle(point,radius);
 							}
 						});
 				 }
@@ -686,7 +782,7 @@ public class GSTCloudUI  extends Composite {
 								//map.addOverlay(new Marker(point));
 								//map.setCenter(point,15);
 								//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
-								drawLandMarksWithinCircle(point,radius);
+								drawPointsWithinCircle(point,radius);
 							}
 						 });
 			 }
@@ -710,7 +806,7 @@ public class GSTCloudUI  extends Composite {
 							//map.addOverlay(new Marker(point));
 							//map.setCenter(point,15);
 							//GSTCloudUtils.drawSearchCircleOnScreen(point,new Double(tbLatLngRadius.getText()),60,map);
-							drawLandMarksWithinCircle(point,radius);
+							drawPointsWithinCircle(point,radius);
 						}
 					 });
 		 }
@@ -736,18 +832,19 @@ public class GSTCloudUI  extends Composite {
 			return;
 		}
 		final LatLng centerPoint = LatLng.newInstance(new Double(tbLatitude.getText()),new Double(tbLongitude.getText()));
-		drawLandMarksWithinCircle(centerPoint,radius);
+		drawPointsWithinCircle(centerPoint,radius);
 	}
-	private void showByName(String landMarkName){
+	private void showByName(String name){
+		 
 		final Double radius = new Double(tbAttributeRadius.getText());
-		landMarksService.searchLandmarkByName(landMarkName,new AsyncCallback<List<LandmarkDTO>>()
+		if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0){
+		landMarksService.searchLandmarkByName(name,new AsyncCallback<List<LandmarkDTO>>()
 				{
 					public void onFailure(Throwable caught) 
 					{
 					}
 				    public void onSuccess(List<LandmarkDTO> result ) 
-				    {
-				    
+				    {				    
 						int rowCount = result.size();
 						for (int row = 0; row < rowCount; row ++)
 						{
@@ -759,13 +856,37 @@ public class GSTCloudUI  extends Composite {
 				   	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,radius,60,map);
 				   	          //map.setCenter(centerPoint, 10);
 							// Add an info window to highlight a point of interest
-					    	  
-					    	  
 					    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
-					    	  drawLandMarksWithinCircle(centerPoint,radius);
+					    	  drawPointsWithinCircle(centerPoint,radius);
 						}
 				    }
-				});
+				});}
+		 else  if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0){
+				towerService.searchTowerByName(name,new AsyncCallback<List<TowerDTO>>()
+						{
+							public void onFailure(Throwable caught) 
+							{
+							}
+						    public void onSuccess(List<TowerDTO> result ) 
+						    {						    
+								int rowCount = result.size();
+								for (int row = 0; row < rowCount; row ++)
+								{
+									Double lat = result.get(row).getLatitude();
+									Double lng = result.get(row).getLongitude();
+									LatLng centerPoint = LatLng.newInstance(lat,lng);
+//									// Add a marker
+						   	          //map.addOverlay(new Marker(centerPoint));
+						   	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,radius,60,map);
+						   	          //map.setCenter(centerPoint, 10);
+									// Add an info window to highlight a point of interest
+							    	  
+							    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
+							    	  drawPointsWithinCircle(centerPoint,radius);
+								}
+						    }
+						});
+		 }
 	}
 
 	private void showByGeoCodedAddress(final String address) {
@@ -783,7 +904,7 @@ public class GSTCloudUI  extends Composite {
 	          //Marker marker = new Marker(centerPoint);
 	          //map.addOverlay(marker);
 	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,new Double(tbGeoCodedRadius.getText()),60,map);
-	          drawLandMarksWithinCircle(localPoint,radius);
+	          drawPointsWithinCircle(localPoint,radius);
 	          //info.open(marker, new InfoWindowContent(address));
 //	          displayLatLng(point);
 	        }
@@ -1087,6 +1208,7 @@ public class GSTCloudUI  extends Composite {
 					{		
 						for (int row = 0; row < result.size(); row ++) 				
 							lm.addLayer(result.get(row));
+						lm.getLt().setSelectedItem(lm.getLt().getItem(1));
 						vp2.add(lm);
 
 					}
@@ -1130,12 +1252,24 @@ public class GSTCloudUI  extends Composite {
 //		}		
 
 	}
-
+	
+	@SuppressWarnings("deprecation")
 	public void setupTablePanel()
 	{
+		datagrid= new AdvancedTable();
 		datagrid.setAllowRowMark(true);
 		datagrid.setFirstColumnVisible(false);
-		datagrid.setTableModelService(landmarksModelService);
+		
+		if (lm.getLt().getSelectedItem()==null) 
+			selectedLayer=GSTCloudSharedConstants.Landmark;
+		else 
+			selectedLayer = lm.getLt().getSelectedItem().getText();
+		
+		if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0)
+			datagrid.setTableModelService(towerModelService);
+		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0)
+			datagrid.setTableModelService(landmarksModelService);
+		
 		datagrid.addRowSelectionListener(new RowSelectionListener() {
 			public void onRowSelected(AdvancedTable sender, String rowId) {
 				lblMessages.setText("Row " + rowId + " selected.");
@@ -1143,6 +1277,7 @@ public class GSTCloudUI  extends Composite {
 		});
 		datagrid.setSize("1260px", "100px");
 		datagrid.setPageSize(3);
+		vpDataGird.clear();
 		vpDataGird.add(datagrid);
 
 		tbFilter.setWidth("100%");
@@ -1193,4 +1328,5 @@ public class GSTCloudUI  extends Composite {
 		btnShowMarked.setWidth("128px");
 }
 
+	
 }
