@@ -13,71 +13,81 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.IdentityType;
 
-//@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "false")
-//@Inheritance(customStrategy = "complete-table")
 public class TowerDTO  implements IsSerializable{
-//public class LandmarkDTO  extends Geohashed implements IsSerializable{
-//    @PrimaryKey
-//    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-//    private Long id;
-
-//    @Persistent
-	private boolean currentlySelected;
 	
-    private String category;
+	boolean currentlySelected;
+	
+	private String category;
+	
+    private String name;
 
-//    @Persistent
+    private String owner;
+  
+    private String status;
+  
+ //Stores the coverage of a tower in wkt form 
+    private String coverage;
+  
+  //Stores the height of a tower in meters 
+    private Double height;
+ 
     private Double latitude;
     
-//    @Persistent
     private Double longitude;
     
-//    @Persistent
-    private String placeName;
-
     public TowerDTO()
     {
     	
     }
     
-    public TowerDTO(String category,Double latitude, Double longitude, String placeName,boolean selected) {
-        this.category = category;
-        this.latitude=latitude;
-        this.longitude=longitude;
-        this.placeName = placeName;
+    public TowerDTO(String category,String name, String owner, String status, String coverage, Double height, Double latitude, Double longitude, boolean selected) {
+    	this.category=category;
+    	this.name = name;
+        this.owner = owner;
+        this.status = status;
+        this.coverage = coverage;
+        this.height = height;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.currentlySelected=selected;
-//        this.setGeoCells(geoCells);
     }
-
-//    public long getid() {
-//        return id;
-//    }
-
-//    public LandmarkDTO(Landmark landmark) {
-//    	this.setCategory(landmark.getPlaceName());
-//		this.setLatitude(landmark.getLatitude());
-//		this.setLongitude(landmark.getLongitude());
-//		 this.setPlaceName(landmark.getPlaceName());
-//	}
 
 	public Boolean getCurrentlySelected(){
 		return currentlySelected;
 	}
-    
+   
+
     public String getCategory() {
         return category;
     }
-
+   
+	
+    public String getName() {
+        return name;
+    }
+    
+    public String getOwner() {
+        return owner;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public String getCoverage() {
+        return coverage;
+    }
+    
+    public Double getHeight() {
+        return height;
+    }
+    
     public Double getLatitude() {
         return latitude;
     }
 
     public Double getLongitude() {
         return longitude;
-    }
-    
-    public String getPlaceName() {
-        return placeName;
     }
     
     public void setCurrentlySelected(boolean select){
@@ -88,8 +98,25 @@ public class TowerDTO  implements IsSerializable{
         this.category = category;
     }
 
-    public void setPlaceName(String placsName) {
-        this.placeName = placsName;
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
+    
+    public void setHeight(Double height) {
+        this.height = height;
     }
     
     public void setLatitude(Double latitude) {

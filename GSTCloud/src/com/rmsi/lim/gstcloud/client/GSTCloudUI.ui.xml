@@ -34,7 +34,7 @@
 			 <g:StackLayoutPanel ui:field="stp" styleName="stackp">
 			 		<g:stack>
 			 		<g:customHeader size='25'>
-          			<g:Label styleName="stacklabel">Site Search </g:Label>
+          			<g:Label ui:field="lblsearchType" styleName="stacklabel">Landmark Search </g:Label>
         			</g:customHeader>
         			
 <!--QuertTabPanel(Starts Here), holds LatLngPanel,AttributePanel,SpatialPanel,GeoCodedPanel-->

@@ -52,6 +52,7 @@ import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudConstants;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
+import com.rmsi.lim.gstcloud.client.interfaces.TableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.model.TableColumn;
 
 public class AdvancedTable extends Composite implements ClickHandler,EventHandler {
@@ -88,7 +89,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	private int pageSize = DEFAULT_PAGE_SIZE;
 	private boolean firstColumnVisible = true;
 	private boolean allowRowMark = false;
-	private LandmarksTableModelServiceAsync tableModelService;
+	private TableModelServiceAsync tableModelService;
 	private TableColumn[] columns;
 	private DataFilter[] filters;
 	private String[][] pageRows;
@@ -283,7 +284,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	/**
 	 * @return the current table data source (TableModelService).
 	 */
-	public LandmarksTableModelServiceAsync getTableModelService() {
+	public TableModelServiceAsync getTableModelService() {
 		return this.tableModelService;
 	}
 	
@@ -332,7 +333,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	 * based on the information coming from the server and redraws the
 	 * table contents (column titles and data rows).
 	 */
-	public void setTableModelService(LandmarksTableModelServiceAsync tableModelService) {
+	public void setTableModelService(TableModelServiceAsync tableModelService) {
 		this.tableModelService = tableModelService;
 		this.updateTableColumns(new AsyncCallback<TableColumn[]>() {
 			public void onFailure(Throwable caught) {
@@ -1009,7 +1010,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		}
 		else {
 			String selectedRowId =
-				this.pageRows[this.selectedRowIndex-1][0];
+				this.pageRows[this.selectedRowIndex-1][1];
 			return selectedRowId;
 		}
 	}

@@ -11,4 +11,5 @@ public interface LayerServiceAsync
 	void loadLayer(Layer layer, AsyncCallback<String> callback);
 	void getLayers(AsyncCallback<List<Layer>>callback);
 //	void populateLayer(AsyncCallback<LayerTree> callback);
+	void refreshMap(String sti,AsyncCallback<String> callback);
 }

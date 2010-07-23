@@ -15,11 +15,13 @@ import javax.cache.CacheManager;
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.datastore.Text;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -196,5 +198,4 @@ public class GisCloudServiceImpl extends RemoteServiceServlet implements
 		return geoGreeting;
 	
 	}
-
 }

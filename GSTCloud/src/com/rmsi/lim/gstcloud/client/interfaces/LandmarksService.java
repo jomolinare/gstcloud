@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 
 
-@RemoteServiceRelativePath("load")
+@RemoteServiceRelativePath("landmarks")
 public interface LandmarksService extends RemoteService 
 	{
 

@@ -62,12 +62,21 @@
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>loadServlet</servlet-name>
+    <servlet-name>landmarksServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarksServiceImpl</servlet-class>
   </servlet>
    <servlet-mapping>
-    <servlet-name>loadServlet</servlet-name>
-    <url-pattern>/gstcloud/load</url-pattern>
+    <servlet-name>landmarksServlet</servlet-name>
+    <url-pattern>/gstcloud/landmarks</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>towerServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.TowerServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>towerServlet</servlet-name>
+    <url-pattern>/gstcloud/tower</url-pattern>
   </servlet-mapping>
  
   <servlet>
@@ -89,13 +98,23 @@
   </servlet-mapping>
      
       <servlet>
-  <servlet-name>TableModelServlet</servlet-name>
+  <servlet-name>LandMarksTableModelServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarksTableModelServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>TableModelServlet</servlet-name>
-    <url-pattern>/gstcloud/TableModel</url-pattern>
+    <servlet-name>LandMarksTableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/LandMarksTableModel</url-pattern>
   </servlet-mapping>
+     
+         <servlet>
+  <servlet-name>TowerTableModelServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.TowerTableModelServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TowerTableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/TowerTableModel</url-pattern>
+  </servlet-mapping>
+     
      
      <servlet>
 		<servlet-name>FileUpServlet</servlet-name>

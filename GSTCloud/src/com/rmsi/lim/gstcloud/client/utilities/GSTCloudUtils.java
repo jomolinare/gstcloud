@@ -238,9 +238,9 @@ public class GSTCloudUtils {
 	 */
 	public static void layerLoader() 
 	{
-		final Layer l1 = new Layer("States","Polygon");
-		final Layer l2 = new Layer("Districts","Polygon");
-		final Layer l3 = new Layer("Local Body","Point");
+//		final Layer l1 = new Layer("States","Polygon");
+//		final Layer l2 = new Layer("Districts","Polygon");
+//		final Layer l3 = new Layer("Local Body","Point");
 		final Layer l4 = new Layer("Landmark","Point");
 		final Layer l5 = new Layer("Tower","Point");
 		final Layer l6 = new Layer("Retailer","Point");
@@ -260,9 +260,9 @@ public class GSTCloudUtils {
 			} 
 		};
 		
-		layerService.loadLayer(l1, geoCallBack);
-		layerService.loadLayer(l2, geoCallBack);
-		layerService.loadLayer(l3, geoCallBack);
+//		layerService.loadLayer(l1, geoCallBack);
+//		layerService.loadLayer(l2, geoCallBack);
+//		layerService.loadLayer(l3, geoCallBack);
 		layerService.loadLayer(l4, geoCallBack);
 		layerService.loadLayer(l5, geoCallBack);
 		layerService.loadLayer(l6, geoCallBack);

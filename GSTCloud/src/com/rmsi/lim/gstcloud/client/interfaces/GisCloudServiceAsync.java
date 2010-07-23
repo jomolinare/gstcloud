@@ -7,5 +7,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface GisCloudServiceAsync {
 	void pointInPolygon(String lngLat, AsyncCallback<String> callback);
-	void polygonInPolygon(String bbox, AsyncCallback<String> callback);
+	void polygonInPolygon(String bbox, AsyncCallback<String> callback);	
 }
