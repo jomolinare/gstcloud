@@ -14,7 +14,7 @@
 	 	<g:VerticalPanel styleName="header">
 	 	<g:HTML>
 	 		<img src="images/lo-cloud.png" title="Brand Cloud GIS" alt="Brand Cloud GIS" class="c-logo" />
-	 		<img src="images/logo-rmsi.png" title="Brand RMSI" alt="Brand RMSI" class="r-logo" />
+	 		<img src="images/Uninor-logo.png" title="Brand UNINOR" alt="Brand UNINOR" class="r-logo" />
 	 		<h3 class="d-none">RMSI Cloud GIS</h3></g:HTML>
 	 	</g:VerticalPanel>					
 
@@ -50,7 +50,7 @@
 						<g:TextBox ui:field="tbLatitude" styleName="tblarge" text="Enter Lattitude"></g:TextBox>
 						<g:Label ui:field="lblLongitude" text="Longitude:" styleName="textlabel" />
 						<g:TextBox ui:field="tbLongitude" styleName="tblarge" text="Enter Longitude"></g:TextBox>
-						<g:Label ui:field="lblLatLngRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:Label ui:field="lblLatLngRadius" text="Specified Radius(in m):" styleName="textlabel"/>
 						<g:TextBox ui:field="tbLatLngRadius" styleName="tbsmall" text="Enter Radius" />
 						<g:HorizontalPanel ui:field="hpLatLng">
 							<g:Button ui:field="btnLatLngSearch" text="Search" styleName="Button" />
@@ -71,7 +71,7 @@
 				    	<g:VerticalPanel ui:field="vpAttribute" styleName="vLatLongPanel" >
 						<g:Label ui:field="lblAttribute" text="Name:" styleName="textlabel"/>
 						<g:TextBox ui:field="tbAttribute" styleName="tblarge" text="Enter Address"></g:TextBox>
-						<g:Label ui:field="lblAttributeRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:Label ui:field="lblAttributeRadius" text="Specified Radius(in m):" styleName="textlabel"/>
 						<g:TextBox ui:field="tbAttributeRadius" styleName="tbsmall" text="Enter Radius"></g:TextBox>
 						<g:HorizontalPanel ui:field="hpAttribute">
 							<g:Button ui:field="btnAttributeSearch" text="Search" styleName="Button" />
@@ -95,7 +95,7 @@
 						<g:ListBox ui:field="lbDistrict" />
 						<g:Label ui:field="lblLocalBody" text="Local Body:" styleName="textlabel"/>
 						<g:ListBox ui:field="lbLocalBody" />
-						<g:Label ui:field="lblSpatialRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:Label ui:field="lblSpatialRadius" text="Specified Radius(in m):" styleName="textlabel"/>
 						<g:TextBox ui:field="tbSpatialRadius" styleName="tbsmall" text="Enter Radius"></g:TextBox>
 							<g:HorizontalPanel ui:field="hpSpatial">
 							<g:Button ui:field="btnSpatialSearch" text="Search" styleName="Button" />
@@ -115,7 +115,7 @@
         				<g:VerticalPanel ui:field="vpGeoCoded" styleName="vLatLongPanel" >
 						<g:Label ui:field="lblGeoCodedAddress" text="Address:" styleName="textlabel"/>
 						<g:TextBox ui:field="tbGeoCodedAddress" text="Enter Address" />
-						<g:Label ui:field="lblGeoCodedRadius" text="Specified Radius:" styleName="textlabel"/>
+						<g:Label ui:field="lblGeoCodedRadius" text="Specified Radius(in m):" styleName="textlabel"/>
 						<g:TextBox  ui:field="tbGeoCodedRadius"  text="Enter Radius"/>
 							<g:HorizontalPanel ui:field="hpGeoCoded">
 							<g:Button ui:field="btnGeoCodedSearch" text="Search" styleName="Button" />
@@ -142,7 +142,7 @@
 					<g:HorizontalPanel ui:field="hpAdmin" />
 					<g:HorizontalPanel>
 					<g:Button ui:field="btnAdminLoad" text="Load" styleName="Button" />
-					<g:Button ui:field="btnAdminDisplay" text="Display" styleName="Button" />
+					<g:Button ui:field="btnAdminDisplay" text="Display All" styleName="Button" />
 					</g:HorizontalPanel>
 					
 				</g:VerticalPanel>

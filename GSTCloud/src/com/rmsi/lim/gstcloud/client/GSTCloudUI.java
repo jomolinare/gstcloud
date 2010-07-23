@@ -328,10 +328,10 @@ public class GSTCloudUI  extends Composite {
 		          
 		        } else */{
 		          //sender.addOverlay(new Marker(point));
-		        	/*Icon icon = Icon.newInstance(
-		            "http://labs.google.com/ridefinder/images/mm_20_red.png");*/
-		        Icon icon = Icon.newInstance(
-		        "file://RetailerIcon.png");
+		        	Icon icon = Icon.newInstance(
+		            "http://labs.google.com/ridefinder/images/mm_20_red.png");
+		        //Icon icon = Icon.newInstance(
+		        //"file://RetailerIcon.png");
 		        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
 		        icon.setIconSize(Size.newInstance(12, 20));
 		        icon.setShadowSize(Size.newInstance(22, 20));
@@ -1057,10 +1057,13 @@ public class GSTCloudUI  extends Composite {
 	     */
 	   
 	    map.setDoubleClickZoom(true);
-	    lblCenterPoint.setText(map.getCenter().toString());	   
+	    lblCenterPoint.setText
+	    	("MapCenter="+new Double(map.getCenter().getLatitude()).toString().substring(0,6)+","+
+	    			new Double(map.getCenter().getLongitude()).toString().substring(0,6)		);	   
 	    map.addMapMoveEndHandler(new MapMoveEndHandler() {
 	        public void onMoveEnd(MapMoveEndEvent event) {
-	          lblCenterPoint.setText(map.getCenter().toString());
+	          lblCenterPoint.setText("MapCenter="+new Double(map.getCenter().getLatitude()).toString().substring(0,6)+","+
+		    			new Double(map.getCenter().getLongitude()).toString().substring(0,6)		);	
 	        }
 	      });
 	    /*
