@@ -121,7 +121,7 @@ public class FileUp extends HttpServlet{
 		
 		for (Coordinate coordinate : coordinates) 
 		{
-			if (selectedLayer==GSTCloudSharedConstants.Landmark)
+			if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0)
 			{
 			Landmark land = new Landmark("Landmark",coordinate.getLatitude(),coordinate.getLongitude(),placemark.getName(),GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
 			pm.makePersistent(land);
