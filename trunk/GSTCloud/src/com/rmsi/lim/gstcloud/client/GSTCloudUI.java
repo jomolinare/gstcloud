@@ -799,10 +799,12 @@ public class GSTCloudUI  extends Composite {
 					 public void onSuccess(List<LandmarkDTO> result) 
 							{
 								int rowCount = result.size();
+								LatLngBounds bounds = LatLngBounds.newInstance(); 
 								for (int row = 0; row < rowCount; row ++) 
 								{
 									final LandmarkDTO lm=	result.get(row);
 									LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+									bounds.extend(point);
 									final Marker marker =new Marker(point);
 									marker.addMarkerClickHandler(new MarkerClickHandler() {
 							   	          public void onClick(MarkerClickEvent event) {
@@ -824,6 +826,8 @@ public class GSTCloudUI  extends Composite {
 									//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 									
 								}
+								map.setCenter(bounds.getCenter());
+								map.setZoomLevel(map.getBoundsZoomLevel(bounds));
 								datagrid.updateTableData();
 							}
 				 });
@@ -839,11 +843,12 @@ public class GSTCloudUI  extends Composite {
 					 public void onSuccess(List<TowerDTO> result) 
 							{
 								int rowCount = result.size();
+								LatLngBounds bounds = LatLngBounds.newInstance(); 
 								for (int row = 0; row < rowCount; row ++) 
 								{
 									final TowerDTO tw=	result.get(row);	
 									LatLng point = LatLng.newInstance(tw.getLatitude(),tw.getLongitude());
-									
+									bounds.extend(point);
 									 // Add a marker
 									String iconName=
 								        "http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/"+tw.getStatus()+".png";
@@ -882,6 +887,8 @@ public class GSTCloudUI  extends Composite {
 									//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 									
 								}	
+								map.setCenter(bounds.getCenter());
+								map.setZoomLevel(map.getBoundsZoomLevel(bounds));
 								datagrid.updateTableData();
 							}
 				 });
@@ -897,10 +904,12 @@ public class GSTCloudUI  extends Composite {
 						 public void onSuccess(List<CSCDTO> result) 
 								{
 									int rowCount = result.size();
+									LatLngBounds bounds = LatLngBounds.newInstance(); 
 									for (int row = 0; row < rowCount; row ++) 
 									{
 										final CSCDTO csc=	result.get(row);
 										LatLng point = LatLng.newInstance(csc.getLatitude(),csc.getLongitude());
+										bounds.extend(point);
 										Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/csc.png");
 								        //Icon icon = Icon.newInstance(
 								        //"file://RetailerIcon.png");
@@ -935,6 +944,8 @@ public class GSTCloudUI  extends Composite {
 										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 										
 									}
+									map.setCenter(bounds.getCenter());
+									map.setZoomLevel(map.getBoundsZoomLevel(bounds));
 									datagrid.updateTableData();
 								}
 					 });
@@ -950,10 +961,12 @@ public class GSTCloudUI  extends Composite {
 						 public void onSuccess(List<RetailerDTO> result) 
 								{
 									int rowCount = result.size();
+									LatLngBounds bounds = LatLngBounds.newInstance(); 
 									for (int row = 0; row < rowCount; row ++) 
 									{
 										final RetailerDTO re=	result.get(row);
 										LatLng point = LatLng.newInstance(re.getLatitude(),re.getLongitude());
+										bounds.extend(point);
 										Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer-icon.png");
 								        //Icon icon = Icon.newInstance(
 								        //"file://RetailerIcon.png");
@@ -986,6 +999,8 @@ public class GSTCloudUI  extends Composite {
 										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 										
 									}
+									map.setCenter(bounds.getCenter());
+									map.setZoomLevel(map.getBoundsZoomLevel(bounds));
 									datagrid.updateTableData();
 								}
 					 });
