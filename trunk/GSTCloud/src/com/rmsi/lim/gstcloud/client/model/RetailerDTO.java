@@ -13,7 +13,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.IdentityType;
 
-public class CSCDTO  implements IsSerializable{
+public class RetailerDTO  implements IsSerializable{
 	
 	boolean currentlySelected;
 	
@@ -21,27 +21,21 @@ public class CSCDTO  implements IsSerializable{
 	
     private String name;
 
-    private String contact_person;
-  
     private String address;
-  
-    private String tower_name;
- 
+    
     private Double latitude;
     
     private Double longitude;
     
-    public CSCDTO()
+    public RetailerDTO()
     {
     	
     }
     
-    public CSCDTO(String category,String name, String contact_person, String address, String tower_name, Double latitude, Double longitude, boolean selected) {
+    public RetailerDTO(String category,String name, String address, Double latitude, Double longitude, boolean selected) {
     	this.category=category;
     	this.name = name;
-        this.contact_person = contact_person;
         this.address = address;
-        this.tower_name = tower_name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.currentlySelected=selected;
@@ -49,26 +43,20 @@ public class CSCDTO  implements IsSerializable{
 
 	public Boolean getCurrentlySelected(){
 		return currentlySelected;
-	}   
+	}
+   
 
     public String getCategory() {
         return category;
-    }   
+    }
+   
 	
     public String getName() {
         return name;
     }
     
-    public String getContact_person() {
-        return contact_person;
-    }
-    
     public String getAddress() {
         return address;
-    }    
-    
-    public String getTower_name() {
-        return tower_name;
     }
     
     public Double getLatitude() {
@@ -86,22 +74,13 @@ public class CSCDTO  implements IsSerializable{
     public void setCategory(String category) {
         this.category = category;
     }
-
     
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setcontact_person(String contact_person) {
-        this.contact_person = contact_person;
-    }
-    
     public void setAddress(String address) {
         this.address = address;
-    }
-    
-    public void setTower_name(String tower_name) {
-        this.tower_name = tower_name;
     }
     
     public void setLatitude(Double latitude) {

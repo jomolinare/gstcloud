@@ -15,48 +15,45 @@ import java.util.Collections;
 import java.util.List;
 
 
-import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelService;
-import com.rmsi.lim.gstcloud.client.model.TowerDTO;
+import com.rmsi.lim.gstcloud.client.interfaces.RetailerTableModelService;
+import com.rmsi.lim.gstcloud.client.model.RetailerDTO;
 import com.rmsi.lim.gstcloud.client.model.TableColumn;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.rmsi.lim.gstcloud.server.*;
-import com.rmsi.lim.gstcloud.server.utilities.TowerComparator;
+import com.rmsi.lim.gstcloud.server.utilities.RetailerComparator;
 import com.rmsi.lim.gstcloud.server.utilities.ReflectionUtils;
 
-public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
-		TowerTableModelService {
+public class RetailerTableModelServiceImpl extends RemoteServiceServlet implements
+		RetailerTableModelService {
 
 	private static final long serialVersionUID = 1L;
 
 	private TableColumn[] columns = new TableColumn[] {
 			new TableColumn("CurrentlySelected","Selected"),
+			new TableColumn("Address", "Address"),
 			new TableColumn("Category","Category"),
-			new TableColumn("Coverage","Coverage"),
-			new TableColumn("Height","Height"),
 			new TableColumn("Latitude","Latitude" ),
 			new TableColumn("Longitude","Longitude"),
-			new TableColumn("Name", "Name"),
-			new TableColumn("Owner", "Owner" ),
-			new TableColumn("Status","Status" )			
+			new TableColumn("Name", "Name"),		
 			};
 	
 	public String applySpatialFilter(Double lat, Double lng, Double rad){
-		TowerServiceImpl fea1 = new TowerServiceImpl();
-		this.allTowers=fea1.displayTowersWithinDistance(lat, lng, rad);
+		RetailerServiceImpl fea1 = new RetailerServiceImpl();
+		this.allRetailers=fea1.displayRetailersWithinDistance(lat, lng, rad);
 		this.applyDataFilters(null);
 		return "filter applied";
 	}
 
-	private List<TowerDTO> allTowers ;
+	private List<RetailerDTO> allRetailers ;
 
-	private List<TowerDTO> filteredTowers;
+	private List<RetailerDTO> filteredRetailers;
 
-	public TowerTableModelServiceImpl() 
+	public RetailerTableModelServiceImpl() 
 {
-		TowerServiceImpl fea1 = new TowerServiceImpl();
-		this.allTowers=fea1.getTowers();
+		RetailerServiceImpl fea1 = new RetailerServiceImpl();
+		this.allRetailers=fea1.getRetailers();
 		
 		
 		this.applyDataFilters(null);
@@ -71,14 +68,14 @@ public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public Integer getRowsCount(DataFilter[] filters) {
 		applyDataFilters(filters);
-		Integer count = this.filteredTowers.size();
+		Integer count = this.filteredRetailers.size();
 		return count;
 	}
 
 	@Override
 	public String[][] getRows(int startRow, int rowsCount,
 			DataFilter[] filters, String sortColumn, boolean sortingOrder) {
-		TowerDTO[] rowsData = getRowsData(startRow, rowsCount, filters, sortColumn,
+		RetailerDTO[] rowsData = getRowsData(startRow, rowsCount, filters, sortColumn,
 				sortingOrder);
 		int columnsCount = this.columns.length;
 		String[][] rows = new String[rowsCount][columnsCount];
@@ -92,43 +89,38 @@ public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
 		return rows;
 	}
 
-	private TowerDTO[] getRowsData(int startRow, int rowsCount,
+	private RetailerDTO[] getRowsData(int startRow, int rowsCount,
 			DataFilter[] filters, String sortColumn, boolean sortingOrder) {
 		applyDataFilters(filters);
 		applySorting(sortColumn, sortingOrder);
-		TowerDTO[] rows = new TowerDTO[rowsCount];
+		RetailerDTO[] rows = new RetailerDTO[rowsCount];
 		for (int row = startRow; row < startRow + rowsCount; row++) {
-			rows[row - startRow] = this.filteredTowers.get(row);
+			rows[row - startRow] = this.filteredRetailers.get(row);
 		}
 		return rows;
 	}
 
 	private void applyDataFilters(DataFilter[] filters) {
-		this.filteredTowers = new ArrayList<TowerDTO>();
+		this.filteredRetailers = new ArrayList<RetailerDTO>();
 		if (filters == null) {
-			// No filter - append all Towers
-			for (TowerDTO Towers : this.allTowers) {
-				this.filteredTowers.add(Towers );
+			// No filter - append all Retailers
+			for (RetailerDTO Retailers : this.allRetailers) {
+				this.filteredRetailers.add(Retailers );
 			}
 		} else {
 			// Simulate data filtering
 			String keyword = filters[0].getValue().toUpperCase();
-			for (TowerDTO Towers : this.allTowers) {
-				String name = Towers.getName();
+			for (RetailerDTO Retailers : this.allRetailers) {
+				String name = Retailers.getName();
 				if (name == null) {
 					name = "";
 				}
-				String owner = Towers.getOwner();
-				if (owner == null) {
-					owner = "";
-				}
-				String category = Towers.getCategory();
+				String category = Retailers.getCategory();
 				if (category == null) {
 					category = "";
 				}
-				if (name.toUpperCase().contains(keyword) || 
-						owner.toUpperCase().contains(keyword) || category.toUpperCase().contains(keyword)) {
-					this.filteredTowers.add(Towers);
+				if (name.toUpperCase().contains(keyword) || category.toUpperCase().contains(keyword)) {
+					this.filteredRetailers.add(Retailers);
 				}
 			}
 		}
@@ -137,9 +129,9 @@ public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
 	private void applySorting(String sortColumn, boolean sortingOrder) 
 {
 		if (sortColumn != null) {
-			TowerComparator TowersComparator =
-				new TowerComparator(sortColumn, sortingOrder);
-			Collections.sort(this.filteredTowers, TowersComparator);
+			RetailerComparator RetailersComparator =
+				new RetailerComparator(sortColumn, sortingOrder);
+			Collections.sort(this.filteredRetailers, RetailersComparator);
 		}
 	}
 

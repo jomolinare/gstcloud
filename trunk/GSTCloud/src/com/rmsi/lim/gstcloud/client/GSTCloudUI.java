@@ -66,6 +66,10 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 	//import com.rmsi.lim.gstcloud.client.GSTCloud.MyHandler;
 //@SuppressWarnings("deprecation")
+import com.rmsi.lim.gstcloud.client.interfaces.CSCService;
+import com.rmsi.lim.gstcloud.client.interfaces.CSCServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
@@ -74,6 +78,10 @@ import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.RetailerService;
+import com.rmsi.lim.gstcloud.client.interfaces.RetailerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.RetailerTableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.RetailerTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
 import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesService;
 import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesServiceAsync;
@@ -81,10 +89,12 @@ import com.rmsi.lim.gstcloud.client.interfaces.TowerService;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelServiceAsync;
+import com.rmsi.lim.gstcloud.client.model.CSCDTO;
 import com.rmsi.lim.gstcloud.client.model.District;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.model.Layer;
 import com.rmsi.lim.gstcloud.client.model.LocalBody;
+import com.rmsi.lim.gstcloud.client.model.RetailerDTO;
 import com.rmsi.lim.gstcloud.client.model.State;
 import com.rmsi.lim.gstcloud.client.model.TowerDTO;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
@@ -230,11 +240,22 @@ public class GSTCloudUI  extends Composite {
     .create(SpatialBodiesService.class);
 	private final LayerServiceAsync layerService = GWT
 	.create(LayerService.class);
-	private final LandmarksTableModelServiceAsync landmarksModelService=GWT.create(LandmarksTableModelService.class);
+	private final LandmarksTableModelServiceAsync landmarksModelService=GWT
+	.create(LandmarksTableModelService.class);
 	LayerManager lm = new LayerManager(this);
-	private final TowerTableModelServiceAsync towerModelService=GWT.create(TowerTableModelService.class);
+	private final TowerTableModelServiceAsync towerModelService=GWT
+	.create(TowerTableModelService.class);
 	private final TowerServiceAsync towerService = GWT
     .create(TowerService.class);
+	private final CSCTableModelServiceAsync cscModelService=GWT
+	.create(CSCTableModelService.class);
+	private final CSCServiceAsync cscService = GWT
+    .create(CSCService.class);
+	private final RetailerTableModelServiceAsync retailerModelService=GWT
+	.create(RetailerTableModelService.class);
+	private final RetailerServiceAsync retailerService = GWT
+    .create(RetailerService.class);
+	
 	private String selectedLayer;
 
 	private List<LatLng> listofClicks = new ArrayList<LatLng>();
@@ -328,8 +349,7 @@ public class GSTCloudUI  extends Composite {
 		          
 		        } else */{
 		          //sender.addOverlay(new Marker(point));
-		        	Icon icon = Icon.newInstance(
-		            "http://labs.google.com/ridefinder/images/mm_20_red.png");
+		        	Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer-icon.png");
 		        //Icon icon = Icon.newInstance(
 		        //"file://RetailerIcon.png");
 		        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
@@ -337,8 +357,8 @@ public class GSTCloudUI  extends Composite {
 		        icon.setShadowSize(Size.newInstance(22, 20));
 		        icon.setIconAnchor(Point.newInstance(6, 20));
 		        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-		        	MarkerOptions options = MarkerOptions.newInstance();
-		            options.setIcon(icon);
+		        MarkerOptions options = MarkerOptions.newInstance();
+		        options.setIcon(icon);
 		        	
 		         sender.addOverlay(new Marker(point, options));
 		         listofClicks.add(point);
@@ -447,9 +467,7 @@ public class GSTCloudUI  extends Composite {
 				for (int row = 0; row < rowCount; row ++)
 				{
 					final LandmarkDTO lm =result.get(row);
-					Double pntlat = lm.getLatitude();
-					Double pntlng = lm.getLongitude();
-					final LatLng point = LatLng.newInstance(pntlat,pntlng);
+					final LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
 //					// Add a marker
 					final Marker marker =new Marker(point);
 		   	          
@@ -457,10 +475,10 @@ public class GSTCloudUI  extends Composite {
 		   	          public void onClick(MarkerClickEvent event) {
 		   	          InfoWindow info = map.getInfoWindow();
 		   	          info.open(marker,
-		   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
-		   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
-		   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
-		   	            		  "</tr><tr><td>Landmark Name</td><td>"+lm.getPlaceName()+
+		   	              new InfoWindowContent("<tr><td>Category: </td><td>" +lm.getCategory()+
+		   	            		  "</td></tr><tr><td>Latitude: </td><td>"+lm.getLatitude()+
+		   	            		  "</td></tr><tr><td>Longitude: </td><td>"+lm.getLongitude()+
+		   	            		  "</td></tr><tr><td>Landmark Name: </td><td>"+lm.getPlaceName()+
 		   	            		  "</td></tr>"));
 		   	        }
 		   	      });
@@ -490,24 +508,151 @@ public class GSTCloudUI  extends Composite {
 			    	
 			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
 			    	map.setCenter(localPoint, 10);
+			    	//map.addOverlay(new Marker(localPoint));
+					for (int row = 0; row < rowCount; row ++)
+					{
+						final TowerDTO tw =result.get(row);
+						final LatLng point = LatLng.newInstance(tw.getLatitude(),tw.getLongitude());
+						
+//						// Add a marker
+						String iconName=
+					        "http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/"+tw.getStatus()+".png";
+						Icon icon = Icon.newInstance(iconName);
+				         icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+				         icon.setIconSize(Size.newInstance(12, 20));
+				         icon.setShadowSize(Size.newInstance(22, 20));
+				         icon.setIconAnchor(Point.newInstance(6, 20));
+				         icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+				         MarkerOptions options = MarkerOptions.newInstance();
+				         options.setIcon(icon);
+						final Marker marker =new Marker(point,options);
+						/*final Marker marker =new Marker(point);
+									   	          */
+			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
+			   	          public void onClick(MarkerClickEvent event) {
+			   	          InfoWindow info = map.getInfoWindow();
+			   	          info.open(marker,
+			   	              new InfoWindowContent("<tr><td>Category: </td><td>" +tw.getCategory()+
+			   	            		  "</td></tr><tr><td>Latitude: </td><td>"+tw.getLatitude()+
+			   	            		  "</td></tr><tr><td>Longitude: </td><td>"+tw.getLongitude()+
+			   	            		  "</td></tr><tr><td>Tower Name: </td><td>"+tw.getName()+
+			   	            		"</td></tr><tr><td>Status: </td><td>"+tw.getStatus()+
+			   	            		"</td></tr><tr><td>Owner: </td><td>"+tw.getOwner()+
+			   	            		"</td></tr><tr><td>Coverage: </td><td>"+tw.getCoverage()+
+			   	            		"</td></tr><tr><td>Height: </td><td>"+tw.getHeight().toString()+
+			   	            		  "</td></tr>"));
+			   	        }
+			   	      });
+			   	      map.addOverlay(marker);
+					}
+					datagrid.setCenterPoint(localPoint);
+					datagrid.setSearchRadius(localRadius);
+					datagrid.updateTableData();
+			    }
+			});
+		}
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
+			cscService.displayCSCsWithinDistance
+			(localPoint.getLatitude(), 
+			 localPoint.getLongitude(),
+			 localRadius, 
+			 new AsyncCallback<List<CSCDTO>>()
+			{
+				public void onFailure(Throwable caught) 
+				{
+				}
+			    public void onSuccess(List<CSCDTO> result ) 
+			    {
+			    //	tbAttributeRadius.setValue("Running");
+			    	int rowCount = result.size();
+			    	
+			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
+			    	map.setCenter(localPoint, 10);
 			    	map.addOverlay(new Marker(localPoint));
 					for (int row = 0; row < rowCount; row ++)
 					{
-						final TowerDTO lm =result.get(row);
-						Double pntlat = lm.getLatitude();
-						Double pntlng = lm.getLongitude();
-						final LatLng point = LatLng.newInstance(pntlat,pntlng);
+						final CSCDTO csc =result.get(row);
+						final LatLng point = LatLng.newInstance(csc.getLatitude(),csc.getLongitude());
 //						// Add a marker
-						final Marker marker =new Marker(point);
+						Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/csc.png");
+				        //Icon icon = Icon.newInstance(
+				        //"file://RetailerIcon.png");
+				        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+				        icon.setIconSize(Size.newInstance(12, 20));
+				        icon.setShadowSize(Size.newInstance(22, 20));
+				        icon.setIconAnchor(Point.newInstance(6, 20));
+				        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+				        MarkerOptions options = MarkerOptions.newInstance();
+				        options.setIcon(icon);
+						final Marker marker =new Marker(point,options);
 			   	          
 			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
 			   	          public void onClick(MarkerClickEvent event) {
 			   	          InfoWindow info = map.getInfoWindow();
 			   	          info.open(marker,
-			   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
-			   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
-			   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
-			   	            		  "</tr><tr><td>Tower Name</td><td>"+lm.getName()+
+			   	        		new InfoWindowContent("<tr><td>Category: </td><td>" +csc.getCategory()+
+				   	            		  "</td></tr><tr><td>Latitude: </td><td>"+csc.getLatitude()+
+				   	            		  "</td></tr><tr><td>Longitude: </td><td>"+csc.getLongitude()+
+				   	            		"</td></tr><tr><td>CSC Name: </td><td>"+csc.getName()+
+				   	            		  "</td></tr><tr><td>Tower Name: </td><td>"+csc.getTower_name()+
+				   	            		"</td></tr><tr><td>Contact_person: </td><td>"+csc.getContact_person()+
+				   	            		"</td></tr><tr><td>Address: </td><td>"+csc.getAddress()+
+				   	            		  "</td></tr>"));
+			   	        }
+			   	      });
+			   	      map.addOverlay(marker);
+					}
+					datagrid.setCenterPoint(localPoint);
+					datagrid.setSearchRadius(localRadius);
+					datagrid.updateTableData();
+			    }
+			});
+			}
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0)
+		{
+			retailerService.displayRetailersWithinDistance
+			(localPoint.getLatitude(), 
+			 localPoint.getLongitude(),
+			 localRadius, 
+			 new AsyncCallback<List<RetailerDTO>>()
+			{
+				public void onFailure(Throwable caught) 
+				{
+				}
+			    public void onSuccess(List<RetailerDTO> result ) 
+			    {
+			    //	tbAttributeRadius.setValue("Running");
+			    	int rowCount = result.size();
+			    	
+			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
+			    	map.setCenter(localPoint, 10);
+			    	map.addOverlay(new Marker(localPoint));
+					for (int row = 0; row < rowCount; row ++)
+					{
+						final RetailerDTO re =result.get(row);
+						final LatLng point = LatLng.newInstance(re.getLatitude(),re.getLongitude());
+//						// Add a marker
+						Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer-icon.png");
+				        //Icon icon = Icon.newInstance(
+				        //"file://RetailerIcon.png");
+				        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+				        icon.setIconSize(Size.newInstance(12, 20));
+				        icon.setShadowSize(Size.newInstance(22, 20));
+				        icon.setIconAnchor(Point.newInstance(6, 20));
+				        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+				        MarkerOptions options = MarkerOptions.newInstance();
+				        options.setIcon(icon);
+						final Marker marker =new Marker(point,options);
+			   	          
+			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
+			   	          public void onClick(MarkerClickEvent event) {
+			   	          InfoWindow info = map.getInfoWindow();
+			   	          info.open(marker,
+			   	              new InfoWindowContent("<tr><td>Category: </td><td>" +re.getCategory()+
+			   	            		  "</td></tr><tr><td>Latitude: </td><td>"+re.getLatitude()+
+			   	            		  "</td></tr><tr><td>Longitude: </td><td>"+re.getLongitude()+
+			   	            		  "</td></tr><tr><td>Retailer Name: </td><td>"+re.getName()+
+			   	            		"</td></tr><tr><td>Address: </td><td>"+re.getAddress()+
 			   	            		  "</td></tr>"));
 			   	        }
 			   	      });
@@ -663,10 +808,10 @@ public class GSTCloudUI  extends Composite {
 							   	          public void onClick(MarkerClickEvent event) {
 								   	          InfoWindow info = map.getInfoWindow();
 								   	          info.open(marker,
-								   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
-								   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
-								   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
-								   	            		  "</tr><tr><td>Landmark Name</td><td>"+lm.getPlaceName()+
+								   	              new InfoWindowContent("<tr><td>Category: </td><td>" +lm.getCategory()+
+								   	            		  "</td></tr><tr><td>Latitude: </td><td>"+lm.getLatitude()+
+								   	            		  "</td></tr><tr><td>Longitude: </td><td>"+lm.getLongitude()+
+								   	            		  "</td></tr><tr><td>Landmark Name: </td><td>"+lm.getPlaceName()+
 								   	            		  "</td></tr>"));
 								   	        }
 								   	      });						
@@ -696,21 +841,39 @@ public class GSTCloudUI  extends Composite {
 								int rowCount = result.size();
 								for (int row = 0; row < rowCount; row ++) 
 								{
-									final TowerDTO lm=	result.get(row);	
-									LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
-									final Marker marker =new Marker(point);
+									final TowerDTO tw=	result.get(row);	
+									LatLng point = LatLng.newInstance(tw.getLatitude(),tw.getLongitude());
+									
+									 // Add a marker
+									String iconName=
+								        "http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/"+tw.getStatus()+".png";
+									Icon icon = Icon.newInstance(iconName);
+							         icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+							         icon.setIconSize(Size.newInstance(12, 20));
+							         icon.setShadowSize(Size.newInstance(22, 20));
+							         icon.setIconAnchor(Point.newInstance(6, 20));
+							         icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+							         MarkerOptions options = MarkerOptions.newInstance();
+							         options.setIcon(icon);
+									final Marker marker =new Marker(point,options);
+									
 									marker.addMarkerClickHandler(new MarkerClickHandler() {
 							   	          public void onClick(MarkerClickEvent event) {
 								   	          InfoWindow info = map.getInfoWindow();
 								   	          info.open(marker,
-								   	              new InfoWindowContent("<tr><td>Category</td><td>" +lm.getCategory()+
-								   	            		  "</tr><tr><td>Latitude:</td><td>"+lm.getLatitude()+
-								   	            		  "</tr><tr><td>Longitude:</td><td>"+lm.getLongitude()+
-								   	            		  "</tr><tr><td>Landmark Name</td><td>"+lm.getName()+
-								   	            		  "</td></tr>"));
+								   	        		new InfoWindowContent("<tr><td>Category: </td><td>" +tw.getCategory()+
+									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+tw.getLatitude()+
+									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+tw.getLongitude()+
+									   	            		  "</td></tr><tr><td>Tower Name: </td><td>"+tw.getName()+
+									   	            		"</td></tr><tr><td>Status: </td><td>"+tw.getStatus()+
+									   	            		"</td></tr><tr><td>Owner: </td><td>"+tw.getOwner()+
+									   	            		"</td></tr><tr><td>Coverage: </td><td>"+tw.getCoverage()+
+									   	            		"</td></tr><tr><td>Height: </td><td>"+tw.getHeight()+
+									   	            		  "</td></tr>"));
 								   	        }
 								   	      });						
-                                  // Add a marker
+                                 
+									
 									map.addOverlay(marker);
 									
 									//map.setCenter(point,15);
@@ -723,7 +886,110 @@ public class GSTCloudUI  extends Composite {
 							}
 				 });
 		}
-		 
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
+			cscService.getCSCs(new AsyncCallback<List<CSCDTO>>() 
+					 {
+						 public void onFailure(Throwable caught) 
+						 {
+					
+					     }
+
+						 public void onSuccess(List<CSCDTO> result) 
+								{
+									int rowCount = result.size();
+									for (int row = 0; row < rowCount; row ++) 
+									{
+										final CSCDTO csc=	result.get(row);
+										LatLng point = LatLng.newInstance(csc.getLatitude(),csc.getLongitude());
+										Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/csc.png");
+								        //Icon icon = Icon.newInstance(
+								        //"file://RetailerIcon.png");
+								        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+								        icon.setIconSize(Size.newInstance(12, 20));
+								        icon.setShadowSize(Size.newInstance(22, 20));
+								        icon.setIconAnchor(Point.newInstance(6, 20));
+								        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+								        MarkerOptions options = MarkerOptions.newInstance();
+								        options.setIcon(icon);
+										final Marker marker =new Marker(point,options);
+										marker.addMarkerClickHandler(new MarkerClickHandler() {
+								   	          public void onClick(MarkerClickEvent event) {
+									   	          InfoWindow info = map.getInfoWindow();
+									   	          info.open(marker,
+									   	              new InfoWindowContent("<tr><td>Category: </td><td>" +csc.getCategory()+
+									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+csc.getLatitude()+
+									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+csc.getLongitude()+
+									   	            		"</td></tr><tr><td>CSC Name: </td><td>"+csc.getName()+
+									   	            		  "</td></tr><tr><td>Tower Name: </td><td>"+csc.getTower_name()+
+									   	            		"</td></tr><tr><td>Contact_person: </td><td>"+csc.getContact_person()+
+									   	            		"</td></tr><tr><td>Address: </td><td>"+csc.getAddress()+
+									   	            		  "</td></tr>"));
+									   	        }
+									   	      });						
+	                                   // Add a marker
+										map.addOverlay(marker);
+										
+										//map.setCenter(point,15);
+										
+										// Add an info window to highlight a point of interest
+										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+										
+									}
+									datagrid.updateTableData();
+								}
+					 });
+			 }
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0){
+			retailerService.getRetailers(new AsyncCallback<List<RetailerDTO>>() 
+					 {
+						 public void onFailure(Throwable caught) 
+						 {
+					
+					     }
+
+						 public void onSuccess(List<RetailerDTO> result) 
+								{
+									int rowCount = result.size();
+									for (int row = 0; row < rowCount; row ++) 
+									{
+										final RetailerDTO re=	result.get(row);
+										LatLng point = LatLng.newInstance(re.getLatitude(),re.getLongitude());
+										Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer-icon.png");
+								        //Icon icon = Icon.newInstance(
+								        //"file://RetailerIcon.png");
+								        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+								        icon.setIconSize(Size.newInstance(12, 20));
+								        icon.setShadowSize(Size.newInstance(22, 20));
+								        icon.setIconAnchor(Point.newInstance(6, 20));
+								        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+								        MarkerOptions options = MarkerOptions.newInstance();
+								        options.setIcon(icon);
+										final Marker marker =new Marker(point,options);
+										marker.addMarkerClickHandler(new MarkerClickHandler() {
+								   	          public void onClick(MarkerClickEvent event) {
+									   	          InfoWindow info = map.getInfoWindow();
+									   	          info.open(marker,
+									   	              new InfoWindowContent("<tr><td>Category: </td><td>" +re.getCategory()+
+									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+re.getLatitude()+
+									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+re.getLongitude()+
+									   	            		  "</td></tr><tr><td>Retailer Name: </td><td>"+re.getName()+
+									   	            		"</td></tr><tr><td>Address: </td><td>"+re.getAddress()+
+									   	            		  "</td></tr>"));
+									   	        }
+									   	      });						
+	                                   // Add a marker
+										map.addOverlay(marker);
+										
+										//map.setCenter(point,15);
+										
+										// Add an info window to highlight a point of interest
+										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+										
+									}
+									datagrid.updateTableData();
+								}
+					 });
+			 }
 	}
 	
 	private void showBySpatialLocation(){
@@ -868,6 +1134,58 @@ public class GSTCloudUI  extends Composite {
 							{
 							}
 						    public void onSuccess(List<TowerDTO> result ) 
+						    {						    
+								int rowCount = result.size();
+								for (int row = 0; row < rowCount; row ++)
+								{
+									Double lat = result.get(row).getLatitude();
+									Double lng = result.get(row).getLongitude();
+									LatLng centerPoint = LatLng.newInstance(lat,lng);
+//									// Add a marker
+						   	          //map.addOverlay(new Marker(centerPoint));
+						   	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,radius,60,map);
+						   	          //map.setCenter(centerPoint, 10);
+									// Add an info window to highlight a point of interest
+							    	  
+							    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
+							    	  drawPointsWithinCircle(centerPoint,radius);
+								}
+						    }
+						});
+		 }
+		 else  if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
+				cscService.searchCSCByName(name,new AsyncCallback<List<CSCDTO>>()
+						{
+							public void onFailure(Throwable caught) 
+							{
+							}
+						    public void onSuccess(List<CSCDTO> result ) 
+						    {						    
+								int rowCount = result.size();
+								for (int row = 0; row < rowCount; row ++)
+								{
+									Double lat = result.get(row).getLatitude();
+									Double lng = result.get(row).getLongitude();
+									LatLng centerPoint = LatLng.newInstance(lat,lng);
+//									// Add a marker
+						   	          //map.addOverlay(new Marker(centerPoint));
+						   	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,radius,60,map);
+						   	          //map.setCenter(centerPoint, 10);
+									// Add an info window to highlight a point of interest
+							    	  
+							    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
+							    	  drawPointsWithinCircle(centerPoint,radius);
+								}
+						    }
+						});
+		 }
+		 else  if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0){
+			 retailerService.searchRetailerByName(name,new AsyncCallback<List<RetailerDTO>>()
+						{
+							public void onFailure(Throwable caught) 
+							{
+							}
+						    public void onSuccess(List<RetailerDTO> result ) 
 						    {						    
 								int rowCount = result.size();
 								for (int row = 0; row < rowCount; row ++)
@@ -1057,13 +1375,21 @@ public class GSTCloudUI  extends Composite {
 	     */
 	   
 	    map.setDoubleClickZoom(true);
+	    int maxLatLength =new Double(map.getCenter().getLatitude()).toString().length();
+	    if (maxLatLength>6) maxLatLength=6;
+	    int maxLngLength =new Double(map.getCenter().getLongitude()).toString().length();
+	    if (maxLngLength>6) maxLngLength=6;
 	    lblCenterPoint.setText
-	    	("MapCenter="+new Double(map.getCenter().getLatitude()).toString().substring(0,6)+","+
-	    			new Double(map.getCenter().getLongitude()).toString().substring(0,6)		);	   
+	    	("MapCenter="+new Double(map.getCenter().getLatitude()).toString().substring(0,maxLatLength)+","+
+	    			new Double(map.getCenter().getLongitude()).toString().substring(0,maxLngLength)		);	   
 	    map.addMapMoveEndHandler(new MapMoveEndHandler() {
 	        public void onMoveEnd(MapMoveEndEvent event) {
-	          lblCenterPoint.setText("MapCenter="+new Double(map.getCenter().getLatitude()).toString().substring(0,6)+","+
-		    			new Double(map.getCenter().getLongitude()).toString().substring(0,6)		);	
+	        	int maxLatLength =new Double(map.getCenter().getLatitude()).toString().length();
+	    	    if (maxLatLength>6) maxLatLength=6;
+	    	    int maxLngLength =new Double(map.getCenter().getLongitude()).toString().length();
+	    	    if (maxLngLength>6) maxLngLength=6;
+	          lblCenterPoint.setText("MapCenter="+new Double(map.getCenter().getLatitude()).toString().substring(0,maxLatLength)+","+
+		    			new Double(map.getCenter().getLongitude()).toString().substring(0,maxLngLength)		);	
 	        }
 	      });
 	    /*
@@ -1272,6 +1598,10 @@ public class GSTCloudUI  extends Composite {
 			datagrid.setTableModelService(towerModelService);
 		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0)
 			datagrid.setTableModelService(landmarksModelService);
+		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0)
+			datagrid.setTableModelService(cscModelService);
+		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0)
+			datagrid.setTableModelService(retailerModelService);
 		
 		datagrid.addRowSelectionListener(new RowSelectionListener() {
 			public void onRowSelected(AdvancedTable sender, String rowId) {

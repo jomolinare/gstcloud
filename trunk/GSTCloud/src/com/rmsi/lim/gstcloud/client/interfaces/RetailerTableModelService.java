@@ -7,8 +7,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.rmsi.lim.gstcloud.client.model.TableColumn;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
 
-@RemoteServiceRelativePath("CSCTableModel")
-public interface CSCTableModelService extends TableModelService {
+@RemoteServiceRelativePath("RetailerTableModel")
+public interface RetailerTableModelService extends TableModelService {
 	public TableColumn[]  getColumns();
 	public Integer getRowsCount(DataFilter[] filters);
 	public String[][] getRows(int startRow, int rowsCount,

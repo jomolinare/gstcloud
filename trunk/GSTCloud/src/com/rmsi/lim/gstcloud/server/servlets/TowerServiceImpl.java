@@ -39,7 +39,7 @@ public class TowerServiceImpl extends RemoteServiceServlet implements TowerServi
 	
 	PersistenceManager pm = PMF.get().getPersistenceManager();
 	
-	String query = "SELECT FROM com.rmsi.lim.gstcloud.server.model.Tower WHERE category == 'Tower'";
+	String query = "SELECT FROM com.rmsi.lim.gstcloud.server.model.Tower WHERE category == 'TOWER'";
 	@Override
 	public List<TowerDTO> getTowers() 
 	{
@@ -66,7 +66,7 @@ public class TowerServiceImpl extends RemoteServiceServlet implements TowerServi
 		    com.beoui.geocell.model.Point centerPoint = new com.beoui.geocell.model.Point(latitude, longitude);
 	        
 	        List<Object> params = new ArrayList<Object>();
-	        params.add("Tower");
+	        params.add("TOWER");
 	        //GeocellQuery baseQuery = new GeocellQuery("lastName == lastNameParam", "String lastNameParam", params);
             GeocellQuery baseQuery = new GeocellQuery("category== categoryParam","String categoryParam", params);
 	        List<Tower> objects = null;
@@ -126,99 +126,4 @@ public class TowerServiceImpl extends RemoteServiceServlet implements TowerServi
 			}
 		return null;
 	}
-
-	@Override
-	public String loadKML(String fileName) {
-			
-			try
-			{
-				
-			Boolean fileOK = true;
-			File fileIn = new File(fileName);
-			
-			System.out.println(fileIn);
-			Kml kml = Kml.unmarshal(fileIn,fileOK);
-		
-			if (kml != null)
-			{			
-				Feature feature = kml.getFeature();
-				processFeature(null, feature);
-			}
-			
-			Placemark placemark ;		
-			
-	    }
-	    catch (Exception e)
-	    {
-	      System.err.println(e);
-	      System.exit(0);
-	    }  
-	  
-	    return "Success";
-	  }
-
-
-		
-		private  void processFeature(Feature parentFeature, Feature feature)
-		{
-			if (feature instanceof Document)
-				{
-					processDocument(parentFeature, (Document) feature);
-				}
-			else if (feature instanceof Folder)
-				{
-					processFolder(parentFeature, (Folder) feature);
-				}
-			else if (feature instanceof Placemark)
-				{
-					processPlacemark(parentFeature, (Placemark) feature);
-				}
-			else
-				{
-					System.out.println("Feature " + feature.getName() + " : " + feature);
-				}
-		}
-		
-		private  void processDocument(Feature parentFeature, Document doc)
-		{
-			List<Feature> features = doc.getFeature();
-
-			 System.out.println("Document " + doc.getName());
-
-			for (Feature docFeature : features)
-				{
-					processFeature(doc, docFeature);
-				}
-		}
-
-		private  void processFolder(Feature parentFeature, Folder folder)
-		{
-			List<Feature> features = folder.getFeature();
-
-			// System.out.println("Folder " + folder.getName());
-
-			for (Feature folderFeature : features)
-				{
-					processFeature(folder, folderFeature);
-				}
-		
-	}
-		private  void processPlacemark(Feature parentFeature, Placemark placemark)
-		{
-			Point point = (Point) placemark.getGeometry();
-			List<Coordinate> coordinates = point.getCoordinates();
-			
-			for (Coordinate coordinate : coordinates) 
-			{
-				Tower twr = new Tower("Tower",placemark.getName(),"Uninor","Under Construction","Coverage",100.0,coordinate.getLatitude(),coordinate.getLongitude(),GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
-				pm.makePersistent(twr);
-			}	
-			
-		
-
-		}
-
-	
-		
-	
 }

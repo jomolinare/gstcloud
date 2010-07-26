@@ -11,39 +11,31 @@ import com.beoui.geocell.GeocellManager;
 import com.beoui.geocell.model.LocationCapable;
 import com.beoui.geocell.model.Point;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.rmsi.lim.gstcloud.client.model.CSCDTO;
+import com.rmsi.lim.gstcloud.client.model.RetailerDTO;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "false")
 @Inheritance(customStrategy = "complete-table")
-public class CSC extends Geohashed implements LocationCapable,IsSerializable
+public class Retailer extends Geohashed implements LocationCapable,IsSerializable
 {
   @Persistent
-  private String category;
-  
-  @Persistent
-  private String name;
+    private String name;
 
   @Persistent
-    private String contact_person;
+  private String category;
+
+  @Persistent
+    private String address;  
   
-  @Persistent
-  private String address;  
- 
-  @Persistent
-  private String tower_name;
-    
   @Persistent
     private Double latitude;
     
     @Persistent
     private Double longitude;    
       
-    public CSC(String category,String name, String contact_person, String address, String tower_name, Double latitude, Double longitude, List<String> geoCells) {
+    public Retailer(String category,String name, String address, Double latitude, Double longitude, List<String> geoCells) {
         this.category=category;
     	this.name = name;
-        this.contact_person = contact_person;
-        this.address = address;
-        this.tower_name = tower_name;
+        this.address = address;        
         this.latitude = latitude;
         this.longitude = longitude;
         this.setGeoCells(geoCells);
@@ -56,16 +48,8 @@ public class CSC extends Geohashed implements LocationCapable,IsSerializable
         return name;
     }
     
-    public String getContact_person() {
-        return contact_person;
-    }
-    
     public String getAddress() {
         return address;
-    }
-        
-    public String getTower_name() {
-        return tower_name;
     }
     
     public Double getLatitude() {
@@ -83,16 +67,8 @@ public class CSC extends Geohashed implements LocationCapable,IsSerializable
         this.name = name;
     }
 
-    public void setContact_person(String contact_person) {
-        this.contact_person = contact_person;
-    }
-    
     public void setAddress(String address) {
         this.address = address;
-    }
-        
-    public void setTower_name(String tower_name) {
-        this.tower_name = tower_name;
     }
     
     public void setLatitude(Double latitude) {
@@ -103,15 +79,13 @@ public class CSC extends Geohashed implements LocationCapable,IsSerializable
         this.longitude = longitude;
     }
 
-	public CSC(CSCDTO csc) {
-		this.setCategory(csc.getCategory());
-		this.setName(csc.getName());
-		this.setContact_person(csc.getContact_person());
-		this.setAddress(csc.getAddress());
-		this.setTower_name(csc.getTower_name());	
-		this.setLatitude(csc.getLatitude());
-		this.setLongitude(csc.getLongitude());
-	    this.setGeoCells(GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(csc.getLatitude(),csc.getLongitude())));		
+	public Retailer(RetailerDTO Retailer) {
+		this.setCategory(Retailer.getCategory());
+		this.setName(Retailer.getName());
+		this.setAddress(Retailer.getAddress());	
+		this.setLatitude(Retailer.getLatitude());
+		this.setLongitude(Retailer.getLongitude());
+	    this.setGeoCells(GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(Retailer.getLatitude(),Retailer.getLongitude())));		
 	}
 
 	public List<String> getGeocells() {

@@ -13,6 +13,5 @@ public interface TowerServiceAsync
 	void loadStation(TowerDTO station, AsyncCallback<String> callback);
     void getTowers(AsyncCallback<List<TowerDTO>> callback);
     void searchTowerByName(String text,AsyncCallback<List<TowerDTO>> callback);
-    void displayTowersWithinDistance(Double latitude,Double longitude,Double distance,AsyncCallback<List<TowerDTO>> callback);
-    void loadKML(String filename, AsyncCallback<String> asyncCallback);
+    void displayTowersWithinDistance(Double latitude,Double longitude,Double distance,AsyncCallback<List<TowerDTO>> callback);   
 }
