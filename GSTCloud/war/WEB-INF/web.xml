@@ -80,6 +80,24 @@
   </servlet-mapping>
  
   <servlet>
+    <servlet-name>CSCServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.CSCServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>CSCServlet</servlet-name>
+    <url-pattern>/gstcloud/CSC</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>retailerServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.RetailerServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>retailerServlet</servlet-name>
+    <url-pattern>/gstcloud/retailer</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
   <servlet-name>loadLocalServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.SpatialBodiesServiceImpl</servlet-class>
   </servlet>
@@ -106,13 +124,31 @@
     <url-pattern>/gstcloud/LandMarksTableModel</url-pattern>
   </servlet-mapping>
      
-         <servlet>
+ <servlet>
   <servlet-name>TowerTableModelServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.TowerTableModelServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>TowerTableModelServlet</servlet-name>
     <url-pattern>/gstcloud/TowerTableModel</url-pattern>
+  </servlet-mapping>
+     
+         <servlet>
+  <servlet-name>CSCTableModelServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.CSCTableModelServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CSCTableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/CSCTableModel</url-pattern>
+  </servlet-mapping>
+     
+     <servlet>
+  <servlet-name>RetailerTableModelServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.RetailerTableModelServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RetailerTableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/RetailerTableModel</url-pattern>
   </servlet-mapping>
      
      

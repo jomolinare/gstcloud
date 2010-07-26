@@ -16,5 +16,4 @@ public interface LandmarksService extends RemoteService
 	    List<LandmarkDTO> getLandMarks();
 	    List<LandmarkDTO> searchLandmarkByName(String text);
 	    List<LandmarkDTO> displayLandmarksWithinDistance(Double latitude,Double longitude,Double distance);
-	    String loadKML(String fileIn);
-	}
+}

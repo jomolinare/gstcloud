@@ -14,7 +14,7 @@
 	 	<g:VerticalPanel styleName="header">
 	 	<g:HTML>
 	 		<img src="images/lo-cloud.png" title="Brand Cloud GIS" alt="Brand Cloud GIS" class="c-logo" />
-	 		<img src="images/Uninor-logo.png" title="Brand UNINOR" alt="Brand UNINOR" class="r-logo" />
+	 		<img src="images/uninor-logo.png" title="Brand UNINOR" alt="Brand UNINOR" class="r-logo" />
 	 		<h3 class="d-none">RMSI Cloud GIS</h3></g:HTML>
 	 	</g:VerticalPanel>					
 

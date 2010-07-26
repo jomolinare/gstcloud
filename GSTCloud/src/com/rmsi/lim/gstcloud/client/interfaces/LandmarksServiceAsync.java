@@ -14,5 +14,4 @@ public interface LandmarksServiceAsync
     void getLandMarks(AsyncCallback<List<LandmarkDTO>> callback);
     void searchLandmarkByName(String text,AsyncCallback<List<LandmarkDTO>> callback);
     void displayLandmarksWithinDistance(Double latitude,Double longitude,Double distance,AsyncCallback<List<LandmarkDTO>> callback);
-    void loadKML(String filename, AsyncCallback<String> asyncCallback);
 }

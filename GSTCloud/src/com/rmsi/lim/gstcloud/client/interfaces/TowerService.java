@@ -16,5 +16,4 @@ public interface TowerService extends RemoteService
 	    List<TowerDTO> getTowers();
 	    List<TowerDTO> searchTowerByName(String text);
 	    List<TowerDTO> displayTowersWithinDistance(Double latitude,Double longitude,Double distance);
-	    String loadKML(String fileIn);
 	}

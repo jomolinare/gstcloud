@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.rmsi.lim.gstcloud.client.model.TableColumn;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
 
-public interface CSCTableModelServiceAsync extends TableModelServiceAsync{
+public interface RetailerTableModelServiceAsync extends TableModelServiceAsync{
 	public void getColumns(AsyncCallback<TableColumn[]> callback);
 	public void getRowsCount(DataFilter[] filters, AsyncCallback<Integer> callback);
 	public void getRows(int startRow, int rowsCount,

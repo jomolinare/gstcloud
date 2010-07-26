@@ -2,28 +2,27 @@ package com.rmsi.lim.gstcloud.server.utilities;
 
 import java.util.Comparator;
 
-import com.rmsi.lim.gstcloud.client.model.CSCDTO;
-import com.rmsi.lim.gstcloud.client.model.TowerDTO;
+import com.rmsi.lim.gstcloud.client.model.RetailerDTO;
 
 
-public class CSCComparator implements Comparator<CSCDTO> {
+public class RetailerComparator implements Comparator<RetailerDTO> {
 	
 	private String sortColumn;
 	private boolean sortingOrder;
 	
-	public CSCComparator(String sortColumn, boolean sortingOrder) {
+	public RetailerComparator(String sortColumn, boolean sortingOrder) {
 		this.sortColumn = sortColumn;
 		this.sortingOrder = sortingOrder;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public int compare(CSCDTO CSC1, CSCDTO CSC2) {
+	public int compare(RetailerDTO Retailer1, RetailerDTO Retailer2) {
 		Comparable column1 = (Comparable)
 			ReflectionUtils.getPropertyValue(
-					CSC1, this.sortColumn);
+					Retailer1, this.sortColumn);
 		Comparable column2 = (Comparable)
 			ReflectionUtils.getPropertyValue(
-					CSC2, this.sortColumn);
+					Retailer2, this.sortColumn);
 		int compareResult = -1;
 		if (column1 != null) {
 			if (column2 != null) {

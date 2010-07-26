@@ -9,7 +9,9 @@ import com.beoui.geocell.GeocellManager;
 import com.google.gwt.user.client.Window;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
+import com.rmsi.lim.gstcloud.server.model.CSC;
 import com.rmsi.lim.gstcloud.server.model.Landmark;
+import com.rmsi.lim.gstcloud.server.model.Retailer;
 import com.rmsi.lim.gstcloud.server.model.Tower;
 import com.rmsi.lim.gstcloud.server.utilities.PMF;
 
@@ -113,22 +115,61 @@ public class FileUp extends HttpServlet{
 				processFeature(folder, folderFeature);
 			}	
 	}
+	private String extractTagValue(String description, String tag){
+		int i=description.indexOf(tag);		
+		i+=(tag.length()+9);
+		int j=description.indexOf('<', i);
+		return (description.substring(i, j));		 
+	}
 	
 	private  void processPlacemark(Feature parentFeature, Placemark placemark)
 	{
 		Point point = (Point) placemark.getGeometry();
 		List<Coordinate> coordinates = point.getCoordinates();
-		
+		String str=(String)placemark.getDescription();
+		System.out.println(str);
 		for (Coordinate coordinate : coordinates) 
 		{
-			if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0)
-			{
-			Landmark land = new Landmark("Landmark",coordinate.getLatitude(),coordinate.getLongitude(),placemark.getName(),GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
-			pm.makePersistent(land);
+			if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0){
+				Landmark land = new Landmark(extractTagValue(str,"CATEGORY:")
+						                    ,coordinate.getLatitude()
+						                    ,coordinate.getLongitude()
+						                    ,placemark.getName()
+						                    ,GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
+				pm.makePersistent(land);
 			}
 			else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0){
-			Tower twr = new Tower("Tower",placemark.getName(),"Uninor","Under Construction","Coverage",100.0,coordinate.getLatitude(),coordinate.getLongitude(),GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
-			pm.makePersistent(twr);
+												
+				Tower twr = new Tower(extractTagValue(str,"CATEGORY:")
+						             ,placemark.getName()
+						             ,extractTagValue(str,"OWNER:")
+						             ,extractTagValue(str,"STATUS:")
+						             ,extractTagValue(str,"COVERAGE:")
+						             ,new Double(extractTagValue(str,"TOWER_HEIGHT:"))
+						             ,coordinate.getLatitude()
+						             ,coordinate.getLongitude()
+						             ,GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
+				pm.makePersistent(twr);
+			}
+			else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
+				CSC csc = new CSC(extractTagValue(str,"CATEGORY:")
+								 ,placemark.getName()
+								 ,extractTagValue(str,"CONTACT_PERSON:")
+								 ,extractTagValue(str,"ADDRESS:")
+								 ,extractTagValue(str,"TOWER_NAME:")
+								 ,coordinate.getLatitude()
+								 ,coordinate.getLongitude()
+								 ,GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
+				pm.makePersistent(csc);
+			}
+			else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0){				
+				Retailer ret = new Retailer(extractTagValue(str,"CATEGORY:")
+										   ,placemark.getName()
+										   ,extractTagValue(str,"ADDRESS:")
+										   ,coordinate.getLatitude()
+										   ,coordinate.getLongitude()
+										   ,GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
+				pm.makePersistent(ret);
 			}
 		}	
 	}
