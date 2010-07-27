@@ -70,7 +70,7 @@
 <!--AttributePanel (Starts Here)				-->
 				    	<g:VerticalPanel ui:field="vpAttribute" styleName="vLatLongPanel" >
 						<g:Label ui:field="lblAttribute" text="Name:" styleName="textlabel"/>
-						<g:TextBox ui:field="tbAttribute" styleName="tblarge" text="Enter Address"></g:TextBox>
+						<g:TextBox ui:field="tbAttribute" styleName="tblarge" text="Enter Name"></g:TextBox>
 						<g:Label ui:field="lblAttributeRadius" text="Specified Radius(in m):" styleName="textlabel"/>
 						<g:TextBox ui:field="tbAttributeRadius" styleName="tbsmall" text="Enter Radius"></g:TextBox>
 						<g:HorizontalPanel ui:field="hpAttribute">
