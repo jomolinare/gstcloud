@@ -20,15 +20,18 @@ import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.ScaleControl;
+import com.google.gwt.maps.client.event.GroundOverlayVisibilityChangedHandler;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
+import com.google.gwt.maps.client.event.GroundOverlayVisibilityChangedHandler.GroundOverlayVisibilityChangedEvent;
 import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.event.MapMoveEndHandler.MapMoveEndEvent;
 import com.google.gwt.maps.client.event.MarkerClickHandler.MarkerClickEvent;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.overlay.GroundOverlay;
 import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
@@ -40,9 +43,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -260,6 +265,67 @@ public class GSTCloudUI  extends Composite {
 
 	private List<LatLng> listofClicks = new ArrayList<LatLng>();
 	
+	private InfoWindowContent createTowerInfoWindowContent(LatLng point, TowerDTO tw){
+		final LatLng localPoint=point;
+		final TowerDTO localTower=tw;
+		 VerticalPanel vpc =new VerticalPanel();
+	          FlexTable table =new FlexTable();
+	          table.setText(0, 0 ,"Category:");
+	          table.setText(0, 1 ,tw.getCategory());
+	          table.setText(1, 0 ,"Latitude:");
+	          table.setText(1, 1 ,tw.getLatitude().toString());
+	          table.setText(2, 0 ,"Longitude:");
+	          table.setText(2, 1 ,tw.getLongitude().toString());
+	          table.setText(3, 0 ,"Tower Name:");
+	          table.setText(3, 1 ,tw.getName());
+	          table.setText(4, 0 ,"Status:");
+	          table.setText(4, 1 ,tw.getStatus());
+	          table.setText(5, 0 ,"Owner:");
+	          table.setText(5, 1 ,tw.getOwner());
+	          table.setText(6, 0 ,"Coverage:");
+	          table.setText(6, 1 ,tw.getCoverage());
+	          table.setText(7, 0 ,"Height:");
+	          table.setText(7, 1 ,tw.getHeight().toString());
+	         
+	          
+	          final Button btnShowCoverage =new Button("Show Coverage");
+	          LatLngBounds rectBounds = LatLngBounds.newInstance(LatLng.newInstance(
+	            		 localPoint.getLatitude() - 0.01, localPoint.getLongitude()
+	                     - 0.01), LatLng.newInstance(localPoint.getLatitude() +0.01,
+	                    		 localPoint.getLongitude() + 0.01));	 
+	          final GroundOverlay overlay =new GroundOverlay("images/Coverages/"+localTower.getCoverage(),rectBounds);
+	          overlay.addGroundOverlayVisibilityChangedHandler(new GroundOverlayVisibilityChangedHandler() {
+
+	             public void onVisibilityChanged(
+	                 GroundOverlayVisibilityChangedEvent event) {
+	               if (event.isVisible()) {
+	            	btnShowCoverage.setText("Hide Coverage");
+	               } else {
+	            	btnShowCoverage.setText("Show Coverage");
+	               }
+	             }
+
+	           });
+	          map.addOverlay(overlay);
+	          overlay.setVisible(false);
+	          btnShowCoverage.addClickHandler(new ClickHandler(){
+	        	 public void onClick(ClickEvent event) {
+	        		         	
+	        	  
+	        	  if (overlay.isVisible()) {
+	        		  btnShowCoverage.setText("Show Coverage");
+        	        } else {
+        	        	btnShowCoverage.setText("Hide Coverage");
+        	        }
+        	        overlay.setVisible(!overlay.isVisible());
+	        	 }
+	          });
+	          vpc.add(table);
+	          vpc.add(btnShowCoverage);
+	          InfoWindowContent content = new InfoWindowContent(vpc);
+	          return content;
+	}
+	
 	public GSTCloudUI() {
 		
 		initWidget(uiBinder.createAndBindUi(this));
@@ -446,6 +512,7 @@ public class GSTCloudUI  extends Composite {
 	{
 		final Double localRadius=radius;
 		final LatLng localPoint =point;
+		 
 		if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0){
 		landMarksService.displayLandmarksWithinDistance
 		(localPoint.getLatitude(), 
@@ -459,18 +526,19 @@ public class GSTCloudUI  extends Composite {
 		    public void onSuccess(List<LandmarkDTO> result ) 
 		    {
 		    //	tbAttributeRadius.setValue("Running");
+		    	LatLngBounds bounds = LatLngBounds.newInstance();
 		    	int rowCount = result.size();
 		    	
 		    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
 		    	map.setCenter(localPoint, 10);
-		    	map.addOverlay(new Marker(localPoint));
+		    	//map.addOverlay(new Marker(localPoint));
 				for (int row = 0; row < rowCount; row ++)
 				{
 					final LandmarkDTO lm =result.get(row);
 					final LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
 //					// Add a marker
 					final Marker marker =new Marker(point);
-		   	          
+                    bounds.extend(point);
 		   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
 		   	          public void onClick(MarkerClickEvent event) {
 		   	          InfoWindow info = map.getInfoWindow();
@@ -484,6 +552,8 @@ public class GSTCloudUI  extends Composite {
 		   	      });
 		   	      map.addOverlay(marker);
 				}
+				map.setCenter(bounds.getCenter());
+				map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
 				datagrid.setCenterPoint(localPoint);
 				datagrid.setSearchRadius(localRadius);
 				datagrid.updateTableData();
@@ -531,7 +601,9 @@ public class GSTCloudUI  extends Composite {
 			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
 			   	          public void onClick(MarkerClickEvent event) {
 			   	          InfoWindow info = map.getInfoWindow();
-			   	          info.open(marker,
+			   	         
+			   	          info.open(marker, createTowerInfoWindowContent(point,tw));
+			   	         /* info.open(marker,
 			   	              new InfoWindowContent("<tr><td>Category: </td><td>" +tw.getCategory()+
 			   	            		  "</td></tr><tr><td>Latitude: </td><td>"+tw.getLatitude()+
 			   	            		  "</td></tr><tr><td>Longitude: </td><td>"+tw.getLongitude()+
@@ -540,7 +612,7 @@ public class GSTCloudUI  extends Composite {
 			   	            		"</td></tr><tr><td>Owner: </td><td>"+tw.getOwner()+
 			   	            		"</td></tr><tr><td>Coverage: </td><td>"+tw.getCoverage()+
 			   	            		"</td></tr><tr><td>Height: </td><td>"+tw.getHeight().toString()+
-			   	            		  "</td></tr>"));
+			   	            		  "</td></tr>"));*/
 			   	        }
 			   	      });
 			   	      map.addOverlay(marker);
@@ -568,7 +640,7 @@ public class GSTCloudUI  extends Composite {
 			    	
 			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
 			    	map.setCenter(localPoint, 10);
-			    	map.addOverlay(new Marker(localPoint));
+			    	//map.addOverlay(new Marker(localPoint));
 					for (int row = 0; row < rowCount; row ++)
 					{
 						final CSCDTO csc =result.get(row);
@@ -626,7 +698,7 @@ public class GSTCloudUI  extends Composite {
 			    	
 			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
 			    	map.setCenter(localPoint, 10);
-			    	map.addOverlay(new Marker(localPoint));
+			    	//map.addOverlay(new Marker(localPoint));
 					for (int row = 0; row < rowCount; row ++)
 					{
 						final RetailerDTO re =result.get(row);
@@ -827,7 +899,7 @@ public class GSTCloudUI  extends Composite {
 									
 								}
 								map.setCenter(bounds.getCenter());
-								map.setZoomLevel(map.getBoundsZoomLevel(bounds));
+								map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
 								datagrid.updateTableData();
 							}
 				 });
@@ -847,7 +919,7 @@ public class GSTCloudUI  extends Composite {
 								for (int row = 0; row < rowCount; row ++) 
 								{
 									final TowerDTO tw=	result.get(row);	
-									LatLng point = LatLng.newInstance(tw.getLatitude(),tw.getLongitude());
+									final LatLng point = LatLng.newInstance(tw.getLatitude(),tw.getLongitude());
 									bounds.extend(point);
 									 // Add a marker
 									String iconName=
@@ -865,16 +937,7 @@ public class GSTCloudUI  extends Composite {
 									marker.addMarkerClickHandler(new MarkerClickHandler() {
 							   	          public void onClick(MarkerClickEvent event) {
 								   	          InfoWindow info = map.getInfoWindow();
-								   	          info.open(marker,
-								   	        		new InfoWindowContent("<tr><td>Category: </td><td>" +tw.getCategory()+
-									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+tw.getLatitude()+
-									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+tw.getLongitude()+
-									   	            		  "</td></tr><tr><td>Tower Name: </td><td>"+tw.getName()+
-									   	            		"</td></tr><tr><td>Status: </td><td>"+tw.getStatus()+
-									   	            		"</td></tr><tr><td>Owner: </td><td>"+tw.getOwner()+
-									   	            		"</td></tr><tr><td>Coverage: </td><td>"+tw.getCoverage()+
-									   	            		"</td></tr><tr><td>Height: </td><td>"+tw.getHeight()+
-									   	            		  "</td></tr>"));
+								   	          info.open(marker, createTowerInfoWindowContent(point,tw));
 								   	        }
 								   	      });						
                                  
@@ -888,7 +951,7 @@ public class GSTCloudUI  extends Composite {
 									
 								}	
 								map.setCenter(bounds.getCenter());
-								map.setZoomLevel(map.getBoundsZoomLevel(bounds));
+								map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
 								datagrid.updateTableData();
 							}
 				 });
@@ -945,7 +1008,7 @@ public class GSTCloudUI  extends Composite {
 										
 									}
 									map.setCenter(bounds.getCenter());
-									map.setZoomLevel(map.getBoundsZoomLevel(bounds));
+									map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
 									datagrid.updateTableData();
 								}
 					 });
@@ -1000,7 +1063,7 @@ public class GSTCloudUI  extends Composite {
 										
 									}
 									map.setCenter(bounds.getCenter());
-									map.setZoomLevel(map.getBoundsZoomLevel(bounds));
+									map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
 									datagrid.updateTableData();
 								}
 					 });
@@ -1137,7 +1200,7 @@ public class GSTCloudUI  extends Composite {
 				   	          //GSTCloudUtils.drawSearchCircleOnScreen(centerPoint,radius,60,map);
 				   	          //map.setCenter(centerPoint, 10);
 							// Add an info window to highlight a point of interest
-					    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+					    	  //map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
 					    	  drawPointsWithinCircle(centerPoint,radius);
 						}
 				    }
@@ -1162,7 +1225,7 @@ public class GSTCloudUI  extends Composite {
 						   	          //map.setCenter(centerPoint, 10);
 									// Add an info window to highlight a point of interest
 							    	  
-							    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
+							    	  //map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
 							    	  drawPointsWithinCircle(centerPoint,radius);
 								}
 						    }
@@ -1188,7 +1251,7 @@ public class GSTCloudUI  extends Composite {
 						   	          //map.setCenter(centerPoint, 10);
 									// Add an info window to highlight a point of interest
 							    	  
-							    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
+							    	  //map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
 							    	  drawPointsWithinCircle(centerPoint,radius);
 								}
 						    }
@@ -1214,7 +1277,7 @@ public class GSTCloudUI  extends Composite {
 						   	          //map.setCenter(centerPoint, 10);
 									// Add an info window to highlight a point of interest
 							    	  
-							    	  map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
+							    	  //map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getName()));
 							    	  drawPointsWithinCircle(centerPoint,radius);
 								}
 						    }
@@ -1228,7 +1291,7 @@ public class GSTCloudUI  extends Composite {
 	    try{
 		geocoder.getLatLng(address, new LatLngCallback() {
 	      public void onFailure() {
-	        //Window.alert(address + " not found");
+	          Window.alert(address + " not found");
 	    	  System.out.println(address+ "not found");
 	      }
 	      public void onSuccess(LatLng centerPoint) {
