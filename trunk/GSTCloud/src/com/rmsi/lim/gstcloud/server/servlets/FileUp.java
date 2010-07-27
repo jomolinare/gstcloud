@@ -51,10 +51,13 @@ public class FileUp extends HttpServlet{
 	String selectedLayer;
 	public void doPost(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
 		{ 
-			selectedLayer=(String)(request.getSession().getAttribute("selectedlayer"));
-            ServletFileUpload upload = new ServletFileUpload();   
-        
-        try{
+			Object temp=request.getSession().getAttribute("selectedlayer");
+			if (temp!=null)
+				selectedLayer=(String)temp;
+			else selectedLayer=GSTCloudSharedConstants.Landmark;
+			
+            ServletFileUpload upload = new ServletFileUpload();
+            try{
             FileItemIterator iter = upload.getItemIterator(request);
 
             while (iter.hasNext()) {
