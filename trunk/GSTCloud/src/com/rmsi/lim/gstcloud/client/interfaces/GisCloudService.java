@@ -10,4 +10,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface GisCloudService extends RemoteService {
 	String pointInPolygon(String lngLat);
 	String polygonInPolygon(String bbox);	
+	String loadPolygons(String layerName);
 }

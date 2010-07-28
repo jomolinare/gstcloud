@@ -197,5 +197,11 @@ public class GisCloudServiceImplFromDataStore extends RemoteServiceServlet imple
 		
 	}
 
+	@Override
+	public String loadPolygons(String layerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }
