@@ -198,4 +198,16 @@ public class GisCloudServiceImpl extends RemoteServiceServlet implements
 		return geoGreeting;
 	
 	}
+
+
+	@Override
+	public String loadPolygons(String layerName) {
+		// TODO Auto-generated method stub
+		if (layerName=="Ward")
+		{
+			
+		}
+		
+		return "Success";
+	}
 }
