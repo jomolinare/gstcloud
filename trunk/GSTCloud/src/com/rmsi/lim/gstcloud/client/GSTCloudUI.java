@@ -28,6 +28,7 @@ import com.google.gwt.maps.client.event.GroundOverlayVisibilityChangedHandler.Gr
 import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.event.MapMoveEndHandler.MapMoveEndEvent;
 import com.google.gwt.maps.client.event.MarkerClickHandler.MarkerClickEvent;
+import com.google.gwt.maps.client.event.PolylineEndLineHandler;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLngBounds;
@@ -36,7 +37,9 @@ import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
+import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
+import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -75,6 +78,10 @@ import com.rmsi.lim.gstcloud.client.interfaces.CSCService;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.ComplaintService;
+import com.rmsi.lim.gstcloud.client.interfaces.ComplaintServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.ComplaintTableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.ComplaintTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
@@ -95,6 +102,7 @@ import com.rmsi.lim.gstcloud.client.interfaces.TowerServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.model.CSCDTO;
+import com.rmsi.lim.gstcloud.client.model.ComplaintDTO;
 import com.rmsi.lim.gstcloud.client.model.District;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.model.Layer;
@@ -116,6 +124,13 @@ public class GSTCloudUI  extends Composite {
 	
 	private static testagainUiBinder uiBinder = GWT
 			.create(testagainUiBinder.class);
+	
+	private InfoWindow info = null;
+	ArrayList<Double> arrLat = new ArrayList<Double>();
+	ArrayList<Double> arrLng = new ArrayList<Double>();
+	int check =0;
+	private Polyline line = null;
+	
  @UiTemplate("GSTCloudUI.ui.xml")
 	interface testagainUiBinder extends UiBinder<Panel, GSTCloudUI> {
 	}
@@ -224,6 +239,7 @@ public class GSTCloudUI  extends Composite {
  @UiField
  Button btnApplyFilter, btnClearFilter,btnMarkAll,btnMarkNothing,btnShowMarked;
 	
+ 
 
  
  
@@ -260,6 +276,11 @@ public class GSTCloudUI  extends Composite {
 	.create(RetailerTableModelService.class);
 	private final RetailerServiceAsync retailerService = GWT
     .create(RetailerService.class);
+	private final ComplaintServiceAsync complaintService = GWT
+    .create(ComplaintService.class);
+	private final ComplaintTableModelServiceAsync complaintModelService=GWT
+	.create(ComplaintTableModelService.class);
+	
 	
 	private String selectedLayer;
 
@@ -397,38 +418,88 @@ public class GSTCloudUI  extends Composite {
 		final Button btnSelectRetailers= new Button ("Select Retailers");
 		final Button btnShowTerritoryOverLay= new Button ("Show Resulting Territory");
 		
+		final Button btnMeasureDistOn = new Button(" Measuring On");
+		final Button btnMeasureDistOff = new Button(" Measuring Off");
+		
+		btnMeasureDistOff.setEnabled(false);
+		btnMeasureDistOn.setEnabled(true);
 		btnShowSearchOverlay.setEnabled(false);
 		btnShowTerritoryOverLay.setEnabled(false);
 		btnHideTerritory.setEnabled(false);
 		
+		
+		
 		final MapClickHandler uniclick = 
 		new MapClickHandler() {
 		      public void onClick(MapClickEvent e) {
-		        
-		    	MapWidget sender = e.getSender();
-		    	btnShowSearchOverlay.setEnabled(true);
-		    	Overlay overlay = e.getOverlay();
-		        LatLng point = e.getLatLng();
+		    	  
+		    	  
+		  				if(btnMeasureDistOn.isEnabled() == true){
+		  					
+		  					MapWidget sender = e.getSender();
+		  			    	btnShowSearchOverlay.setEnabled(true);
+		  			    	Overlay overlay = e.getOverlay();
+		  			        LatLng point = e.getLatLng();
 
-		       /* if (overlay != null && overlay instanceof Marker) {
-		          sender.removeOverlay(overlay);
-		          
-		        } else */{
-		          //sender.addOverlay(new Marker(point));
-		        	Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer-icon.png");
-		        //Icon icon = Icon.newInstance(
-		        //"file://RetailerIcon.png");
-		        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
-		        icon.setIconSize(Size.newInstance(12, 20));
-		        icon.setShadowSize(Size.newInstance(22, 20));
-		        icon.setIconAnchor(Point.newInstance(6, 20));
-		        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-		        MarkerOptions options = MarkerOptions.newInstance();
-		        options.setIcon(icon);
-		        	
-		         sender.addOverlay(new Marker(point, options));
-		         listofClicks.add(point);
-		        }
+		  			       /* if (overlay != null && overlay instanceof Marker) {
+		  			          sender.removeOverlay(overlay);
+		  			          
+		  			        } else */{
+		  			          //sender.addOverlay(new Marker(point));
+		  			        	Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer.png");
+		  			        //Icon icon = Icon.newInstance(
+		  			        //"file://RetailerIcon.png");
+		  			        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+		  			        icon.setIconSize(Size.newInstance(12, 20));
+		  			        icon.setShadowSize(Size.newInstance(22, 20));
+		  			        icon.setIconAnchor(Point.newInstance(6, 20));
+		  			        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		  			        MarkerOptions options = MarkerOptions.newInstance();
+		  			        options.setIcon(icon);
+		  			        	
+		  			         sender.addOverlay(new Marker(point, options));
+		  			         listofClicks.add(point);
+		  			        }
+		  					
+		  					map.panTo(point);				
+		  				}else{
+		  					
+		  					arrLat.add(check,e.getLatLng().getLatitude()) ;
+		  					arrLng.add(check,e.getLatLng().getLongitude()) ;
+		  					PolyStyleOptions style = PolyStyleOptions.newInstance("Cyan", 1, 100);
+
+		  					final Polyline poly = new Polyline(new LatLng[0]);
+		  					map.addOverlay(poly);
+		  					poly.setDrawingEnabled(); 
+		  					poly.setStrokeStyle(style);
+
+		  					poly.addPolylineEndLineHandler(new PolylineEndLineHandler() {
+
+		  						public void onEnd(PolylineEndLineEvent eventEndLineHandler) {
+		  							System.out.println( " : Line End at "
+		  									+ eventEndLineHandler.getLatLng() + ".  Bounds="
+		  									+ poly.getBounds().getNorthEast() + ","
+		  									+ poly.getBounds().getSouthWest() + " length=" + poly.getLength()
+		  									+ "m");
+
+		  							arrLat.add(check+1,eventEndLineHandler.getLatLng().getLatitude()) ;
+		  							arrLng.add(check+1,eventEndLineHandler.getLatLng().getLongitude()) ;
+		  							check++;
+		  							line = poly;
+		  						}
+		  					});
+
+
+		  				}
+
+		  			
+
+		  		
+		    	  
+		    	  
+		    	  
+		        
+		    	
 		      }
 		     };
 		    
@@ -486,7 +557,33 @@ public class GSTCloudUI  extends Composite {
 					      btnHideTerritory.setEnabled(true);
 					      
 				    	  }
-				      }
+				      }else if (event.getSource()==btnMeasureDistOn) 
+						{	
+							btnMeasureDistOn.setEnabled(false);
+							btnMeasureDistOff.setEnabled(true);
+							map.addMapClickHandler(uniclick);
+						}else if (event.getSource()==btnMeasureDistOff) 
+						{	
+							
+							btnMeasureDistOn.setEnabled(true);
+							btnMeasureDistOff.setEnabled(false);
+							Double sum = 0.0;
+							int size = (arrLat.size() - 1);
+							for(int i=0;i<size;i++){
+								sum+= Math.sqrt( Math.pow(arrLat.get(i) - arrLat.get(i+1),2)+Math.pow(arrLng.get(i) - arrLng.get(i+1),2)) ;
+							}
+							System.out.println("Length of the line after clicks is .....................:" + (sum*111000));
+
+							info = map.getInfoWindow();
+							HTML htmlWidget = new HTML( "<p> The length of the line is</p>"+(sum*111000));
+							InfoWindowContent content = new InfoWindowContent(htmlWidget);
+							info.open(map.getCenter(), content);     
+							arrLat.clear();
+							arrLng.clear();
+							check = 0;
+							map.removeOverlay(line);
+							
+						}
 		      }};
 		
 		btnSelectRetailers.addClickHandler(territoryClickHandler);
@@ -497,6 +594,11 @@ public class GSTCloudUI  extends Composite {
 		toolsPanel.add(btnShowTerritoryOverLay);
 	    btnHideTerritory.addClickHandler(territoryClickHandler);
 	    toolsPanel.add(btnHideTerritory);
+	    
+	    toolsPanel.add(btnMeasureDistOn);
+	    btnMeasureDistOn.addClickHandler(territoryClickHandler);
+	    toolsPanel.add(btnMeasureDistOff);
+	    btnMeasureDistOff.addClickHandler(territoryClickHandler);
 	   
 	    //initWidget(panel);
 	}
@@ -623,6 +725,68 @@ public class GSTCloudUI  extends Composite {
 			    }
 			});
 		}
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0)
+		{
+			complaintService.displayComplaintsWithinDistance
+			(localPoint.getLatitude(), 
+			 localPoint.getLongitude(),
+			 localRadius, 
+			 new AsyncCallback<List<ComplaintDTO>>()
+			{
+				public void onFailure(Throwable caught) 
+				{
+				}
+			    public void onSuccess(List<ComplaintDTO> result ) 
+			    {
+			    //	tbAttributeRadius.setValue("Running");
+			    	int rowCount = result.size();
+			    	
+			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
+			    	map.setCenter(localPoint, 10);
+			    	//map.addOverlay(new Marker(localPoint));
+					for (int row = 0; row < rowCount; row ++)
+					{
+						final ComplaintDTO cmp =result.get(row);
+						final LatLng point = LatLng.newInstance(cmp.getLatitude(),cmp.getLongitude());
+						
+//						// Add a marker
+						Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/comment.png");
+				        //Icon icon = Icon.newInstance(
+				        //"file://RetailerIcon.png");
+				        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+				        icon.setIconSize(Size.newInstance(12, 20));
+				        icon.setShadowSize(Size.newInstance(22, 20));
+				        icon.setIconAnchor(Point.newInstance(6, 20));
+				        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+				        MarkerOptions options = MarkerOptions.newInstance();
+				        options.setIcon(icon);
+						final Marker marker =new Marker(point,options);
+						/*final Marker marker =new Marker(point);
+									   	          */
+			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
+			   	          public void onClick(MarkerClickEvent event) {
+			   	          InfoWindow info = map.getInfoWindow();
+			   	         
+			   	          //info.open(marker, createComplaintInfoWindowContent(point,tw));
+			   	          info.open(marker,
+			   	              new InfoWindowContent("<tr><td> Latitude: </td><td>"+cmp.getLatitude()+
+			   	            		  "</td></tr><tr><td> Longitude: </td><td>"+cmp.getLongitude()+
+			   	            		  "</td></tr><tr><td> Complaint SubType: </td><td>"+cmp.getSubtype()+
+			   	            		"</td></tr><tr><td> Complaint SubSubType: </td><td>"+cmp.getSubSubtype()+
+			   	            		"</td></tr><tr><td> Complaint SubSubType: </td><td>"+cmp.getproblemsummary()+
+			   	            		"</td></tr><tr><td> Complaint Circle: </td><td>"+cmp.getCircle()+
+			   	            		"</td></tr>"));
+			   	        }
+			   	      });
+			   	      map.addOverlay(marker);
+					}
+					datagrid.setCenterPoint(localPoint);
+					datagrid.setSearchRadius(localRadius);
+					datagrid.updateTableData();
+			    }
+			});
+		}
+		
 		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
 			cscService.displayCSCsWithinDistance
 			(localPoint.getLatitude(), 
@@ -1013,6 +1177,64 @@ public class GSTCloudUI  extends Composite {
 								}
 					 });
 			 }
+		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0){
+			complaintService.getComplaints(new AsyncCallback<List<ComplaintDTO>>() 
+					 {
+						 public void onFailure(Throwable caught) 
+						 {
+							 System.out.println("Could not fetch complaints");
+					     }
+
+						 public void onSuccess(List<ComplaintDTO> result) 
+								{
+									int rowCount = result.size();
+									System.out.println("Number of returned rows:"+rowCount);
+									LatLngBounds bounds = LatLngBounds.newInstance(); 
+									for (int row = 0; row < rowCount; row ++) 
+									{
+										final ComplaintDTO complaint=	result.get(row);
+										LatLng point = LatLng.newInstance(complaint.getLatitude(),complaint.getLongitude());
+										bounds.extend(point);
+										Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/comment.png");
+								        //Icon icon = Icon.newInstance(
+								        //"file://RetailerIcon.png");
+								        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+								        icon.setIconSize(Size.newInstance(12, 20));
+								        icon.setShadowSize(Size.newInstance(22, 20));
+								        icon.setIconAnchor(Point.newInstance(6, 20));
+								        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+								        MarkerOptions options = MarkerOptions.newInstance();
+								        options.setIcon(icon);
+										final Marker marker =new Marker(point,options);
+										marker.addMarkerClickHandler(new MarkerClickHandler() {
+								   	          public void onClick(MarkerClickEvent event) {
+									   	          InfoWindow info = map.getInfoWindow();
+									   	          info.open(marker,
+									   	              new InfoWindowContent("<tr><td> Category: </td><td>" +complaint.getCategory()+
+									   	            		  "</td></tr><tr><td> Latitude: </td><td>"+complaint.getLatitude()+
+									   	            		  "</td></tr><tr><td> Longitude: </td><td>"+complaint.getLongitude()+
+									   	            		"</td></tr><tr><td> Complaint Circle: </td><td>"+complaint.getCircle()+
+									   	            		  "</td></tr><tr><td> Complaint Subtype: </td><td>"+complaint.getSubtype()+
+									   	            		"</td></tr><tr><td> Complaint SubSubtype: </td><td>"+complaint.getSubSubtype()+
+									   	            		"</td></tr><tr><td> Complaint Problem Summary: </td><td>"+complaint.getproblemsummary()+
+									   	            		  "</td></tr>"));
+									   	        }
+									   	      });						
+	                                   // Add a marker
+										map.addOverlay(marker);
+										
+										//map.setCenter(point,15);
+										
+										// Add an info window to highlight a point of interest
+										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+										
+									}
+									map.setCenter(bounds.getCenter());
+									map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
+									datagrid.updateTableData();
+								}
+					 });
+			 }
 		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0){
 			retailerService.getRetailers(new AsyncCallback<List<RetailerDTO>>() 
 					 {
@@ -1045,11 +1267,11 @@ public class GSTCloudUI  extends Composite {
 								   	          public void onClick(MarkerClickEvent event) {
 									   	          InfoWindow info = map.getInfoWindow();
 									   	          info.open(marker,
-									   	              new InfoWindowContent("<tr><td>Category: </td><td>" +re.getCategory()+
-									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+re.getLatitude()+
-									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+re.getLongitude()+
-									   	            		  "</td></tr><tr><td>Retailer Name: </td><td>"+re.getName()+
-									   	            		"</td></tr><tr><td>Address: </td><td>"+re.getAddress()+
+									   	              new InfoWindowContent("<tr><td> Category: </td><td>" +re.getCategory()+
+									   	            		  " </td></tr><tr><td> Latitude: </td><td>"+re.getLatitude()+
+									   	            		  " </td></tr><tr><td> Longitude: </td><td>"+re.getLongitude()+
+									   	            		  " </td></tr><tr><td> Retailer Name: </td><td>"+re.getName()+
+									   	            		" </td></tr><tr><td> Address: </td><td>"+re.getAddress()+
 									   	            		  "</td></tr>"));
 									   	        }
 									   	      });						
@@ -1490,6 +1712,7 @@ public class GSTCloudUI  extends Composite {
 			}
 	    	
 	    });*/
+
 	    
 		/*
 		 * Zooming in close enough will put the map viewport
@@ -1615,7 +1838,7 @@ public class GSTCloudUI  extends Composite {
 					{		
 						for (int row = 0; row < result.size(); row ++) 				
 							lm.addLayer(result.get(row));
-						lm.getLt().setSelectedItem(lm.getLt().getItem(1));
+						lm.getLt().setSelectedItem(lm.getLt().getItem(2));
 						vp2.add(lm);
 
 					}
@@ -1680,6 +1903,8 @@ public class GSTCloudUI  extends Composite {
 			datagrid.setTableModelService(cscModelService);
 		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0)
 			datagrid.setTableModelService(retailerModelService);
+		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0)
+			datagrid.setTableModelService(complaintModelService)	;
 		
 		datagrid.addRowSelectionListener(new RowSelectionListener() {
 			public void onRowSelected(AdvancedTable sender, String rowId) {

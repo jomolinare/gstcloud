@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
 import com.rmsi.lim.gstcloud.server.model.CSC;
+import com.rmsi.lim.gstcloud.server.model.Complaint;
 import com.rmsi.lim.gstcloud.server.model.Landmark;
 import com.rmsi.lim.gstcloud.server.model.Retailer;
 import com.rmsi.lim.gstcloud.server.model.Tower;
@@ -122,6 +123,7 @@ public class FileUp extends HttpServlet{
 		int i=description.indexOf(tag);		
 		i+=(tag.length()+9);
 		int j=description.indexOf('<', i);
+		System.out.println("extracted tag is:"+description.substring(i, j));
 		return (description.substring(i, j));		 
 	}
 	
@@ -173,6 +175,20 @@ public class FileUp extends HttpServlet{
 										   ,coordinate.getLongitude()
 										   ,GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
 				pm.makePersistent(ret);
+			}
+			else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0){	
+				System.out.println("Selected Later is Complaint");
+				Complaint com = new Complaint("Complaint"
+						//extractTagValue(str,"CATEGORY:")
+						
+										     ,extractTagValue(str,"Circle_Name")
+										     ,extractTagValue(str,"Sub_Type")
+										     ,extractTagValue(str,"Sub_Sub_Type")
+										     ,extractTagValue(str,"TT_Problem_Summary")
+										   ,coordinate.getLatitude()
+										   ,coordinate.getLongitude()
+										   ,GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(coordinate.getLatitude(),coordinate.getLongitude())));
+				pm.makePersistent(com);
 			}
 		}	
 	}
