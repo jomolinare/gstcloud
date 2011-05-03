@@ -76,6 +76,25 @@ left:25%;
 top:8%;
 background:#f6feff;
 }
+.demo-popup
+{
+    background-color       :    #f6feff;
+    border                 :    3px solid #009;
+}
+
+.demo-popup-message
+{
+    font-size              :    80%;
+    padding                :    15px;
+}
+.demo-popup-footer
+{
+    padding                :    5px;
+    text-align             :    center;
+    width                  :    100%;
+}
+
+
 
 /**Map Panel (mapwrapper)*/
 

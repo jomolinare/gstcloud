@@ -7,18 +7,18 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/java-topology-suite"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="D:/jars/ostermillerutils_1_07_00.jar"/>
-	<classpathentry kind="lib" path="D:/jars/googlemaps_gwt_2_2_1.jar"/>
-	<classpathentry kind="lib" path="D:/jars/gwt-maps.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/activation.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb1-impl.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-api.jar" sourcepath="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-api-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-api-doc.zip!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-impl.jar" sourcepath="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-impl.src.zip"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-xjc.jar" sourcepath="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jaxb-xjc.src.zip"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/vishakha.gupta/My Documents/Downloads/jaxb-ri-20091104/lib/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/gwt-ajaxloader-1.1.0/gwt-ajaxloader.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/gwt-maps.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/gwt-visualization-1.0.2-noredist.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/jaxb1-impl.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/activation.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/googlemaps_gwt_2_2_1.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/ostermillerutils_1_07_00.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/jts-1.11.jar"/>
+	<classpathentry kind="lib" path="D:/Shrikant/new jars/acme.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
