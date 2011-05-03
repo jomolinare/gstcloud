@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
 
 <web-app>
 
   <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>GSTCloud.html</welcome-file>
-  </welcome-file-list>
+  
   
   <!-- Servlets -->
 
@@ -25,7 +21,6 @@
     <servlet-name>readStaticIndex</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.ReadStaticIndexServlet</servlet-class>
   </servlet>
-  
   <servlet-mapping>
     <servlet-name>readStaticIndex</servlet-name>
     <url-pattern>/readStaticIndex</url-pattern>
@@ -54,7 +49,6 @@
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.GisCloudServiceImpl</servlet-class>
   </servlet>
-  
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/gstcloud/greet</url-pattern>
@@ -63,11 +57,20 @@
   
   <servlet>
     <servlet-name>landmarksServlet</servlet-name>
-    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarksServiceImpl</servlet-class>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarkServiceImpl</servlet-class>
   </servlet>
    <servlet-mapping>
     <servlet-name>landmarksServlet</servlet-name>
     <url-pattern>/gstcloud/landmarks</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>newlayerServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.NLRServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>newlayerServlet</servlet-name>
+    <url-pattern>/gstcloud/NLR</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -80,6 +83,34 @@
   </servlet-mapping>
  
   <servlet>
+    <servlet-name>wardBoundaryServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.WardBoundariesServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>wardBoundaryServlet</servlet-name>
+    <url-pattern>/gstcloud/wardBoundary</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>complaintServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.ComplaintsServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>complaintServlet</servlet-name>
+    <url-pattern>/gstcloud/complaint</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>dataStoreServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.DatastoreServiceImpl</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>dataStoreServlet</servlet-name>
+    <url-pattern>/gstcloud/dataStore</url-pattern>
+  </servlet-mapping>
+  
+ 
+  <servlet>
     <servlet-name>CSCServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.CSCServiceImpl</servlet-class>
   </servlet>
@@ -88,7 +119,7 @@
     <url-pattern>/gstcloud/CSC</url-pattern>
   </servlet-mapping>
   
-   <servlet>
+  <servlet>
     <servlet-name>retailerServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.RetailerServiceImpl</servlet-class>
   </servlet>
@@ -115,7 +146,18 @@
     <url-pattern>/gstcloud/loadLayer</url-pattern>
   </servlet-mapping>
      
-      <servlet>
+     
+  <servlet>
+  <servlet-name>tableModelServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.TableModelServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>tableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/tableModel</url-pattern>
+  </servlet-mapping>  
+     
+     
+  <servlet>
   <servlet-name>LandMarksTableModelServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.LandmarksTableModelServiceImpl</servlet-class>
   </servlet>
@@ -124,7 +166,7 @@
     <url-pattern>/gstcloud/LandMarksTableModel</url-pattern>
   </servlet-mapping>
      
- <servlet>
+  <servlet>
   <servlet-name>TowerTableModelServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.TowerTableModelServiceImpl</servlet-class>
   </servlet>
@@ -132,8 +174,17 @@
     <servlet-name>TowerTableModelServlet</servlet-name>
     <url-pattern>/gstcloud/TowerTableModel</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  <servlet-name>WardBoundariesTableModelServlet</servlet-name>
+    <servlet-class>com.rmsi.lim.gstcloud.server.servlets.WardBoundariesTableModelServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WardBoundariesTableModelServlet</servlet-name>
+    <url-pattern>/gstcloud/wardBoundaryTableModel</url-pattern>
+  </servlet-mapping>
      
-         <servlet>
+  <servlet>
   <servlet-name>CSCTableModelServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.CSCTableModelServiceImpl</servlet-class>
   </servlet>
@@ -142,7 +193,7 @@
     <url-pattern>/gstcloud/CSCTableModel</url-pattern>
   </servlet-mapping>
      
-     <servlet>
+  <servlet>
   <servlet-name>RetailerTableModelServlet</servlet-name>
     <servlet-class>com.rmsi.lim.gstcloud.server.servlets.RetailerTableModelServiceImpl</servlet-class>
   </servlet>
@@ -156,10 +207,18 @@
 		<servlet-name>FileUpServlet</servlet-name>
 		<servlet-class>com.rmsi.lim.gstcloud.server.servlets.FileUp</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>FileUpServlet</servlet-name>
 		<url-pattern>/gstcloud/FileUp</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>PolygonServlet</servlet-name>
+		<servlet-class>com.rmsi.lim.gstcloud.server.servlets.PolygonServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PolygonServlet</servlet-name>
+		<url-pattern>/gstcloud/POL</url-pattern>
 	</servlet-mapping>
      
      <servlet>
@@ -170,11 +229,10 @@
             <param-value>transactions-optional</param-value>
         </init-param>	     
     </servlet>
-    
     <servlet-mapping>
         <servlet-name>DataNucleus</servlet-name>
         <url-pattern>/dn/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>                       
     
     
   
