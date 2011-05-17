@@ -51,8 +51,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
@@ -140,8 +140,8 @@ public class GSTCloud implements EntryPoint
 	 *//*
 	private final GisCloudServiceAsync gisCloudService = GWT
 			.create(GisCloudService.class);
-	private final LandmarksServiceAsync fea = GWT
-		    .create(LandmarksService.class);
+	private final LandmarkServiceAsync fea = GWT
+		    .create(LandmarkService.class);
 	private final SpatialBodiesServiceAsync dea = GWT
 	        .create(SpatialBodiesService.class);
 	private final LayerServiceAsync layerService = GWT
@@ -1268,14 +1268,14 @@ public class GSTCloud implements EntryPoint
 		upload.setName("KmlFileUpload"); 
 		uiObject.fpAdmin.setWidget(uiObject.vpAdmin1);
 		uiObject.fpAdmin.setAction(GWT.getModuleBaseURL()+"FileUp");
-		 uiObject.fpAdmin.setEncoding(FormPanel.ENCODING_MULTIPART);
-		 uiObject.fpAdmin.setMethod(FormPanel.METHOD_POST);
-		 uiObject.hpAdmin.add(upload);
+		uiObject.fpAdmin.setEncoding(FormPanel.ENCODING_MULTIPART);
+		uiObject.fpAdmin.setMethod(FormPanel.METHOD_POST);
+		uiObject.hpAdmin.add(upload);
+		 
 	}
 	
 	public void onModuleLoad()
 	{
-
 		setupFileUpload();
 		title2 = new HTML(applicationTitle2);
 		Window.setTitle(applicationTitle2);
