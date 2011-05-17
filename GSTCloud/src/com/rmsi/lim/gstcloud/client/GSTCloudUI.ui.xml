@@ -14,7 +14,9 @@
 	 	<g:VerticalPanel styleName="header">
 	 	<g:HTML>
 	 		<img src="images/lo-cloud.png" title="Brand Cloud GIS" alt="Brand Cloud GIS" class="c-logo" />
-	 		<img src="images/uninor-logo.png" title="Brand UNINOR" alt="Brand UNINOR" class="r-logo" />
+	 		<!--<img src="images/uninor-logo.png" title="Brand UNINOR" alt="Brand UNINOR" class="r-logo" />
+	 		<img src="images/Idea_Cellular_Logo.png" title="Brand IDEA" alt="Brand IDEA" class="r-logo" />
+	 		--><img src="images/logo-rmsi.png" title="Brand RMSI" alt="Brand RMSI" class="r-logo" />
 	 		<h3 class="d-none">RMSI Cloud GIS</h3></g:HTML>
 	 	</g:VerticalPanel>					
 
@@ -30,7 +32,7 @@
     <g:Label styleName="stacklabel">Please Login</g:Label>
         				
 </g:VerticalPanel>
-<!--StackLayout Panel(Starts Here), holds QueryTabPanel,AdminPanel,AdminLogin,LayerManager,ToolsPanel-->
+<!--StackLayout Panel(Starts Here), holds QueryTabPanel,AdminPanel,AdminLogin,LayerManager,ToolsPanel,HydroToolsPanel-->
 			 <g:StackLayoutPanel ui:field="stp" styleName="stackp">
 			 		<g:stack>
 			 		<g:customHeader size='25'>
@@ -45,7 +47,7 @@
         			</g:customHeader>
         			
 <!--LatLngPanel	(Starts Here)	-->
-				    	<g:VerticalPanel ui:field="vpLatLng" styleName="vLatLongPanel" >
+				    <g:VerticalPanel ui:field="vpLatLng" styleName="vLatLongPanel" >
 						<g:Label ui:field="lblLatitude" text="Latitude:" styleName="textlabel" />
 						<g:TextBox ui:field="tbLatitude" styleName="tblarge" text="Enter Lattitude"></g:TextBox>
 						<g:Label ui:field="lblLongitude" text="Longitude:" styleName="textlabel" />
@@ -59,7 +61,6 @@
 						<g:Label ui:field="lblError"></g:Label>
 						<g:Label ui:field="nouse1" styleName="hack1" text="&nbsp;" />
 					</g:VerticalPanel>
-
 <!--LatLngPanel	(Ends Here)	-->
 				</g:tab>
 				<g:tab>
@@ -88,7 +89,8 @@
         			</g:customHeader>
 
 <!--SpatialPanel (Starts Here)				-->
-						<g:VerticalPanel ui:field="vpSpatial" styleName="vLatLongPanel" >
+				<!--<g: ScrollPanel ui:field=" scrollSpatial" >
+					--><g:VerticalPanel ui:field="vpSpatial" styleName="vLatLongPanel" >
 						<g:Label ui:field="lblState" text="State:" styleName="textlabel"/>
 						<g:ListBox ui:field="lbState" />
 						<g:Label ui:field="districtLabel" text="District:" styleName="textlabel"/>
@@ -97,14 +99,15 @@
 						<g:ListBox ui:field="lbLocalBody" />
 						<g:Label ui:field="lblSpatialRadius" text="Specified Radius(in m):" styleName="textlabel"/>
 						<g:TextBox ui:field="tbSpatialRadius" styleName="tbsmall" text="Enter Radius"></g:TextBox>
-							<g:HorizontalPanel ui:field="hpSpatial">
+						<g:HorizontalPanel ui:field="hpSpatial">
 							<g:Button ui:field="btnSpatialSearch" text="Search" styleName="Button" />
 							<g:Button ui:field="btnSpatialClear" text="Clear" styleName="Button" />
 						</g:HorizontalPanel>
-							<g:Label ui:field="nouse3" styleName="hack3" text="&nbsp;" />
-						</g:VerticalPanel>
+						<g:Label ui:field="nouse3" styleName="hack3" text="&nbsp;" />
+					</g:VerticalPanel>
+				<!--</g: ScrollPanel>
 
-<!--SpatialPanel (Ends Here)				-->
+--><!--SpatialPanel (Ends Here)				-->
 				</g:tab>
 				<g:tab>
 					<g:customHeader size='5'>
@@ -171,6 +174,17 @@
 						</g:VerticalPanel>
 		
 <!--Tools Panel	(Ends Here)		-->
+		</g:stack>
+		
+		<g:stack>
+					<g:customHeader size='25'>
+    			    <g:Label styleName="stacklabel">Outage Tools</g:Label>
+        			</g:customHeader>
+<!--Outage Tools Panel	(Starts Here)		-->
+						<g:VerticalPanel ui:field="outageToolsPanel" styleName="tools">
+						</g:VerticalPanel>
+		
+<!--Outage Tools Panel	(Ends Here)		-->
 		</g:stack>
 	 
 <!--StackLayout Panel(Ends Here)	-->

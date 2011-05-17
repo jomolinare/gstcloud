@@ -2,21 +2,22 @@ package com.rmsi.lim.gstcloud.client;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.Point;
-import com.google.gwt.maps.client.geom.Size;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.control.ControlPosition;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.control.MapTypeControl;
 import com.google.gwt.maps.client.control.ScaleControl;
@@ -24,72 +25,71 @@ import com.google.gwt.maps.client.event.GroundOverlayVisibilityChangedHandler;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MapMoveEndHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
-import com.google.gwt.maps.client.event.GroundOverlayVisibilityChangedHandler.GroundOverlayVisibilityChangedEvent;
-import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
-import com.google.gwt.maps.client.event.MapMoveEndHandler.MapMoveEndEvent;
-import com.google.gwt.maps.client.event.MarkerClickHandler.MarkerClickEvent;
-import com.google.gwt.maps.client.event.PolylineEndLineHandler;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
+import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.geom.Point;
+import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.GroundOverlay;
 import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
-import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
-import com.google.gwt.maps.client.overlay.Polyline;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
-import com.rmsi.lim.gstcloud.client.GSTCloudUI;
-import com.rmsi.lim.gstcloud.client.GSTCloudUI;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
-import com.google.gwt.event.shared.GwtEvent;
-import com.rmsi.lim.gstcloud.client.GSTCloudUI;
-	//import com.rmsi.lim.gstcloud.client.GSTCloud.MyHandler;
-//@SuppressWarnings("deprecation")
+import com.google.gwt.visualization.client.AbstractDataTable;
+import com.google.gwt.visualization.client.DataTable;
+import com.google.gwt.visualization.client.Selection;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
+import com.google.gwt.visualization.client.events.SelectHandler;
+import com.google.gwt.visualization.client.visualizations.PieChart;
+import com.google.gwt.visualization.client.visualizations.PieChart.Options;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCService;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.ComplaintService;
 import com.rmsi.lim.gstcloud.client.interfaces.ComplaintServiceAsync;
-import com.rmsi.lim.gstcloud.client.interfaces.ComplaintTableModelService;
-import com.rmsi.lim.gstcloud.client.interfaces.ComplaintTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.NewLayerService;
+import com.rmsi.lim.gstcloud.client.interfaces.NewLayerServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.PolygonService;
+import com.rmsi.lim.gstcloud.client.interfaces.PolygonServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RetailerService;
 import com.rmsi.lim.gstcloud.client.interfaces.RetailerServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RetailerTableModelService;
@@ -97,19 +97,26 @@ import com.rmsi.lim.gstcloud.client.interfaces.RetailerTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.RowSelectionListener;
 import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesService;
 import com.rmsi.lim.gstcloud.client.interfaces.SpatialBodiesServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.TableModelService;
+import com.rmsi.lim.gstcloud.client.interfaces.TableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerService;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.TowerTableModelServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.WardBoundariesService;
+import com.rmsi.lim.gstcloud.client.interfaces.WardBoundariesServiceAsync;
 import com.rmsi.lim.gstcloud.client.model.CSCDTO;
-import com.rmsi.lim.gstcloud.client.model.ComplaintDTO;
+import com.rmsi.lim.gstcloud.client.model.ComplaintsDTO;
 import com.rmsi.lim.gstcloud.client.model.District;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 import com.rmsi.lim.gstcloud.client.model.Layer;
 import com.rmsi.lim.gstcloud.client.model.LocalBody;
+import com.rmsi.lim.gstcloud.client.model.NLRTO;
+import com.rmsi.lim.gstcloud.client.model.PlTO;
 import com.rmsi.lim.gstcloud.client.model.RetailerDTO;
 import com.rmsi.lim.gstcloud.client.model.State;
 import com.rmsi.lim.gstcloud.client.model.TowerDTO;
+import com.rmsi.lim.gstcloud.client.model.WardBoundariesDTO;
 import com.rmsi.lim.gstcloud.client.utilities.DataFilter;
 import com.rmsi.lim.gstcloud.client.utilities.FieldVerifier;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudConstants;
@@ -117,20 +124,13 @@ import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
 import com.rmsi.lim.gstcloud.client.utilities.GSTCloudUtils;
 import com.rmsi.lim.gstcloud.client.view.AdvancedTable;
 import com.rmsi.lim.gstcloud.client.view.LayerManager;
-import com.rmsi.lim.gstcloud.client.utilities.GSTCloudSharedConstants;
+
 
 public class GSTCloudUI  extends Composite {
 	 
 	
 	private static testagainUiBinder uiBinder = GWT
 			.create(testagainUiBinder.class);
-	
-	private InfoWindow info = null;
-	ArrayList<Double> arrLat = new ArrayList<Double>();
-	ArrayList<Double> arrLng = new ArrayList<Double>();
-	int check =0;
-	private Polyline line = null;
-	
  @UiTemplate("GSTCloudUI.ui.xml")
 	interface testagainUiBinder extends UiBinder<Panel, GSTCloudUI> {
 	}
@@ -174,6 +174,8 @@ public class GSTCloudUI  extends Composite {
  Button btnAttributeSearch,btnAttributeClear;
  
  //Fields for SpatialPanel
+ /*@UiField
+ ScrollPanel scrollSpatial; */
  @UiField
  VerticalPanel vpSpatial;
  @UiField
@@ -213,7 +215,7 @@ public class GSTCloudUI  extends Composite {
  
  //Fields for ToolPanel
  @UiField
- VerticalPanel toolsPanel;
+ VerticalPanel toolsPanel,outageToolsPanel;
  
  //Fields for DialogBox
  @UiField
@@ -239,7 +241,6 @@ public class GSTCloudUI  extends Composite {
  @UiField
  Button btnApplyFilter, btnClearFilter,btnMarkAll,btnMarkNothing,btnShowMarked;
 	
- 
 
  
  
@@ -250,24 +251,32 @@ public class GSTCloudUI  extends Composite {
 	private AdvancedTable datagrid ;//= new AdvancedTable();
 	final FileUpload upload = new FileUpload();
     Geocoder geocoder = new Geocoder();
-	
+    HashMap hMapForAsyncClass = new HashMap();
 	Button closeButton = new Button();
 	
 	private final GisCloudServiceAsync gisCloudService = GWT
 	.create(GisCloudService.class);
-	private final LandmarksServiceAsync landMarksService = GWT
-    .create(LandmarksService.class);
+	private final LandmarkServiceAsync landMarksService = GWT
+    .create(LandmarkService.class);
 	private final SpatialBodiesServiceAsync spatialBodiesService = GWT
     .create(SpatialBodiesService.class);
 	private final LayerServiceAsync layerService = GWT
 	.create(LayerService.class);
 	private final LandmarksTableModelServiceAsync landmarksModelService=GWT
 	.create(LandmarksTableModelService.class);
+	private final ComplaintsServiceAsync complaintService = GWT
+	.create(ComplaintsService.class);
+	
 	LayerManager lm = new LayerManager(this);
+	
+	private final TableModelServiceAsync modelService=GWT
+	.create(TableModelService.class);
 	private final TowerTableModelServiceAsync towerModelService=GWT
 	.create(TowerTableModelService.class);
 	private final TowerServiceAsync towerService = GWT
     .create(TowerService.class);
+	private final WardBoundariesServiceAsync wardBoundaryService = GWT
+    .create(WardBoundariesService.class);
 	private final CSCTableModelServiceAsync cscModelService=GWT
 	.create(CSCTableModelService.class);
 	private final CSCServiceAsync cscService = GWT
@@ -276,15 +285,177 @@ public class GSTCloudUI  extends Composite {
 	.create(RetailerTableModelService.class);
 	private final RetailerServiceAsync retailerService = GWT
     .create(RetailerService.class);
-	private final ComplaintServiceAsync complaintService = GWT
-    .create(ComplaintService.class);
-	private final ComplaintTableModelServiceAsync complaintModelService=GWT
-	.create(ComplaintTableModelService.class);
 	
+	private final NewLayerServiceAsync newlayerService = GWT
+	.create(NewLayerService.class);
+	
+	private final PolygonServiceAsync pollayerService = GWT
+	.create(PolygonService.class);
 	
 	private String selectedLayer;
-
+	
 	private List<LatLng> listofClicks = new ArrayList<LatLng>();
+	
+	private String wktPoly[] ;
+	private InfoWindow info = null;
+
+	private String[] arrayColors = {"red","blue","orange","green","grey","purple","yellow","brown","violet","cyan","pink","white","maroon","silver","golden"};
+
+	
+	private InfoWindowContent createWBInfoWindowContent(Polygon searchPoly, List<WardBoundariesDTO> wb){
+	
+	
+		
+		int rowCount = wb.size();
+		
+		//InfoWindowContent infoContent = null;
+		
+		VerticalPanel vpc =new VerticalPanel();
+        FlexTable table =new FlexTable();
+        table.setHeight("10px");
+		table.setPixelSize(10, 10);
+		table.setTitle("Population Coverage ");
+        ScrollPanel scrollPanel = new ScrollPanel();
+        table.setWidth("100%");
+        scrollPanel.add(table);
+        scrollPanel.setSize("50", "50"); 
+		for (int row = 0; row < rowCount; row ++) 
+		{
+			final WardBoundariesDTO intersectedDataWithPop=	wb.get(row);
+			String llObj = intersectedDataWithPop.getIntrctData().trim();
+			String llAObj[] = llObj.split(",");
+			LatLng latlng[] = new LatLng[llAObj.length];
+			for(int llCount = 0; llCount < llAObj.length;llCount++)
+			{
+				String str[] = llAObj[llCount].trim().split(" ");
+				latlng[llCount] = LatLng.newInstance(Double.parseDouble(str[0]),Double.parseDouble(str[1]));
+			}
+			
+			final Polygon p = new Polygon(latlng, "green", 1, 1, "green", 0.5);
+			table.setText(row, 0,intersectedDataWithPop.getWardName() );
+			table.setText(row, 1,intersectedDataWithPop.getPopulationPerIntersection().toString());
+			
+			map.addOverlay(p);
+			System.out.println(llObj);
+		}
+		//infoContent = new InfoWindowContent("");
+		System.out.println("The number of rows in the flex table developed are : " +table.getRowCount());
+		 for (int i = 0; i < table.getRowCount(); i++) {
+			 System.out.println("Data in the "+i+" row is :");
+		        for (int j = 0; j < table.getCellCount(i); j++) {
+		        	System.out.println(table.getText(i, j));
+		        }
+		 }
+		vpc.add(table);
+        InfoWindowContent content = new InfoWindowContent(vpc);
+		return content;
+	}
+	
+	 private Options createOptions() {
+		    Options options = Options.create();
+		    options.setWidth(400);
+		    options.setHeight(240);
+		    options.set3D(true);
+		    options.setTitle("Population Coverage");
+		    return options;
+		  }
+
+	 private AbstractDataTable createTable(List<WardBoundariesDTO> wb) {
+		 
+		 final int rowCount = wb.size();
+		 DataTable data = DataTable.create();
+		 data.addColumn(ColumnType.STRING, "Ward Name");
+		 data.addColumn(ColumnType.NUMBER, "Population Covered");
+		 data.addRows(rowCount);   
+		 for (int row = 0; row < rowCount; row ++) 
+			{
+				final WardBoundariesDTO intersectedDataWithPop=	wb.get(row);
+				
+				data.setValue(row, 0,intersectedDataWithPop.getWardName() );
+			    data.setValue(row, 1,intersectedDataWithPop.getPopulationPerIntersection());
+				
+			}
+		 
+		 return data;   
+	 }
+
+	 private InfoWindowContent createWBInfoWindowContent1( List<WardBoundariesDTO> wb){
+		
+	
+
+		final int rowCount = wb.size();
+		
+		VerticalPanel vpc =new VerticalPanel();
+        final DataTable data = DataTable.create();
+	    data.addColumn(ColumnType.STRING, "Ward Name");
+	    data.addColumn(ColumnType.NUMBER, "Population Covered");
+	    data.addRows(rowCount);
+
+	    
+		for (int row = 0; row < rowCount; row ++) 
+		{
+			WardBoundariesDTO intersectedDataWithPop=	wb.get(row);
+			String llObj = intersectedDataWithPop.getIntrctData().trim();
+			String llAObj[] = llObj.split(",");
+			LatLng latlng[] = new LatLng[llAObj.length];
+			for(int llCount = 0; llCount < llAObj.length;llCount++)
+			{
+				String str[] = llAObj[llCount].trim().split(" ");
+				latlng[llCount] = LatLng.newInstance(Double.parseDouble(str[0]),Double.parseDouble(str[1]));
+			}
+			final Polygon p = new Polygon(latlng, arrayColors[row], 1, 1, arrayColors[row], 0.5);
+			data.setValue(row, 0,intersectedDataWithPop.getWardName() );
+		    data.setValue(row, 1,intersectedDataWithPop.getPopulationPerIntersection());
+			map.addOverlay(p);
+			System.out.println(llObj);
+		}
+		
+        InfoWindowContent content = new InfoWindowContent(vpc);
+		return content;
+		
+	}
+	
+	 private SelectHandler createSelectHandler(final PieChart chart) {
+    	return new SelectHandler() {
+      	@Override
+      	public void onSelect(SelectEvent event) {
+        	String message = "";
+        
+        	// May be multiple selections.
+        	JsArray<Selection> selections = chart.getSelections();
+
+        	for (int i = 0; i < selections.length(); i++) {
+          	// add a new line for each selection
+          	message += i == 0 ? "" : "\n";
+          
+          	Selection selection = selections.get(i);
+
+          	if (selection.isCell()) {
+            	// isCell() returns true if a cell has been selected.
+            
+            	// getRow() returns the row number of the selected cell.
+            	int row = selection.getRow();
+            	// getColumn() returns the column number of the selected cell.
+            	int column = selection.getColumn();
+            	message += "cell " + row + ":" + column + " selected";
+          	} else if (selection.isRow()) {
+            	// isRow() returns true if an entire row has been selected.
+            
+            	// getRow() returns the row number of the selected row.
+            	int row = selection.getRow();
+            	message += "row " + row + " selected";
+          	} else {
+            	// unreachable
+            	message += "Pie chart selections should be either row selections or cell selections.";
+            	message += "  Other visualizations support column selections as well.";
+          	}
+        	}
+        
+        	Window.alert(message);
+      	}
+    	};
+  	}
+
 	
 	private InfoWindowContent createTowerInfoWindowContent(LatLng point, TowerDTO tw){
 		final LatLng localPoint=point;
@@ -347,10 +518,17 @@ public class GSTCloudUI  extends Composite {
 	          return content;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
 	public GSTCloudUI() {
 		
 		initWidget(uiBinder.createAndBindUi(this));
-		
 		  spatialBodiesService.getStates(new AsyncCallback<List<State>>()
 			  		{
 			  			public void onFailure(Throwable caught) 
@@ -361,7 +539,7 @@ public class GSTCloudUI  extends Composite {
 						 	public void onSuccess(List<State> result) 
 							{
 						 		if(result.size()== 0)
-						 		{
+						 		{	
 						 			GSTCloudUtils.StatesLoader();
 						 			GSTCloudUtils.DistrictsLoader();
 						 			GSTCloudUtils.LocalBodyLoader();
@@ -391,13 +569,216 @@ public class GSTCloudUI  extends Composite {
 		lbDistrict.addItem("No Available Districts");
 		lbLocalBody.addItem("No Available Villages/Towns");
 		setupMap();
-		//hpAdmin.add(upload);
 		GSTCloudUtils.layerLoader();
 		setupLayerManager();
 		setupTablePanel();
 		setupUninorDemo();
+		setUpOutageDemo();
+		setupHashMap();
 	}
+	
+	private void setupHashMap(){
+	
 		
+		
+		hMapForAsyncClass.put("Landmark", landMarksService);
+		hMapForAsyncClass.put("Customer Service Center", cscModelService);
+		hMapForAsyncClass.put("Retailer", retailerService);
+		hMapForAsyncClass.put("Tower",towerService );
+		hMapForAsyncClass.put("WardBoundaries",wardBoundaryService );
+		/*hMapForAsyncClass.put("Customer Service Center",);*/
+		/*layerService.getLayers(new AsyncCallback<List<Layer>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(List<Layer> result) {
+				int listSize = result.size();
+				for(int i=0;i<listSize;i++){
+					Class<? extends Object> AsyncClass;
+					Object objAsyncClass = null;
+					try {
+						AsyncClass = Class.forName(result.get(i)+"ServiceAsync");
+						objAsyncClass = AsyncClass.newInstance();
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					hMapForAsyncClass.put(result.get(i).getLayerName(),objAsyncClass );
+				}
+			}
+			
+		});*/
+		
+	}
+	
+	private void setUpOutageDemo(){
+
+		final Button btnCreateOutage = new Button("Create Outage");
+		final Button btnShowOutage = new Button("Show Outage");
+
+		ClickHandler createOutageHandler = new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+
+				final PopupPanel popUp  = new PopupPanel(false);
+				VerticalPanel PopUpPanelContents = new VerticalPanel();
+				HTML message = new HTML("Click 'cancel' to close the Window");
+				HorizontalPanel btnHolder = new HorizontalPanel();
+				HorizontalPanel hpOutage = new HorizontalPanel(),hpContent = new HorizontalPanel(),hpLatBox = new HorizontalPanel(),hpLongBox = new HorizontalPanel();
+				Label lblOutageType = new Label("Outage Type");
+				Label lblContent = new Label("People Effected");
+				Label lblLatitude = new Label("Latitude");
+				final TextBox tbLatitude = new TextBox();
+				Label lblLongitude = new Label("Longitude");
+				final TextBox tbLongitude = new TextBox();
+
+				final ListBox lbOutageType = new ListBox();				
+				lbOutageType.addItem("Type A");
+				lbOutageType.addItem("Type B");
+				final ListBox lbContent = new ListBox();
+				lbContent.addItem("1");
+				lbContent.addItem("10");
+				lbContent.addItem("100");
+
+				popUp.setStyleName("demo-popup");
+				popUp.setTitle("PopUpPanel");
+				message.setStyleName("demo-popup-message");
+				ClickHandler popUpCloseHandler = new ClickHandler()
+				{
+					@Override
+					public void onClick(ClickEvent event){
+						popUp.hide();
+					}
+				};
+
+				ClickHandler popUpSaveHandler = new ClickHandler()
+				{
+					@Override
+					public void onClick(ClickEvent event){
+						ComplaintsDTO complaint = new ComplaintsDTO(lbOutageType.getItemText(lbOutageType.getSelectedIndex()),
+								Integer.parseInt(lbContent.getItemText(lbContent.getSelectedIndex())),Double.parseDouble(tbLatitude.getText()),Double.parseDouble(tbLongitude.getText()));
+						complaintService.loadStation(complaint,new AsyncCallback<String>()
+								{
+
+							@Override
+							public void onFailure(Throwable caught) {
+								System.out.println("Failed while loading the data in Complaints");
+							}
+
+							@Override
+							public void onSuccess(String result) {
+								System.out.println("Loading of the data in the complaints is done");
+								popUp.hide();
+								Window.alert("Data Saved Successfully");
+							}
+
+								});
+					}
+				};
+
+				Button btnCancel = new Button("Cancel", popUpCloseHandler);
+				Button btnSave= new Button("Save", popUpSaveHandler);
+
+				hpOutage.add(lblOutageType);
+				hpOutage.add(lbOutageType);
+				hpContent.add(lblContent);
+				hpContent.add(lbContent);
+				hpLatBox.add(lblLatitude);
+				hpLatBox.add(tbLatitude);
+				hpLongBox.add(lblLongitude);
+				hpLongBox.add(tbLongitude);
+
+				btnHolder.add(btnCancel);
+				btnHolder.add(btnSave);
+				btnHolder.setStyleName("demo-popup-footer");
+
+				PopUpPanelContents.add(hpOutage);
+				PopUpPanelContents.add(hpContent);
+				PopUpPanelContents.add(hpLatBox);
+				PopUpPanelContents.add(hpLongBox);
+
+				PopUpPanelContents.add(message);
+				PopUpPanelContents.add(btnHolder);
+				popUp.setWidget(PopUpPanelContents);
+				popUp.center();
+				popUp.show();
+
+			}
+		};
+
+		ClickHandler showOutageHandler = new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				complaintService.getOutages(new AsyncCallback<List<ComplaintsDTO>>()
+						{
+
+					@Override
+					public void onFailure(Throwable caught) {
+
+					}
+
+					@Override
+					public void onSuccess(List<ComplaintsDTO> result) {
+
+						System.out.println("Inside get Outages");
+						int listSize = result.size();
+						Icon icon=null;
+						LatLngBounds bounds = LatLngBounds.newInstance();
+						for(int i=0;i<listSize;i++){
+							System.out.println("ListIndex:"+i);
+							if(result.get(i).getContent() == 1){
+								icon = Icon.newInstance(
+								"images/1.png");
+
+							}else if(result.get(i).getContent() == 10){
+								icon = Icon.newInstance(
+								"images/10.png");
+							}else if(result.get(i).getContent() == 100){
+								icon = Icon.newInstance(
+								"images/100.png");
+							}
+
+							icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+							icon.setIconSize(Size.newInstance(12, 20));
+							icon.setShadowSize(Size.newInstance(22, 20));
+							icon.setIconAnchor(Point.newInstance(6, 20));
+							icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+
+							MarkerOptions options = MarkerOptions.newInstance();
+							options.setIcon(icon);
+							bounds.extend(LatLng.newInstance(result.get(i).getLatitude(),result.get(i).getLongitude()));
+
+							map.addOverlay(new Marker(LatLng.newInstance(result.get(i).getLatitude(),result.get(i).getLongitude()) , options));
+
+						}
+						map.setCenter(bounds.getCenter());
+						map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
+					}
+
+						});
+			}
+		};
+		btnCreateOutage.addClickHandler(createOutageHandler);
+		outageToolsPanel.add(btnCreateOutage);
+		btnShowOutage.addClickHandler(showOutageHandler);
+		outageToolsPanel.add(btnShowOutage);
+
+	}
+	
+	
 	private void setupUninorDemo(){
 		
 		final Polygon UninorSalesTerritory = new Polygon(new LatLng[]
@@ -417,89 +798,59 @@ public class GSTCloudUI  extends Composite {
 		final Button btnHideTerritory = new Button("Clear Territory");
 		final Button btnSelectRetailers= new Button ("Select Retailers");
 		final Button btnShowTerritoryOverLay= new Button ("Show Resulting Territory");
+		final Button btnPointIntersectPoly = new Button("Point Intersection");
+		final Button btnAddFeature = new Button("Add Feature");
 		
-		final Button btnMeasureDistOn = new Button(" Measuring On");
-		final Button btnMeasureDistOff = new Button(" Measuring Off");
 		
-		btnMeasureDistOff.setEnabled(false);
-		btnMeasureDistOn.setEnabled(true);
 		btnShowSearchOverlay.setEnabled(false);
 		btnShowTerritoryOverLay.setEnabled(false);
 		btnHideTerritory.setEnabled(false);
+		layerService.IsLayerPolygon(selectedLayer,new AsyncCallback<Boolean>() 
+				 {
+			 public void onFailure(Throwable caught) 
+			 {
 		
-		
+		     }
+
+			 public void onSuccess(Boolean result) 
+					{
+				 		if(result){
+				 			btnPointIntersectPoly.setEnabled(true);
+						}
+						btnPointIntersectPoly.setEnabled(false);
+				 	}
+				 });
+			
+			
 		
 		final MapClickHandler uniclick = 
 		new MapClickHandler() {
 		      public void onClick(MapClickEvent e) {
-		    	  
-		    	  
-		  				if(btnMeasureDistOn.isEnabled() == true){
-		  					
-		  					MapWidget sender = e.getSender();
-		  			    	btnShowSearchOverlay.setEnabled(true);
-		  			    	Overlay overlay = e.getOverlay();
-		  			        LatLng point = e.getLatLng();
-
-		  			       /* if (overlay != null && overlay instanceof Marker) {
-		  			          sender.removeOverlay(overlay);
-		  			          
-		  			        } else */{
-		  			          //sender.addOverlay(new Marker(point));
-		  			        	Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer.png");
-		  			        //Icon icon = Icon.newInstance(
-		  			        //"file://RetailerIcon.png");
-		  			        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
-		  			        icon.setIconSize(Size.newInstance(12, 20));
-		  			        icon.setShadowSize(Size.newInstance(22, 20));
-		  			        icon.setIconAnchor(Point.newInstance(6, 20));
-		  			        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-		  			        MarkerOptions options = MarkerOptions.newInstance();
-		  			        options.setIcon(icon);
-		  			        	
-		  			         sender.addOverlay(new Marker(point, options));
-		  			         listofClicks.add(point);
-		  			        }
-		  					
-		  					map.panTo(point);				
-		  				}else{
-		  					
-		  					arrLat.add(check,e.getLatLng().getLatitude()) ;
-		  					arrLng.add(check,e.getLatLng().getLongitude()) ;
-		  					PolyStyleOptions style = PolyStyleOptions.newInstance("Cyan", 1, 100);
-
-		  					final Polyline poly = new Polyline(new LatLng[0]);
-		  					map.addOverlay(poly);
-		  					poly.setDrawingEnabled(); 
-		  					poly.setStrokeStyle(style);
-
-		  					poly.addPolylineEndLineHandler(new PolylineEndLineHandler() {
-
-		  						public void onEnd(PolylineEndLineEvent eventEndLineHandler) {
-		  							System.out.println( " : Line End at "
-		  									+ eventEndLineHandler.getLatLng() + ".  Bounds="
-		  									+ poly.getBounds().getNorthEast() + ","
-		  									+ poly.getBounds().getSouthWest() + " length=" + poly.getLength()
-		  									+ "m");
-
-		  							arrLat.add(check+1,eventEndLineHandler.getLatLng().getLatitude()) ;
-		  							arrLng.add(check+1,eventEndLineHandler.getLatLng().getLongitude()) ;
-		  							check++;
-		  							line = poly;
-		  						}
-		  					});
-
-
-		  				}
-
-		  			
-
-		  		
-		    	  
-		    	  
-		    	  
 		        
-		    	
+		    	MapWidget sender = e.getSender();
+		    	btnShowSearchOverlay.setEnabled(true);
+		    	Overlay overlay = e.getOverlay();
+		        LatLng point = e.getLatLng();
+
+		       /* if (overlay != null && overlay instanceof Marker) {
+		          sender.removeOverlay(overlay);
+		          
+		        } else */{
+		          //sender.addOverlay(new Marker(point));
+		        	Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/retailer-icon.png");
+		        //Icon icon = Icon.newInstance(
+		        //"file://RetailerIcon.png");
+		        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
+		        icon.setIconSize(Size.newInstance(12, 20));
+		        icon.setShadowSize(Size.newInstance(22, 20));
+		        icon.setIconAnchor(Point.newInstance(6, 20));
+		        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		        MarkerOptions options = MarkerOptions.newInstance();
+		        options.setIcon(icon);
+		        	
+		         sender.addOverlay(new Marker(point, options));
+		         listofClicks.add(point);
+		        }
 		      }
 		     };
 		    
@@ -550,40 +901,198 @@ public class GSTCloudUI  extends Composite {
 				    	  map.removeOverlay(territoryOverlay);
 				    	  //map.clearOverlays();
 				    	  //listofClicks.clear();
+				    	  try
+				    	  {
+				        //  GeometryFactory gf = new GeometryFactory();
+				         // WKTReader wkt = new WKTReader(gf);
+				    		   
+				    		  //String latLng = "POLYGON((28.538084182259816 77.12526798248291,28.54713206234115 77.14226245880127,28.535595879000425 77.16075897216797,28.523266600650622 77.14496612548828,28.528922411976097 77.1419620513916,28.538084182259816 77.12526798248291))";
+				    		  //input polygon hard coded for intersection 
+				    		  String wktObj = "POLYGON((";
+				    		  /*Iterator<LatLng> itr = listofClicks.iterator();
+				    		  while(itr.hasNext()){
+				    			  if(itr.hasNext())
+				    			  //System.out.println("The array filled after the clicks : "+itr.next());
+				    				  wktObj = wktObj + itr.next().toString().split(",")[0]+" "+ itr.next().toString().split(",")[1] +  "," ;
+				    			  else
+				    				  wktObj = wktObj +itr.next().toString().split(",")[0]+" "+ itr.next().toString().split(",")[1]   ;
+				    		  }*/
+				    		  System.out.println("first value after split is : "+ listofClicks.get(0).toString().split(",")[0].trim());
+				    		  for(int i=0;i<listofClicks.size();i++)
+				    		  {
+				    			  
+				    			  if(i != listofClicks.size()-1)
+				    				  wktObj = wktObj + new Double(listofClicks.get(i).getLatitude()).toString() +" "+new Double(listofClicks.get(i).getLongitude()).toString()+" , " ;
+				    			  else
+				    				  wktObj = wktObj +new Double(listofClicks.get(i).getLatitude()).toString() +" "+new Double(listofClicks.get(i).getLongitude()).toString() ;   ;
+				    				  
+				    		  }
+				    		 
+				  			 wktObj = wktObj + "))";
+				  			System.out.println("The wkt form is : "+wktObj);
+				    		  //String latLng = "POLYGON((28.6342869974287 77.1033069589543,28.6327690429889 77.1033029904267,28.6325450314516 77.1033270262207,28.6322940008653 77.1033539805863,28.6342869974287 77.1033069589543))";
+				  			 String latLng = wktObj;
+				    		 
+				    		 if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.WardBoundaries.trim())==0){
+				    		 wardBoundaryService.getIntersectionData(latLng, new AsyncCallback<List<WardBoundariesDTO>>() 
+									 {
+								 public void onFailure(Throwable caught) 
+								 {
+							
+							     }
+
+								 public void onSuccess(List<WardBoundariesDTO> result) 
+										{
+										   					       
+										  
+										   final List<WardBoundariesDTO> tempResult=result;
+								   	       
+								   	        Runnable onLoadCallback = new Runnable() {
+										      public void run() {
+										    	  VerticalPanel vpc = new VerticalPanel();
+										    	  System.out.println("Inside Runnable");
+										    	  createWBInfoWindowContent1( tempResult);
+										    	  InfoWindow info = map.getInfoWindow();
+										    	  
+												  //info.setMaximizeEnabled(false);
+										    	  //info.open(territoryOverlay.getBounds().getCenter(), createWBInfoWindowContent1( tempResult));
+										    	   //Panel panel = RootPanel.get();
+										 		 
+											        // Create a pie chart visualization.
+											        PieChart pie = new PieChart(createTable(tempResult), createOptions());
+											        vp.setSize("20px", "20px");
+											        vpc.add(pie);
+											        InfoWindowContent content = new InfoWindowContent(vpc);
+											        info.open(territoryOverlay.getBounds().getCenter(), content);
+											        pie.addSelectHandler(createSelectHandler(pie));
+											        //mapwrapper.add(pie);
+											        ;
+										      }
+										    };
+										    VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
+										}
+							 });
+				    		 }
+				    		 else{
+				    			 pollayerService.getIntersectionData(latLng, new AsyncCallback<List<PlTO>>() 
+										 {
+											 public void onFailure(Throwable caught) 
+											 {
+										
+										     }
+
+											 public void onSuccess(List<PlTO> result) 
+													{
+														int rowCount = result.size();
+														
+														for (int row = 0; row < rowCount; row ++) 
+														{
+															final PlTO lm=	result.get(row);
+															//LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+															//bounds.extend(point);
+															String llObj = lm.getIntrctData().trim();
+															String llAObj[] = llObj.split(",");
+															LatLng latlng[] = new LatLng[llAObj.length];
+															for(int llCount = 0; llCount < llAObj.length;llCount++)
+															{
+																String str[] = llAObj[llCount].trim().split(" ");
+																latlng[llCount] = LatLng.newInstance(Double.parseDouble(str[0]),Double.parseDouble(str[1]));
+																
+															}
+															final Polygon p = new Polygon(latlng);
+															
+															map.addOverlay(p);
+															System.out.println(llObj);
+														}
+														
+														
+													}
+										 });
+				    		 }
+				    		 
 				    	  map.addOverlay(UninorSalesTerritory);
+				    	 
+				    	  }catch(Exception e)
+				    	  {
+				    		  
+				    		  e.printStackTrace();
+				    	  }
 				    	  //showOverLayButton.setEnabled(true);
 				    	  btnSelectRetailers.setEnabled(true);
 				    	  btnShowSearchOverlay.setEnabled(false);
 					      btnHideTerritory.setEnabled(true);
 					      
 				    	  }
-				      }else if (event.getSource()==btnMeasureDistOn) 
-						{	
-							btnMeasureDistOn.setEnabled(false);
-							btnMeasureDistOff.setEnabled(true);
-							map.addMapClickHandler(uniclick);
-						}else if (event.getSource()==btnMeasureDistOff) 
-						{	
-							
-							btnMeasureDistOn.setEnabled(true);
-							btnMeasureDistOff.setEnabled(false);
-							Double sum = 0.0;
-							int size = (arrLat.size() - 1);
-							for(int i=0;i<size;i++){
-								sum+= Math.sqrt( Math.pow(arrLat.get(i) - arrLat.get(i+1),2)+Math.pow(arrLng.get(i) - arrLng.get(i+1),2)) ;
-							}
-							System.out.println("Length of the line after clicks is .....................:" + (sum*111000));
+				      }
+			      else if (event.getSource()==btnPointIntersectPoly){
 
-							info = map.getInfoWindow();
-							HTML htmlWidget = new HTML( "<p> The length of the line is</p>"+(sum*111000));
-							InfoWindowContent content = new InfoWindowContent(htmlWidget);
-							info.open(map.getCenter(), content);     
-							arrLat.clear();
-							arrLng.clear();
-							check = 0;
-							map.removeOverlay(line);
-							
-						}
+			    	 
+			    	  MapClickHandler normalClick = 
+			    		  new MapClickHandler() {
+			    		  public void onClick(MapClickEvent e) {    
+			    			  LatLng point = e.getLatLng();
+			    			  String wktObj = "POLYGON((";
+
+					    	  wktObj = wktObj + new Double(point.getLatitude()).toString() +" "+new Double(point.getLongitude()).toString() ;
+
+					    	  wktObj = wktObj + "))";
+					    	  System.out.println("The wkt form is : "+wktObj);
+					    	  String latLng = wktObj;
+			    			  wardBoundaryService.getIntersectedPolygonWithPoint(latLng, new AsyncCallback<List<WardBoundariesDTO>>() 
+					    			  {
+					    		  public void onFailure(Throwable caught) 
+					    		  {
+
+					    		  }
+
+					    		  public void onSuccess(List<WardBoundariesDTO> result) 
+					    		  {
+					    		  }
+					    			  });
+			    		  }
+
+			    	  };
+			    	  map.addMapClickHandler(normalClick);
+			    	  
+			    	  
+			      }
+			      else if(event.getSource() == btnAddFeature){
+			    	  
+			    	  final MapClickHandler normalClick = new MapClickHandler() {
+			    		  
+			    		  public void onClick(MapClickEvent e) {    
+			    			  map.removeMapClickHandler(this);
+			    			  btnAddFeature.setEnabled(false);
+			    			  final LatLng point = e.getLatLng();
+			    			  System.out.println(point.getLatitude());
+			    			  System.out.println(point.getLongitude());
+			    			  final List<String> listColumns = new ArrayList<String>();
+			    				layerService.getColumns(selectedLayer, new AsyncCallback<String[]>(){
+
+			    					@Override
+			    					public void onFailure(Throwable caught) {
+			    						
+			    					}
+
+			    					@Override
+			    					public void onSuccess(String[] result) {
+
+			    						int sizeOfResult = result.length;
+			    						for(int i=0;i<sizeOfResult;i+=1){
+			    							listColumns.add(result[i]);
+			    						}
+			    						 
+			    						
+			    						MakePopupPanel.PopupPanel(listColumns,point.getLatitude(),point.getLongitude(),map,selectedLayer,hMapForAsyncClass);
+			    					}
+			    					
+			    				});
+			    		  }
+			    	  };
+			    	  map.addMapClickHandler(normalClick);
+			      }
+			      
+		    	  
 		      }};
 		
 		btnSelectRetailers.addClickHandler(territoryClickHandler);
@@ -594,11 +1103,10 @@ public class GSTCloudUI  extends Composite {
 		toolsPanel.add(btnShowTerritoryOverLay);
 	    btnHideTerritory.addClickHandler(territoryClickHandler);
 	    toolsPanel.add(btnHideTerritory);
-	    
-	    toolsPanel.add(btnMeasureDistOn);
-	    btnMeasureDistOn.addClickHandler(territoryClickHandler);
-	    toolsPanel.add(btnMeasureDistOff);
-	    btnMeasureDistOff.addClickHandler(territoryClickHandler);
+	    btnPointIntersectPoly.addClickHandler(territoryClickHandler);
+		toolsPanel.add(btnPointIntersectPoly);
+		btnAddFeature.addClickHandler(territoryClickHandler);
+		toolsPanel.add(btnAddFeature);
 	   
 	    //initWidget(panel);
 	}
@@ -725,68 +1233,6 @@ public class GSTCloudUI  extends Composite {
 			    }
 			});
 		}
-		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0)
-		{
-			complaintService.displayComplaintsWithinDistance
-			(localPoint.getLatitude(), 
-			 localPoint.getLongitude(),
-			 localRadius, 
-			 new AsyncCallback<List<ComplaintDTO>>()
-			{
-				public void onFailure(Throwable caught) 
-				{
-				}
-			    public void onSuccess(List<ComplaintDTO> result ) 
-			    {
-			    //	tbAttributeRadius.setValue("Running");
-			    	int rowCount = result.size();
-			    	
-			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
-			    	map.setCenter(localPoint, 10);
-			    	//map.addOverlay(new Marker(localPoint));
-					for (int row = 0; row < rowCount; row ++)
-					{
-						final ComplaintDTO cmp =result.get(row);
-						final LatLng point = LatLng.newInstance(cmp.getLatitude(),cmp.getLongitude());
-						
-//						// Add a marker
-						Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/comment.png");
-				        //Icon icon = Icon.newInstance(
-				        //"file://RetailerIcon.png");
-				        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
-				        icon.setIconSize(Size.newInstance(12, 20));
-				        icon.setShadowSize(Size.newInstance(22, 20));
-				        icon.setIconAnchor(Point.newInstance(6, 20));
-				        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-				        MarkerOptions options = MarkerOptions.newInstance();
-				        options.setIcon(icon);
-						final Marker marker =new Marker(point,options);
-						/*final Marker marker =new Marker(point);
-									   	          */
-			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
-			   	          public void onClick(MarkerClickEvent event) {
-			   	          InfoWindow info = map.getInfoWindow();
-			   	         
-			   	          //info.open(marker, createComplaintInfoWindowContent(point,tw));
-			   	          info.open(marker,
-			   	              new InfoWindowContent("<tr><td> Latitude: </td><td>"+cmp.getLatitude()+
-			   	            		  "</td></tr><tr><td> Longitude: </td><td>"+cmp.getLongitude()+
-			   	            		  "</td></tr><tr><td> Complaint SubType: </td><td>"+cmp.getSubtype()+
-			   	            		"</td></tr><tr><td> Complaint SubSubType: </td><td>"+cmp.getSubSubtype()+
-			   	            		"</td></tr><tr><td> Complaint SubSubType: </td><td>"+cmp.getproblemsummary()+
-			   	            		"</td></tr><tr><td> Complaint Circle: </td><td>"+cmp.getCircle()+
-			   	            		"</td></tr>"));
-			   	        }
-			   	      });
-			   	      map.addOverlay(marker);
-					}
-					datagrid.setCenterPoint(localPoint);
-					datagrid.setSearchRadius(localRadius);
-					datagrid.updateTableData();
-			    }
-			});
-		}
-		
 		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
 			cscService.displayCSCsWithinDistance
 			(localPoint.getLatitude(), 
@@ -899,6 +1345,53 @@ public class GSTCloudUI  extends Composite {
 					datagrid.updateTableData();
 			    }
 			});
+		}else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.NewLayer.trim())==0)
+		{
+			newlayerService.displayNLRsWithinDistance
+			(localPoint.getLatitude(), 
+			 localPoint.getLongitude(),
+			 localRadius, 
+			 new AsyncCallback<List<NLRTO>>()
+			{
+				public void onFailure(Throwable caught) 
+				{
+				}
+			    public void onSuccess(List<NLRTO> result ) 
+			    {
+			    //	tbAttributeRadius.setValue("Running");
+			    	LatLngBounds bounds = LatLngBounds.newInstance();
+			    	int rowCount = result.size();
+			    	
+			    	map.addOverlay(GSTCloudUtils.drawSearchCircleOnScreen(localPoint,localRadius,60));
+			    	map.setCenter(localPoint, 10);
+			    	//map.addOverlay(new Marker(localPoint));
+					for (int row = 0; row < rowCount; row ++)
+					{
+						final NLRTO lm =result.get(row);
+						final LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+//						// Add a marker
+						final Marker marker =new Marker(point);
+	                    bounds.extend(point);
+			   	         marker.addMarkerClickHandler(new MarkerClickHandler() {
+			   	          public void onClick(MarkerClickEvent event) {
+			   	          InfoWindow info = map.getInfoWindow();
+			   	          info.open(marker,
+			   	              new InfoWindowContent("<tr><td>Category: </td><td>" +lm.getCategory()+
+			   	            		  "</td></tr><tr><td>Latitude: </td><td>"+lm.getLatitude()+
+			   	            		  "</td></tr><tr><td>Longitude: </td><td>"+lm.getLongitude()+
+			   	            		  "</td></tr><tr><td>Landmark Name: </td><td>"+lm.getPlaceName()+
+			   	            		  "</td></tr>"));
+			   	        }
+			   	      });
+			   	      map.addOverlay(marker);
+					}
+					map.setCenter(bounds.getCenter());
+					map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
+					datagrid.setCenterPoint(localPoint);
+					datagrid.setSearchRadius(localRadius);
+					datagrid.updateTableData();
+			    }
+			});
 		}
 	}
 	
@@ -923,7 +1416,7 @@ public class GSTCloudUI  extends Composite {
 		     
 		    	//Window.alert(event.getResults());
 		    	/* land.loadKML(upload1.getFilename(), new AsyncCallback<String>(){
-						public void onFailure(Throwable caught) 
+						public void onFailure(Throwable caught) 						
 						{
 							System.out.println("failure");	
 						}
@@ -990,42 +1483,28 @@ public class GSTCloudUI  extends Composite {
 		{
 			showByName(tbAttribute.getText().trim().replace("'", "\\'"));
 		}
-		/*else if (event.getSource()==tbLatitude)
-		{
-			tbLatitude.setValue("");
-		}
-		else if (event.getSource()==tbLongitude)
-		{
-			tbLongitude.setValue("");
-		}
-		else if (event.getSource()==tbLatLngRadius) 
-		{
-			tbLatLngRadius.setValue("");
-		}
-		else if(event.getSource()== tbAttribute){
-			tbAttribute.setValue("");
-		}
-		else if(event.getSource()== tbAttributeRadius){
-			tbAttributeRadius.setValue("");
-		}
-		else if (event.getSource()==tbGeoCodedRadius) 
-		{
-			tbGeoCodedRadius.setValue("");
-		}
-		else if (event.getSource()==tbGeoCodedAddress) 
-		{
-			tbGeoCodedAddress.setValue("");
-		}
-		else if (event.getSource()==tbSpatialRadius) 
-		{
-			tbSpatialRadius.setValue("");
-		}*/
+		
 		
 }
 	private void showAll(){	
 		
+		if (selectedLayer == null){
+			selectedLayer = GSTCloudSharedConstants.Landmark;
+		}
+		modelService.setLayer( selectedLayer, new AsyncCallback<String>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				datagrid.setTableModelService(modelService);
+		
 		 if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0){
-		landMarksService.getLandMarks(new AsyncCallback<List<LandmarkDTO>>() 
+			 map.clearOverlays();
+		landMarksService.getLandmarks(new AsyncCallback<List<LandmarkDTO>>() 
 				 {
 					 public void onFailure(Throwable caught) 
 					 {
@@ -1068,7 +1547,60 @@ public class GSTCloudUI  extends Composite {
 							}
 				 });
 		 }
+		 else  if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.WardBoundaries.trim())==0){
+			 map.clearOverlays();
+			 wardBoundaryService.getWardBoundaries(new AsyncCallback<List<WardBoundariesDTO>>() 
+					 {
+						 public void onFailure(Throwable caught) 
+						 {
+					
+					     }
+
+						 public void onSuccess(List<WardBoundariesDTO> result) 
+								{
+									int rowCount = result.size();
+									
+									LatLngBounds bounds = LatLngBounds.newInstance(); 
+									wktPoly = new String[rowCount];
+									
+									for (int row = 0; row < rowCount; row ++) 
+									{
+										final WardBoundariesDTO lm=	result.get(row);
+										//LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+										//bounds.extend(point);
+										String llObj[] = lm.getPolygonObject();
+										//wktPoly = llObj;
+										String wktObj = "POLYGON((";
+										LatLng latlng[] = new LatLng[llObj.length];
+										for(int polCount=0; polCount<llObj.length;polCount++)
+										{
+											//StringTokenizer stz = new StringTokenizer(llObj[polCount], ",");
+											//wktPoly =
+											if (polCount==0)
+												wktObj = wktObj + llObj[polCount].split(",")[0]+" "+llObj[polCount].split(",")[1];
+											else
+												wktObj = wktObj + ","+ llObj[polCount].split(",")[0]+" "+llObj[polCount].split(",")[1];
+											latlng[polCount] = LatLng.newInstance(Double.parseDouble(llObj[polCount].split(",")[0]),Double.parseDouble(llObj[polCount].split(",")[1]));
+										}
+										wktObj = wktObj + "))";
+										wktPoly[row] = wktObj;
+										final Polygon testpolygon = new Polygon(latlng,"red", 1, 1, "red",0.5);
+										//map.setCenter(point,15);
+										bounds = testpolygon.getBounds();
+										map.addOverlay(testpolygon);
+										// Add an info window to highlight a point of interest
+										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+										
+									}
+									LatLng latl = LatLng.newInstance(37.42211922626856, -122.0849580979198);
+									map.setCenter(bounds.getCenter());
+									map.setZoomLevel(15);
+									
+								}
+					 });
+				}
 		else  if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0){
+			map.clearOverlays();
 		towerService.getTowers(new AsyncCallback<List<TowerDTO>>() 
 				 {
 					 public void onFailure(Throwable caught) 
@@ -1121,6 +1653,7 @@ public class GSTCloudUI  extends Composite {
 				 });
 		}
 		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0){
+			map.clearOverlays();
 			cscService.getCSCs(new AsyncCallback<List<CSCDTO>>() 
 					 {
 						 public void onFailure(Throwable caught) 
@@ -1177,65 +1710,8 @@ public class GSTCloudUI  extends Composite {
 								}
 					 });
 			 }
-		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0){
-			complaintService.getComplaints(new AsyncCallback<List<ComplaintDTO>>() 
-					 {
-						 public void onFailure(Throwable caught) 
-						 {
-							 System.out.println("Could not fetch complaints");
-					     }
-
-						 public void onSuccess(List<ComplaintDTO> result) 
-								{
-									int rowCount = result.size();
-									System.out.println("Number of returned rows:"+rowCount);
-									LatLngBounds bounds = LatLngBounds.newInstance(); 
-									for (int row = 0; row < rowCount; row ++) 
-									{
-										final ComplaintDTO complaint=	result.get(row);
-										LatLng point = LatLng.newInstance(complaint.getLatitude(),complaint.getLongitude());
-										bounds.extend(point);
-										Icon icon = Icon.newInstance("http://gstcloud.googlecode.com/svn/trunk/GSTCloud/war/images/comment.png");
-								        //Icon icon = Icon.newInstance(
-								        //"file://RetailerIcon.png");
-								        icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
-								        icon.setIconSize(Size.newInstance(12, 20));
-								        icon.setShadowSize(Size.newInstance(22, 20));
-								        icon.setIconAnchor(Point.newInstance(6, 20));
-								        icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-								        MarkerOptions options = MarkerOptions.newInstance();
-								        options.setIcon(icon);
-										final Marker marker =new Marker(point,options);
-										marker.addMarkerClickHandler(new MarkerClickHandler() {
-								   	          public void onClick(MarkerClickEvent event) {
-									   	          InfoWindow info = map.getInfoWindow();
-									   	          info.open(marker,
-									   	              new InfoWindowContent("<tr><td> Category: </td><td>" +complaint.getCategory()+
-									   	            		  "</td></tr><tr><td> Latitude: </td><td>"+complaint.getLatitude()+
-									   	            		  "</td></tr><tr><td> Longitude: </td><td>"+complaint.getLongitude()+
-									   	            		"</td></tr><tr><td> Complaint Circle: </td><td>"+complaint.getCircle()+
-									   	            		  "</td></tr><tr><td> Complaint Subtype: </td><td>"+complaint.getSubtype()+
-									   	            		"</td></tr><tr><td> Complaint SubSubtype: </td><td>"+complaint.getSubSubtype()+
-									   	            		"</td></tr><tr><td> Complaint Problem Summary: </td><td>"+complaint.getproblemsummary()+
-									   	            		  "</td></tr>"));
-									   	        }
-									   	      });						
-	                                   // Add a marker
-										map.addOverlay(marker);
-										
-										//map.setCenter(point,15);
-										
-										// Add an info window to highlight a point of interest
-										//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
-										
-									}
-									map.setCenter(bounds.getCenter());
-									map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
-									datagrid.updateTableData();
-								}
-					 });
-			 }
 		else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0){
+			map.clearOverlays();
 			retailerService.getRetailers(new AsyncCallback<List<RetailerDTO>>() 
 					 {
 						 public void onFailure(Throwable caught) 
@@ -1267,11 +1743,11 @@ public class GSTCloudUI  extends Composite {
 								   	          public void onClick(MarkerClickEvent event) {
 									   	          InfoWindow info = map.getInfoWindow();
 									   	          info.open(marker,
-									   	              new InfoWindowContent("<tr><td> Category: </td><td>" +re.getCategory()+
-									   	            		  " </td></tr><tr><td> Latitude: </td><td>"+re.getLatitude()+
-									   	            		  " </td></tr><tr><td> Longitude: </td><td>"+re.getLongitude()+
-									   	            		  " </td></tr><tr><td> Retailer Name: </td><td>"+re.getName()+
-									   	            		" </td></tr><tr><td> Address: </td><td>"+re.getAddress()+
+									   	              new InfoWindowContent("<tr><td>Category: </td><td>" +re.getCategory()+
+									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+re.getLatitude()+
+									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+re.getLongitude()+
+									   	            		  "</td></tr><tr><td>Retailer Name: </td><td>"+re.getName()+
+									   	            		"</td></tr><tr><td>Address: </td><td>"+re.getAddress()+
 									   	            		  "</td></tr>"));
 									   	        }
 									   	      });						
@@ -1289,7 +1765,97 @@ public class GSTCloudUI  extends Composite {
 									datagrid.updateTableData();
 								}
 					 });
-			 }
+			 }else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.NewLayer.trim())==0){
+				 map.clearOverlays();
+							newlayerService.getNLRs(new AsyncCallback<List<NLRTO>>() {
+								public void onFailure(Throwable caught)
+								{
+									
+								}
+								public void onSuccess(List<NLRTO> result)
+								{
+									int rowCount = result.size();
+									LatLngBounds bounds = LatLngBounds.newInstance();
+									for(int row=0; row < rowCount; row++)
+									{
+										final NLRTO nr = result.get(row);
+										LatLng point = LatLng.newInstance(nr.getLatitude(),nr.getLongitude());
+										bounds.extend(point);
+										final Marker marker =new Marker(point);
+										marker.addMarkerClickHandler(new MarkerClickHandler() {
+								   	          public void onClick(MarkerClickEvent event) {
+									   	          InfoWindow info = map.getInfoWindow();
+									   	          info.open(marker,
+									   	              new InfoWindowContent("<tr><td>Category: </td><td>" +nr.getCategory()+
+									   	            		  "</td></tr><tr><td>Latitude: </td><td>"+nr.getLatitude()+
+									   	            		  "</td></tr><tr><td>Longitude: </td><td>"+nr.getLongitude()+
+									   	            		  "</td></tr><tr><td>Landmark Name: </td><td>"+nr.getPlaceName()+
+									   	            		  "</td></tr>"));
+									   	        }
+									   	      });						
+	                                   // Add a marker
+										map.addOverlay(marker);
+									}
+									map.setCenter(bounds.getCenter());
+									map.setZoomLevel(map.getBoundsZoomLevel(bounds)-1);
+								}
+							});
+					 }
+			 else if (selectedLayer.trim().compareTo(GSTCloudSharedConstants.TestPolygon.trim())==0){
+				 map.clearOverlays();
+				 pollayerService.getData(new AsyncCallback<List<PlTO>>() 
+						 {
+							 public void onFailure(Throwable caught) 
+							 {
+						
+						     }
+
+							 public void onSuccess(List<PlTO> result) 
+									{
+										int rowCount = result.size();
+										
+										LatLngBounds bounds = LatLngBounds.newInstance(); 
+										wktPoly = new String[rowCount];
+										
+										for (int row = 0; row < rowCount; row ++) 
+										{
+											final PlTO lm=	result.get(row);
+											//LatLng point = LatLng.newInstance(lm.getLatitude(),lm.getLongitude());
+											//bounds.extend(point);
+											String llObj[] = lm.getPolygonObject();
+											//wktPoly = llObj;
+											String wktObj = "POLYGON((";
+											LatLng latlng[] = new LatLng[llObj.length];
+											for(int polCount=0; polCount<llObj.length;polCount++)
+											{
+												//StringTokenizer stz = new StringTokenizer(llObj[polCount], ",");
+												//wktPoly =
+												if (polCount==0)
+													wktObj = wktObj + llObj[polCount].split(",")[0]+" "+llObj[polCount].split(",")[1];
+												else
+													wktObj = wktObj + ","+ llObj[polCount].split(",")[0]+" "+llObj[polCount].split(",")[1];
+												latlng[polCount] = LatLng.newInstance(Double.parseDouble(llObj[polCount].split(",")[0]),Double.parseDouble(llObj[polCount].split(",")[1]));
+											}
+											wktObj = wktObj + "))";
+											wktPoly[row] = wktObj;
+											final Polygon testpolygon = new Polygon(latlng,"red", 1, 1, "red",0.5);
+											//map.setCenter(point,15);
+											bounds = testpolygon.getBounds();
+											map.addOverlay(testpolygon);
+											// Add an info window to highlight a point of interest
+											//map.getInfoWindow().open(map.getCenter(), new InfoWindowContent("This is" + result.get(row).getPlaceName()));
+											
+										}
+										LatLng latl = LatLng.newInstance(37.42211922626856, -122.0849580979198);
+										map.setCenter(bounds.getCenter());
+										map.setZoomLevel(15);
+										
+									}
+						 });
+				 }
+	}
+			
+		});
 	}
 	
 	private void showBySpatialLocation(){
@@ -1712,7 +2278,6 @@ public class GSTCloudUI  extends Composite {
 			}
 	    	
 	    });*/
-
 	    
 		/*
 		 * Zooming in close enough will put the map viewport
@@ -1838,7 +2403,7 @@ public class GSTCloudUI  extends Composite {
 					{		
 						for (int row = 0; row < result.size(); row ++) 				
 							lm.addLayer(result.get(row));
-						lm.getLt().setSelectedItem(lm.getLt().getItem(2));
+						lm.getLt().setSelectedItem(lm.getLt().getItem(1));
 						vp2.add(lm);
 
 					}
@@ -1886,25 +2451,102 @@ public class GSTCloudUI  extends Composite {
 	@SuppressWarnings("deprecation")
 	public void setupTablePanel()
 	{
+		
 		datagrid= new AdvancedTable();
 		datagrid.setAllowRowMark(true);
 		datagrid.setFirstColumnVisible(false);
-		
+		System.out.println("Selected layer is :"+ selectedLayer);
 		if (lm.getLt().getSelectedItem()==null) 
 			selectedLayer=GSTCloudSharedConstants.Landmark;
 		else 
 			selectedLayer = lm.getLt().getSelectedItem().getText();
-		
-		if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0)
-			datagrid.setTableModelService(towerModelService);
+		System.out.println("Selected layer is :"+ selectedLayer);
+		//if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Tower.trim())==0)
+			//{
+			// modelService.initialize(columns, layerName, filterColumns, callback);
+			// datagrid.setTableModelService(modelService);
+			//}
+			/*datagrid.setTableModelService(towerModelService);
 		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Landmark.trim())==0)
 			datagrid.setTableModelService(landmarksModelService);
 		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.CSC.trim())==0)
 			datagrid.setTableModelService(cscModelService);
 		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Retailer.trim())==0)
 			datagrid.setTableModelService(retailerModelService);
-		else if(selectedLayer.trim().compareTo(GSTCloudSharedConstants.Complaint.trim())==0)
-			datagrid.setTableModelService(complaintModelService)	;
+		*/
+		// final TableColumn[] arrColumn ;
+		//final String[] arrFilterColumn;
+		
+		/*final List<String> tempArrFilterColumn = new ArrayList<String>();
+		final List<TableColumn> tempArrColumn = new ArrayList<TableColumn>();
+		layerService.getColumns(selectedLayer, new AsyncCallback<String[]>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(String[] result) {
+
+				int sizeOfResult = result.length;
+				
+				
+				for(int i=0;i<sizeOfResult-1;i+=2){
+					tempArrColumn.add(new TableColumn(result[i],result[i+1]));
+				}
+				
+				layerService.getFilterColumns(selectedLayer, new AsyncCallback<String[]>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+
+					@Override
+					public void onSuccess(String[] result) {
+						
+						for(int i=0;i<result.length;i++){
+							tempArrFilterColumn.add(result[i]);
+						}
+						
+						modelService.initialize(tempArrColumn, selectedLayer,tempArrFilterColumn, new AsyncCallback<String>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
+								
+							}
+
+							@Override
+							public void onSuccess(String result) {
+								datagrid.setTableModelService(modelService);
+							}
+							
+						});
+						
+					}
+					
+				});
+				
+				
+			}
+			
+		});*/
+				
+		
+		modelService.setLayer( selectedLayer, new AsyncCallback<String>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				datagrid.setTableModelService(modelService);
+			}
+			
+		});
 		
 		datagrid.addRowSelectionListener(new RowSelectionListener() {
 			public void onRowSelected(AdvancedTable sender, String rowId) {

@@ -11,9 +11,12 @@
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
+  <inherits name='com.google.gwt.visualization.Visualization'/> 
+  
+
   <!-- Other module inherits                                      -->
   <inherits name="com.google.gwt.maps.GoogleMaps" />
-  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA9dMg6RMrLPqO3KiTOCx6BBSRToRF3uODGoNCR6O0HRvwJT-QGRSllXiZdURqnASiPpIetWXCQVtN_w"></script>
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAykFO6wcUWkh6KbXZFCODgBQXvBVWjn8ueEXPJ2iIacqe9nvrVRRAB3T0u2s-OpRCreszVANIUSqHyA"></script>
    
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.rmsi.lim.gstcloud.client.GSTCloud'/>
