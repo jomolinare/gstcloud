@@ -26,7 +26,6 @@ public interface SpatialBodiesService extends RemoteService
 
 	List<State> getStates();
 	
-//	List<Districts> getDistrictsByStateId(Long stateId);
 	List<District> getDistrictsByStateName(String stateName);
 	List<LocalBody> getLocalBodiesByDistrictName (String districtName);
 }
