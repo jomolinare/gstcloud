@@ -1,0 +1,15 @@
+com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true, true, true, true, com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException/3936916533, 3936916533
+com.rmsi.lim.gstcloud.client.interfaces.TableModelService, false, false, false, false, _, 4104097644
+com.rmsi.lim.gstcloud.client.model.TableColumn, true, true, false, false, com.rmsi.lim.gstcloud.client.model.TableColumn/2101070256, 2101070256
+[Lcom.rmsi.lim.gstcloud.client.model.TableColumn;, true, true, false, false, [Lcom.rmsi.lim.gstcloud.client.model.TableColumn;/31599168, 31599168
+com.rmsi.lim.gstcloud.client.utilities.DataFilter, false, false, true, true, com.rmsi.lim.gstcloud.client.utilities.DataFilter/344032230, 344032230
+[Lcom.rmsi.lim.gstcloud.client.utilities.DataFilter;, false, false, true, true, [Lcom.rmsi.lim.gstcloud.client.utilities.DataFilter;/151223160, 151223160
+java.lang.Double, false, false, true, true, java.lang.Double/858496421, 858496421
+java.lang.Exception, true, false, true, false, java.lang.Exception/1920171873, 1920171873
+java.lang.Integer, true, true, false, false, java.lang.Integer/3438268394, 3438268394
+java.lang.Number, true, false, true, false, java.lang.Number/300033342, 300033342
+java.lang.RuntimeException, true, false, true, false, java.lang.RuntimeException/515124647, 515124647
+java.lang.String, true, true, true, true, java.lang.String/2004016611, 2004016611
+[Ljava.lang.String;, true, true, false, false, [Ljava.lang.String;/2600011424, 2600011424
+[[Ljava.lang.String;, true, true, false, false, [[Ljava.lang.String;/4182515373, 4182515373
+java.lang.Throwable, true, false, true, false, java.lang.Throwable/2953622131, 2953622131
