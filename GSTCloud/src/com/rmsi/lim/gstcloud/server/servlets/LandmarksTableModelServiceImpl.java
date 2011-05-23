@@ -40,7 +40,7 @@ public class LandmarksTableModelServiceImpl extends RemoteServiceServlet impleme
 			};
 	
 	public String applySpatialFilter(Double lat, Double lng, Double rad){
-		LandmarksServiceImpl fea1 = new LandmarksServiceImpl();
+		LandmarkServiceImpl fea1 = new LandmarkServiceImpl();
 		this.allLandmarks=fea1.displayLandmarksWithinDistance(lat, lng, rad);
 		this.applyDataFilters(null);
 		return "filter applied";
@@ -52,8 +52,8 @@ public class LandmarksTableModelServiceImpl extends RemoteServiceServlet impleme
 
 	public LandmarksTableModelServiceImpl() 
 {
-		LandmarksServiceImpl fea1 = new LandmarksServiceImpl();
-		this.allLandmarks=fea1.getLandMarks();
+		LandmarkServiceImpl fea1 = new LandmarkServiceImpl();
+		this.allLandmarks=fea1.getLandmarks();
 		
 		
 		this.applyDataFilters(null);
@@ -135,5 +135,15 @@ public class LandmarksTableModelServiceImpl extends RemoteServiceServlet impleme
 			Collections.sort(this.filteredLandmarks, landmarksComparator);
 		}
 	}
+
+	@Override
+	public String setLayer(String layerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	
 
 }

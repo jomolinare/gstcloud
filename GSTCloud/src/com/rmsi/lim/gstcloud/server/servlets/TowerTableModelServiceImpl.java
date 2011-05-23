@@ -38,7 +38,7 @@ public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
 			new TableColumn("Latitude","Latitude" ),
 			new TableColumn("Longitude","Longitude"),
 			new TableColumn("Name", "Name"),
-			new TableColumn("Owner", "Owner" ),
+			new TableColumn("Owner", "Owner" ),       
 			new TableColumn("Status","Status" )			
 			};
 	
@@ -54,10 +54,9 @@ public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
 	private List<TowerDTO> filteredTowers;
 
 	public TowerTableModelServiceImpl() 
-{
+	{
 		TowerServiceImpl fea1 = new TowerServiceImpl();
 		this.allTowers=fea1.getTowers();
-		
 		
 		this.applyDataFilters(null);
 	}
@@ -142,5 +141,15 @@ public class TowerTableModelServiceImpl extends RemoteServiceServlet implements
 			Collections.sort(this.filteredTowers, TowersComparator);
 		}
 	}
+
+	@Override
+	public String setLayer(String layerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	
 
 }

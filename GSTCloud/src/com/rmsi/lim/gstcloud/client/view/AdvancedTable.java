@@ -102,10 +102,11 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	private int selectedRowIndex;
 	private Set markedRows = new HashSet();
 	
-	private LatLng centerPoint=LatLng.newInstance(new Double(GSTCloudConstants.delhiCityCentroid.getLatitude()),new Double(GSTCloudConstants.delhiCityCentroid.getLatitude())); 
+	private LatLng centerPoint=LatLng.newInstance(new Double(GSTCloudConstants.delhiCityCentroid.getLatitude()),new Double(GSTCloudConstants.delhiCityCentroid.getLongitude())); 
 	private Double searchRadius=100000.0;
 	
 	
+	@SuppressWarnings("deprecation")
 	public AdvancedTable() {
 		super();
 		
@@ -130,11 +131,6 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		if (! GWT.isScript()) {
 			grid.resize(5,4);
 			grid.resize(DEFAULT_PAGE_SIZE+1, 4);
-//			grid.setText(0, 0, "Category");
-//			grid.setText(0, 1, "Latitude");
-//			grid.setText(0, 2, "Longitude");
-//			grid.setText(0, 3, "PlaceName");
-			
 		}
 		
 		// Add event handler to perform sorting on header column click
@@ -164,8 +160,7 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		navigationPanel.setCellHeight(buttonRefresh, "23px");
 		buttonRefresh.setStyleName("Button");
 		buttonRefresh.setSize("70", "23");
-		navigationPanel.setCellVerticalAlignment(buttonRefresh, 
-			HasVerticalAlignment.ALIGN_BOTTOM);
+		navigationPanel.setCellVerticalAlignment(buttonRefresh, HasVerticalAlignment.ALIGN_BOTTOM);
 		buttonRefresh.addClickHandler(this);
 		/*public void onClick(ClickEvent event){
 			if (event.getSource()==buttonRefresh){
@@ -184,10 +179,8 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 		navigationPanel.add(statusLabel);
 		statusLabel.setHeight("20px");
 		navigationPanel.setCellHeight(statusLabel, "23px");
-		navigationPanel.setCellHorizontalAlignment(
-			statusLabel, HasHorizontalAlignment.ALIGN_RIGHT);
-		navigationPanel.setCellVerticalAlignment(
-			statusLabel, HasVerticalAlignment.ALIGN_BOTTOM);
+		navigationPanel.setCellHorizontalAlignment(statusLabel, HasHorizontalAlignment.ALIGN_RIGHT);
+		navigationPanel.setCellVerticalAlignment(statusLabel, HasVerticalAlignment.ALIGN_BOTTOM);
 		showStatus("Table model service not available.", STATUS_ERROR);
 		
 		buttonFirstPage = new Button();
@@ -787,41 +780,43 @@ public class AdvancedTable extends Composite implements ClickHandler,EventHandle
 	
 	
 	 public void onClick(ClickEvent event )
-		    {
-			 if(event.getSource()==buttonFirstPage)
+	 {
+		 if(event.getSource()==buttonFirstPage)
+		 {
+			 this.currentPageIndex = 0;
+			 this.updateRows();
+		 };
+		 if (event.getSource()==buttonPrevPage)
+		 {
+
+			 if(this.currentPageIndex>0)
 			 {
-				 this.currentPageIndex = 0;
+				 this.currentPageIndex--;
 				 this.updateRows();
-			 };
-			  if (event.getSource()==buttonPrevPage)
-			  {
-			    
-				 		if(this.currentPageIndex>0)
-			    		{
-			    			this.currentPageIndex--;
-			    			this.updateRows();
-			    		}
-			    	}
-			    		
-			    	
-            else if (event.getSource()==buttonNextPage)
-                {
-	            int pagesCount = calcPagesCount();
-	            if(this.currentPageIndex <pagesCount-1)
-	            {
-		        this.currentPageIndex++;
-		        this.updateRows();
-	            }}
-	else if(event.getSource()==buttonLastPage)
-	{
-		int pagesCount = calcPagesCount();
-		this.currentPageIndex = pagesCount;
-		this.updateRows();
-	};
-	 if(event.getSource()==buttonRefresh)
-	{
-		this.updateTableData();
-	}};
+			 }
+		 }
+
+
+		 else if (event.getSource()==buttonNextPage)
+		 {
+			 int pagesCount = calcPagesCount();
+			 if(this.currentPageIndex <pagesCount-1)
+			 {
+				 this.currentPageIndex++;
+				 this.updateRows();
+			 }}
+		 else if(event.getSource()==buttonLastPage)
+		 {
+			 int pagesCount = calcPagesCount();
+			 this.currentPageIndex = pagesCount;
+			 this.updateRows();
+		 };
+		 if(event.getSource()==buttonRefresh)
+		 {
+			 this.updateTableData();
+		 }
+	}
+	 
 	public HandlerRegistration addClickHandler(ClickHandler handler) {
 	    return addDomHandler(handler, ClickEvent.getType());
 	  }			
