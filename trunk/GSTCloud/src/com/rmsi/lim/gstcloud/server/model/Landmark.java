@@ -7,6 +7,8 @@ import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import java.util.HashMap;
+
 import com.beoui.geocell.GeocellManager;
 import com.beoui.geocell.model.LocationCapable;
 import com.beoui.geocell.model.Point;
@@ -37,12 +39,25 @@ public class Landmark extends Geohashed implements LocationCapable,IsSerializabl
         this.placeName = placeName;
         this.setGeoCells(geoCells);
     }
+    
+    public Landmark(LandmarkDTO station) {
+		this.setCategory(station.getCategory());
+		this.setLatitude(station.getLatitude());
+		this.setLongitude(station.getLongitude());
+		 this.setPlaceName(station.getPlaceName());
+	     this.setGeoCells(GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(station.getLatitude(),station.getLongitude())));
+		// TODO Auto-generated constructor stub
+	}
 
-//    public long getid() {
-//        return id;
-//    }
+ /*   public Landmark(HashMap hmap) {
+    	this.setCategory((String)hmap.get("Category"));
+		this.setLatitude(Double.parseDouble((String)hmap.get("Latitude")));
+		this.setLongitude(Double.parseDouble((String)hmap.get("Longitude")));
+		 this.setPlaceName((String)hmap.get("PlaceName"));
+	     this.setGeoCells(GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point((Double)hmap.get("Latitude"),(Double)hmap.get("Longitude"))));
+	}*/
 
-    public String getCategory() {
+	public String getCategory() {
         return category;
     }
 
@@ -74,14 +89,7 @@ public class Landmark extends Geohashed implements LocationCapable,IsSerializabl
         this.longitude = longitude;
     }
 
-	public Landmark(LandmarkDTO station) {
-		this.setCategory(station.getCategory());
-		this.setLatitude(station.getLatitude());
-		this.setLongitude(station.getLongitude());
-		 this.setPlaceName(station.getPlaceName());
-	     this.setGeoCells(GeocellManager.generateGeoCell(new com.beoui.geocell.model.Point(station.getLatitude(),station.getLongitude())));
-		// TODO Auto-generated constructor stub
-	}
+	
 
 	public List<String> getGeocells() {
 		

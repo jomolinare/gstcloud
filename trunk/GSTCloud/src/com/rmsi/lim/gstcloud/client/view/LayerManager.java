@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.rmsi.lim.gstcloud.client.GSTCloudUI;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
@@ -19,14 +20,17 @@ public class LayerManager extends Composite implements ClickHandler{
 	private Button btnMoveLyrUp = new Button("Shift Up");
 	private Button btnMoveLyrDown = new Button("Shift Down");
 	private Button btnRefresh = new Button("Refresh");
-	private final LayerServiceAsync layerService = GWT
-	.create(LayerService.class);
+	private final LayerServiceAsync layerService = GWT.create(LayerService.class);
 	private GSTCloudUI parentUI;	
 	public LayerManager(GSTCloudUI parent)
 	{
+		ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.setSize("220", "140"); 
 		this.parentUI=parent;
 		VerticalPanel vp= new VerticalPanel();		
-		vp.add(lt);
+		/*vp.add(lt);*/
+		vp.add(scrollPanel);
+		scrollPanel.add(lt);
 		HorizontalPanel hp = new HorizontalPanel();
 		btnMoveLyrUp.setStylePrimaryName("Button");
 		btnMoveLyrDown.setStylePrimaryName("Button");
@@ -66,7 +70,7 @@ public class LayerManager extends Composite implements ClickHandler{
 		else if(event.getSource() == btnRefresh)
 		{
 			System.out.println(lt.getSelectedItem().getText());
-			parentUI.setupTablePanel();
+			
 			parentUI.lblsearchType.setText(lt.getSelectedItem().getText()+" Search");
 			layerService.refreshMap(lt.getSelectedItem().getText(),new AsyncCallback<String>(){
 				public void onFailure(Throwable caught) 
@@ -78,8 +82,11 @@ public class LayerManager extends Composite implements ClickHandler{
 				{
 					System.out.println("123");
 					System.out.println(result);
+					parentUI.setupTablePanel();
+		
 				} 
 			});
+			
 		
 	}
 	}

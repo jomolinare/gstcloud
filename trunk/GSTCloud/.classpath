@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/java-topology-suite"/>
@@ -20,5 +19,6 @@
 	<classpathentry kind="lib" path="D:/Shrikant/new jars/ostermillerutils_1_07_00.jar"/>
 	<classpathentry kind="lib" path="D:/Shrikant/new jars/jts-1.11.jar"/>
 	<classpathentry kind="lib" path="D:/Shrikant/new jars/acme.jar"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

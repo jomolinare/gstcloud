@@ -28,7 +28,7 @@ import com.rmsi.lim.gstcloud.client.interfaces.DatastoreService;
 import com.rmsi.lim.gstcloud.client.interfaces.DatastoreServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkServiceAsync;
 import com.rmsi.lim.gstcloud.client.model.LandmarkDTO;
 
 public class MakePopupPanel {

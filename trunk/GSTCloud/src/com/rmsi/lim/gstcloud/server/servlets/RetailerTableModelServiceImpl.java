@@ -135,4 +135,14 @@ public class RetailerTableModelServiceImpl extends RemoteServiceServlet implemen
 		}
 	}
 
+	@Override
+	public String setLayer(String layerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+
+
 }

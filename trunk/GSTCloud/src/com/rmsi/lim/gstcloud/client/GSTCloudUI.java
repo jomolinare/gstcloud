@@ -76,12 +76,12 @@ import com.rmsi.lim.gstcloud.client.interfaces.CSCService;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.CSCTableModelServiceAsync;
-import com.rmsi.lim.gstcloud.client.interfaces.ComplaintService;
-import com.rmsi.lim.gstcloud.client.interfaces.ComplaintServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.ComplaintsService;
+import com.rmsi.lim.gstcloud.client.interfaces.ComplaintsServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudService;
 import com.rmsi.lim.gstcloud.client.interfaces.GisCloudServiceAsync;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksService;
-import com.rmsi.lim.gstcloud.client.interfaces.LandmarksServiceAsync;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkService;
+import com.rmsi.lim.gstcloud.client.interfaces.LandmarkServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelService;
 import com.rmsi.lim.gstcloud.client.interfaces.LandmarksTableModelServiceAsync;
 import com.rmsi.lim.gstcloud.client.interfaces.LayerService;
@@ -256,8 +256,8 @@ public class GSTCloudUI  extends Composite {
 	
 	private final GisCloudServiceAsync gisCloudService = GWT
 	.create(GisCloudService.class);
-	private final LandmarksServiceAsync landMarksService = GWT
-    .create(LandmarksService.class);
+	private final LandmarkServiceAsync landMarksService = GWT
+    .create(LandmarkService.class);
 	private final SpatialBodiesServiceAsync spatialBodiesService = GWT
     .create(SpatialBodiesService.class);
 	private final LayerServiceAsync layerService = GWT

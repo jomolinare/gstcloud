@@ -88,8 +88,8 @@ public class LandmarkDTO  implements IsSerializable{
         this.category = category;
     }
 
-    public void setPlaceName(String placsName) {
-        this.placeName = placsName;
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
     }
     
     public void setLatitude(Double latitude) {

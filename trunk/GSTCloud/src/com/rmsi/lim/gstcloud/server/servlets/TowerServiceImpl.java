@@ -48,7 +48,7 @@ public class TowerServiceImpl extends RemoteServiceServlet implements TowerServi
 		List<Tower> Towerlist = (List<Tower>) pm.newQuery(query).execute();
 		
 		List<TowerDTO>  tempList = new ArrayList<TowerDTO>();
-	 	
+	 	 
 	    int rowCount=Towerlist.size();
 	    for (int ctr=0;ctr<rowCount;ctr++)
 	    {

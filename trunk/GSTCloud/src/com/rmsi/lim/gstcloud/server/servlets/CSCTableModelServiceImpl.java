@@ -140,4 +140,14 @@ public class CSCTableModelServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
+	@Override
+	public String setLayer(String layerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	
+
 }
