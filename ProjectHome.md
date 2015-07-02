@@ -1,0 +1,3 @@
+GeoSpatial Telecom Cloud (GSTCloud) aims to provide a set of geospatial functionalities for telecom companies while utilizing the cloud. We plan to use the GAE->JPA,JTS,GWT->Custom Application stack with generated KML being used to displa various Geospatial formats like SHP, MID/MIF, ECW, MrSID on the GMAPs api
+We do not plan to try and do everything possible in a GIS application. Instead we want to focus on telecom related functionalities.
+The three major groups of functionalities we want to bring to life are - network planning(both towers and fiber), churn management and sales territory planning
